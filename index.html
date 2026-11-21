@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#050914" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>NimboSignal Pro</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    :root {
+      --bg-base: #050914;
+      --ambient-1: rgba(16, 185, 129, 0.22);
+      --ambient-2: rgba(14, 165, 233, 0.20);
+      --ambient-3: rgba(168, 85, 247, 0.14);
+      --glass: rgba(255, 255, 255, 0.065);
+      --glass-strong: rgba(255, 255, 255, 0.10);
+      --border: rgba(255, 255, 255, 0.13);
+      --border-bright: rgba(255, 255, 255, 0.24);
+      --text: #f8fafc;
+      --text-sec: #cbd5e1;
+      --muted: #94a3b8;
+      --cyan: #22d3ee;
+      --blue: #38bdf8;
+      --purple: #a855f7;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --safe-top: env(safe-area-inset-top, 12px);
+      --safe-bottom: env(safe-area-inset-bottom, 12px);
+    }
+
+    body.theme-green {
+      --ambient-1: rgba(16, 185, 129, 0.24);
+      --ambient-2: rgba(14, 165, 233, 0.20);
+    }
+    body.theme-amber {
+      --ambient-1: rgba(245, 158, 11, 0.24);
+      --ambient-2: rgba(234, 88, 12, 0.16);
+    }
+    body.theme-red {
+      --ambient-1: rgba(239, 68, 68, 0.28);
+      --ambient-2: rgba(168, 85, 247, 0.18);
+    }
+
+    /* Light Data Mode (saves battery/GPU on weak mobile data) */
+    body.lite-mode .ambient-canvas {
+      background: #060b19 !important;
+    }
+    body.lite-mode .card,
+    body.lite-mode .app-header,
+    body.lite-mode .bottom-nav {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: #0d162c !important;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-base);
+      color: var(--text);
+      min-height: 100vh;
+      padding-top: calc(var(--safe-top) + 62px);
+      padding-bottom: calc(var(--safe-bottom) + 84px);
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    .ambient-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 10%, var(--ambient-1) 0%, transparent 48%),
+        radial-gradient(circle at 85% 25%, var(--ambient-2) 0%, transparent 50%),
+        radial-gradient(circle at 50% 90%, var(--ambient-3) 0%, transparent 55%),
+        linear-gradient(180deg, #070d1d 0%, #03060f 100%);
+      transition: background 0.6s ease;
+    }
+
+    /* Native App Top Bar */
+    .app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 800;
+      padding: calc(var(--safe-top) + 8px) 16px 10px;
+      background: rgba(6, 11, 24, 0.78);
+      backdrop-filter: blur(22px) saturate(180%);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .app-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .app-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(145deg, #ffffff 0%, #e2e8f0 100%);
+      border-radius: 10px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(34, 211, 238, 0.25);
+    }
+
+    .app-title-group h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .app-title-group span {
+      font-size: 0.7rem;
+      color: var(--cyan);
+      font-weight: 600;
+      display: block;
+    }
+
+    .pro-pill {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(168, 85, 247, 0.28));
+      border: 1px solid rgba(168, 85, 247, 0.55);
+      color: #f3e8ff;
+    }
+
+    /* App Container & Views */
+    .app-view {
+      display: none;
+      padding: 12px 16px;
+      max-width: 640px;
+      margin: 0 auto;
+      animation: fadeSlide 0.24s ease;
+    }
+
+    .app-view.active {
+      display: block;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile Search Bar */
+    .mobile-search-wrap {
+      position: relative;
+      margin-bottom: 14px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .mobile-search-wrap input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      color: #ffffff;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 0.92rem;
+      outline: none;
+      user-select: text;
+    }
+
+    .mobile-search-wrap input:focus {
+      border-color: var(--cyan);
+      background: rgba(10, 17, 34, 0.9);
+    }
+
+    .gps-icon-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+      color: #ffffff;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
+    }
+
+    .gps-icon-btn:active {
+      transform: scale(0.95);
+    }
+
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 54px;
+      background: #0d162c;
+      border: 1px solid var(--border-bright);
+      border-radius: 16px;
+      z-index: 850;
+      max-height: 230px;
+      overflow-y: auto;
+      display: none;
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.65);
+    }
+
+    .search-option {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    .search-option:last-child { border-bottom: none; }
+    .search-option:active { background: rgba(56, 189, 248, 0.2); }
+
+    /* Horizontal Quick Pills */
+    .pills-scroller {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+    }
+    .pills-scroller::-webkit-scrollbar { display: none; }
+
+    .pill-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--text-sec);
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .pill-chip:active {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: var(--cyan);
+      color: #ffffff;
+    }
+
+    /* Glass Cards */
+    .card {
+      background: var(--glass);
+      backdrop-filter: blur(22px) saturate(170%);
+      -webkit-backdrop-filter: blur(22px) saturate(170%);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 18px 38px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    }
+
+    .sec-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Apple Weather Hero Card */
+    .hero-weather {
+      text-align: center;
+      padding: 20px 16px;
+      border-radius: 26px;
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      background: linear-gradient(155deg, rgba(16, 185, 129, 0.18) 0%, rgba(6, 78, 59, 0.24) 100%);
+      margin-bottom: 14px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    }
+
+    .hero-weather.amber {
+      border-color: rgba(245, 158, 11, 0.5);
+      background: linear-gradient(155deg, rgba(245, 158, 11, 0.22) 0%, rgba(120, 53, 15, 0.26) 100%);
+    }
+
+    .hero-weather.red {
+      border-color: rgba(239, 68, 68, 0.55);
+      background: linear-gradient(155deg, rgba(239, 68, 68, 0.24) 0%, rgba(127, 29, 29, 0.28) 100%);
+    }
+
+    .loc-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .loc-gps-tag {
+      font-size: 0.72rem;
+      color: var(--cyan);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .big-temp {
+      font-size: 4.2rem;
+      font-weight: 200;
+      letter-spacing: -0.05em;
+      line-height: 1.05;
+      margin: 8px 0 6px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .verdict-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      font-weight: 800;
+      background: rgba(5, 9, 20, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      margin-bottom: 8px;
+    }
+
+    .hero-weather.green .verdict-badge { color: #6ee7b7; }
+    .hero-weather.amber .verdict-badge { color: #fcd34d; }
+    .hero-weather.red .verdict-badge { color: #fca5a5; }
+
+    .verdict-reason {
+      font-size: 0.88rem;
+      color: #f1f5f9;
+      line-height: 1.48;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .m-tile {
+      background: rgba(5, 9, 20, 0.48);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 9px 4px;
+    }
+
+    .m-tile small {
+      display: block;
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .m-tile strong {
+      font-size: 0.88rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Unlocked 12-Hour Horizontal Scroller */
+    .hourly-scroll {
+      display: flex;
+      gap: 9px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .hourly-scroll::-webkit-scrollbar { display: none; }
+
+    .h-item {
+      min-width: 68px;
+      background: rgba(255, 255, 255, 0.055);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 10px 8px;
+      text-align: center;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .h-item span { display: block; font-size: 0.72rem; color: var(--muted); }
+    .h-item strong { display: block; font-size: 0.96rem; margin: 5px 0; }
+    .h-item em { font-style: normal; font-size: 0.72rem; color: var(--cyan); font-weight: 600; }
+
+    /* Gear Items */
+    .gear-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .gear-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .gear-ico {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: rgba(56, 189, 248, 0.16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    /* Fullscreen-feeling Mobile Map */
+    #map {
+      width: 100%;
+      height: 360px;
+      border-radius: 20px;
+      border: 1px solid var(--border-bright);
+      z-index: 1;
+    }
+
+    /* El Niño Ecuador Cards */
+    .ec-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .ec-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: #ffffff;
+      padding: 11px 10px;
+      border-radius: 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .ec-btn:active {
+      background: rgba(245, 158, 11, 0.25);
+      border-color: var(--amber);
+    }
+
+    .bulletin {
+      background: rgba(5, 9, 20, 0.55);
+      border-left: 3px solid var(--amber);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
+      font-size: 0.83rem;
+      color: var(--text-sec);
+    }
+
+    .bulletin small {
+      display: block;
+      color: #fbbf24;
+      font-weight: 700;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    /* Settings & Pro Account Tab */
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .setting-row:last-child { border-bottom: none; }
+
+    /* iOS Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      transition: 0.25s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      transition: 0.25s;
+    }
+    input:checked + .slider {
+      background: linear-gradient(135deg, #38bdf8, #a855f7);
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Native Bottom Tab Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 900;
+      background: rgba(7, 12, 26, 0.86);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-top: 1px solid var(--border);
+      padding: 8px 8px calc(var(--safe-bottom) + 6px);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .nav-tab {
+      background: none;
+      border: none;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 0;
+      transition: color 0.2s, transform 0.15s;
+    }
+
+    .nav-tab .tab-ico {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .nav-tab.active {
+      color: var(--cyan);
+    }
+
+    .nav-tab:active {
+      transform: scale(0.92);
+    }
+
+    /* Paid License Gate Screen (Protects APK from unpaid sharing) */
+    .license-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: radial-gradient(circle at top, #132244 0%, #050914 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .license-gate.unlocked {
+      display: none;
+    }
+
+    .gate-card {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border-bright);
+      border-radius: 28px;
+      padding: 26px 22px;
+      text-align: center;
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    .gate-input {
+      width: 100%;
+      background: rgba(5, 9, 20, 0.75);
+      border: 1px solid var(--border-bright);
+      color: #ffffff;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 14px 0 10px;
+      outline: none;
+      user-select: text;
+    }
+
+    .gate-input:focus {
+      border-color: var(--cyan);
+    }
+
+    .btn-full {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-pro-grad {
+      background: linear-gradient(135deg, #38bdf8 0%, #a855f7 100%);
+      color: #ffffff;
+      box-shadow: 0 8px 22px rgba(168, 85, 247, 0.35);
+    }
+
+    .btn-wa {
+      background: rgba(16, 185, 129, 0.16);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      color: #6ee7b7;
+      margin-top: 10px;
+      text-decoration: none;
+    }
+
+    /* Creator Watermark Evmj23 */
+    .watermark-pill {
+      margin-top: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 0.75rem;
+      color: var(--text-sec);
+    }
+
+    .watermark-pill strong {
+      background: linear-gradient(90deg, #38bdf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+    }
+  </style>
+</head>
+<body class="theme-green">
+  <div class="ambient-canvas"></div>
+
+  <!-- Paid Activation Screen (Protects APK) -->
+  <div id="licenseGate" class="license-gate">
+    <div class="gate-card">
+      <div class="app-logo" style="width:54px; height:54px; margin:0 auto 12px; border-radius:16px;">
+        <svg viewBox="0 0 120 100" width="38" height="34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 45C20 26 38 14 60 14C82 14 100 26 108 45" stroke="#0E7490" stroke-width="6.5" stroke-linecap="round"/>
+          <path d="M23 45C30 32 43 24 60 24C77 24 90 32 97 45" stroke="#22D3EE" stroke-width="5.5" stroke-linecap="round"/>
+          <path d="M35 45L52 29L68 48L56 63" stroke="#0E7490" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="6" y1="49" x2="114" y2="49" stroke="#0E7490" stroke-width="3.2" stroke-linecap="round"/>
+          <circle cx="74" cy="49" r="5.2" fill="#D97706"/>
+          <path d="M23 55C30 68 43 76 60 76C77 76 90 68 97 55" stroke="#22D3EE" stroke-width="5.5" stroke-linecap="round"/>
+          <path d="M12 55C20 74 38 86 60 86C82 86 100 74 108 55" stroke="#0E7490" stroke-width="6.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="pro-pill">APP OFICIAL ANDROID • PLAN PRO</span>
+      <h2 style="font-size:1.3rem; margin-top:10px;">Activa NimboSignal Pro</h2>
+      <p style="font-size:0.83rem; color:var(--text-sec); margin-top:6px; line-height:1.45;">
+        Ingresa tu código de suscripción mensual ($2,99/mes) para desbloquear GPS exacto, pronóstico por horas, alertas prioritarias y cero anuncios.
+      </p>
+
+      <input type="text" id="licenseCodeInput" class="gate-input" placeholder="EJ. NIMBO-PRO-01" />
+      <p id="licenseError" style="color:#fca5a5; font-size:0.78rem; margin-bottom:10px; display:none;"></p>
+
+      <button class="btn-full btn-pro-grad" onclick="activateLicense()">Desbloquear App Pro</button>
+
+      <a id="buyCodeWaLink" href="#" target="_blank" class="btn-full btn-wa">
+        💬 Comprar código Pro ($2,99/mes)
+      </a>
+
+      <div class="watermark-pill">
+        <span>Creado por <strong>Evmj23</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Native App Header -->
+  <header class="app-header">
+    <div class="app-brand">
+      <div class="app-logo">
+        <svg viewBox="0 0 120 100" width="26" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 45C20 26 38 14 60 14C82 14 100 26 108 45" stroke="#0E7490" stroke-width="6.5" stroke-linecap="round"/>
+          <path d="M23 45C30 32 43 24 60 24C77 24 90 32 97 45" stroke="#22D3EE" stroke-width="5.5" stroke-linecap="round"/>
+          <path d="M35 45L52 29L68 48L56 63" stroke="#0E7490" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="6" y1="49" x2="114" y2="49" stroke="#0E7490" stroke-width="3.2" stroke-linecap="round"/>
+          <circle cx="74" cy="49" r="5.2" fill="#D97706"/>
+          <path d="M23 55C30 68 43 76 60 76C77 76 90 68 97 55" stroke="#22D3EE" stroke-width="5.5" stroke-linecap="round"/>
+          <path d="M12 55C20 74 38 86 60 86C82 86 100 74 108 55" stroke="#0E7490" stroke-width="6.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="app-title-group">
+        <h1>NimboSignal</h1>
+        <span id="headerSub">GPS Exacto • Sin Anuncios</span>
+      </div>
+    </div>
+    <span class="pro-pill">PRO ACTIVO</span>
+  </header>
+
+  <!-- TAB 1: HOY (Clima, Veredicto, Horas y Ropa) -->
+  <section id="tab-hoy" class="app-view active">
+    <div class="mobile-search-wrap">
+      <input type="text" id="cityInput" placeholder="Buscar ciudad (Pasaje, Quito, Madrid...)" autocomplete="off" />
+      <button class="gps-icon-btn" onclick="useGPS()" title="Usar mi GPS exacto">📍</button>
+      <div id="searchDropdown" class="search-dropdown"></div>
+    </div>
+
+    <div class="pills-scroller">
+      <button class="pill-chip" onclick="loadLocation('Pasaje, El Oro', 'Ecuador', -3.3256, -79.8069, true)">📍 Pasaje</button>
+      <button class="pill-chip" onclick="loadLocation('Machala, El Oro', 'Ecuador', -3.2581, -79.9554, true)">Machala</button>
+      <button class="pill-chip" onclick="loadLocation('Guayaquil', 'Ecuador', -2.1894, -79.8891, true)">Guayaquil</button>
+      <button class="pill-chip" onclick="loadLocation('Quito', 'Ecuador', -0.1807, -78.4678, true)">Quito</button>
+      <button class="pill-chip" onclick="loadLocation('Madrid', 'España', 40.4168, -3.7038, false)">Madrid</button>
+      <button class="pill-chip" onclick="loadLocation('Nueva York', 'EE. UU.', 40.7128, -74.0060, false)">New York</button>
+    </div>
+
+    <div id="heroWeather" class="hero-weather green">
+      <div class="loc-name" id="locName">Pasaje, El Oro — Ecuador</div>
+      <div class="loc-gps-tag" id="locCoords">GPS Exacto: -3.3256°, -79.8069°</div>
+      <div class="big-temp" id="tempDisplay">--°</div>
+      <div class="verdict-badge" id="verdictBadge">Consultando clima...</div>
+      <p class="verdict-reason" id="verdictReason">Obteniendo datos meteorológicos en vivo desde Open-Meteo...</p>
+
+      <div class="metrics-grid">
+        <div class="m-tile">
+          <small>Lluvia</small>
+          <strong id="rainVal">-- mm</strong>
+        </div>
+        <div class="m-tile">
+          <small>Índice UV</small>
+          <strong id="uvVal">--</strong>
+        </div>
+        <div class="m-tile">
+          <small>Viento</small>
+          <strong id="windVal">-- km/h</strong>
+        </div>
+        <div class="m-tile">
+          <small>Tormenta</small>
+          <strong id="stormVal">--</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-label">
+        <span>⏱️ Próximas 12 horas (Desbloqueado)</span>
+        <span style="color:var(--cyan);" id="updatedTag">--:--</span>
+      </div>
+      <div class="hourly-scroll" id="hourlyScroll"></div>
+    </div>
+
+    <div class="card">
+      <div class="sec-label">
+        <span>🎒 Qué llevar hoy</span>
+        <span>Recomendación real</span>
+      </div>
+      <div class="gear-list" id="gearList"></div>
+    </div>
+  </section>
+
+  <!-- TAB 2: MAPA INTERACTIVO -->
+  <section id="tab-mapa" class="app-view">
+    <div class="card" style="padding:14px;">
+      <div class="sec-label">
+        <span>🗺️ Mapa GPS de Precisión Pro</span>
+        <button class="pill-chip" style="padding:4px 10px;" onclick="useGPS()">📍 Centrar en mí</button>
+      </div>
+      <div id="map"></div>
+      <p id="mapInfoText" style="font-size:0.78rem; color:var(--text-sec); margin-top:10px; text-align:center;">
+        Mostrando ubicación exacta de Pasaje, El Oro.
+      </p>
+    </div>
+  </section>
+
+  <!-- TAB 3: FENÓMENO DE EL NIÑO — ECUADOR -->
+  <section id="tab-elnino" class="app-view">
+    <div class="card" style="border-color: rgba(245, 158, 11, 0.45);">
+      <div class="sec-label">
+        <span style="color:#fbbf24;">🇪🇨 Alerta Preventiva Ecuador</span>
+        <span>Plan Pro</span>
+      </div>
+      <h2 style="font-size:1.1rem; margin-bottom:4px;">Fenómeno de El Niño — Monitoreo</h2>
+      <p style="font-size:0.82rem; color:var(--text-sec); margin-bottom:12px;">
+        Selecciona un cantón o ciudad para medir lluvia acumulada en 24h y revisar boletines verificados.
+      </p>
+
+      <div class="ec-grid">
+        <button class="ec-btn" onclick="loadLocation('Pasaje, El Oro', 'Ecuador', -3.3256, -79.8069, true)">📍 Pasaje (El Oro)</button>
+        <button class="ec-btn" onclick="loadLocation('Machala, El Oro', 'Ecuador', -3.2581, -79.9554, true)">📍 Machala (El Oro)</button>
+        <button class="ec-btn" onclick="loadLocation('Guayaquil, Guayas', 'Ecuador', -2.1894, -79.8891, true)">📍 Guayaquil (Guayas)</button>
+        <button class="ec-btn" onclick="loadLocation('Manta, Manabí', 'Ecuador', -0.9677, -80.7089, true)">📍 Manta (Manabí)</button>
+        <button class="ec-btn" onclick="loadLocation('Esmeraldas', 'Ecuador', 0.9682, -79.6517, true)">📍 Esmeraldas</button>
+        <button class="ec-btn" onclick="loadLocation('Quito, Pichincha', 'Ecuador', -0.1807, -78.4678, true)">📍 Quito (Pichincha)</button>
+      </div>
+
+      <div style="background:rgba(5,9,20,0.6); border:1px solid var(--border); border-radius:16px; padding:13px;">
+        <strong id="ecRiskTitle" style="font-size:0.88rem; display:block;">Calculando riesgo 24h...</strong>
+        <p id="ecRiskDesc" style="font-size:0.8rem; color:var(--text-sec); margin-top:4px;"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-label">
+        <span>📰 Boletines Oficiales Verificados</span>
+        <span style="color:var(--cyan);">Completos</span>
+      </div>
+      <div class="bulletin">
+        <small>INAMHI • Monitoreo Litoral y Sierra</small>
+        En episodios cálidos del Pacífico y etapa lluviosa, las precipitaciones suelen intensificarse en tarde y noche en El Oro, Guayas y Manabí. Evita cruzar corrientes de agua y mantén drenajes despejados.
+      </div>
+      <div class="bulletin">
+        <small>Secretaría de Gestión de Riesgos • Prevención</small>
+        Ten lista una mochila de emergencia con documentos en funda hermética, linterna, agua y batería cargada ante posibles cortes eléctricos por tormentas.
+      </div>
+      <p style="font-size:0.74rem; color:#fde68a; background:rgba(245,158,11,0.1); padding:10px; border-radius:12px;">
+        <strong>Aviso:</strong> Herramienta de apoyo informativo; no reemplaza alertas oficiales de emergencia del INAMHI ni de la Secretaría de Gestión de Riesgos.
+      </p>
+    </div>
+  </section>
+
+  <!-- TAB 4: MI PLAN PRO & AJUSTES -->
+  <section id="tab-cuenta" class="app-view">
+    <div class="card" style="text-align:center; border-color:rgba(168,85,247,0.45);">
+      <span class="pro-pill">SUSCRIPCIÓN PRO ACTIVA</span>
+      <h2 style="font-size:1.25rem; margin-top:10px;">NimboSignal Pro ($2,99/mes)</h2>
+      <p id="licenseStatusText" style="font-size:0.82rem; color:var(--cyan); margin-top:4px; font-weight:600;">
+        Licencia verificada • 30 días restantes
+      </p>
+      <p style="font-size:0.78rem; color:var(--muted); margin-top:6px;">
+        Disfruta de 100% libre de anuncios, precisión GPS exacta, pronóstico por horas y alertas prioritarias.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="sec-label"><span>⚙️ Ajustes de la App Móvil</span></div>
+
+      <div class="setting-row">
+        <div>
+          <strong style="font-size:0.88rem; display:block;">Modo Ligero (Ahorro de datos)</strong>
+          <small style="font-size:0.75rem; color:var(--muted);">Reduce efectos visuales y amplía caché para señal móvil lenta.</small>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="liteModeToggle" onchange="toggleLiteMode(this.checked)" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong style="font-size:0.88rem; display:block;">Alertas prioritarias de tormenta</strong>
+          <small style="font-size:0.75rem; color:var(--muted);">Aviso inmediato si el semáforo pasa a Rojo en tu zona.</small>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="alertsToggle" checked onchange="togglePriorityAlerts(this.checked)" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong style="font-size:0.88rem; display:block;">Código activo</strong>
+          <small id="activeCodeLabel" style="font-size:0.75rem; color:var(--cyan);">---</small>
+        </div>
+        <button class="pill-chip" onclick="logoutLicense()">Cambiar código</button>
+      </div>
+    </div>
+
+    <div style="text-align:center; padding:10px 0 20px;">
+      <p style="font-size:0.75rem; color:var(--muted);">NimboSignal Mobile v1.0 Pro • Pasaje, El Oro, Ecuador</p>
+      <div class="watermark-pill">
+        <span>Diseñado y desarrollado por <strong>Evmj23</strong></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom Native Navigation Bar -->
+  <nav class="bottom-nav" aria-label="Navegación principal">
+    <button class="nav-tab active" data-target="tab-hoy" onclick="switchTab('tab-hoy', this)">
+      <span class="tab-ico">⛅</span>
+      <span>Hoy</span>
+    </button>
+    <button class="nav-tab" data-target="tab-mapa" onclick="switchTab('tab-mapa', this)">
+      <span class="tab-ico">🗺️</span>
+      <span>Mapa</span>
+    </button>
+    <button class="nav-tab" data-target="tab-elnino" onclick="switchTab('tab-elnino', this)">
+      <span class="tab-ico">🇪🇨</span>
+      <span>El Niño</span>
+    </button>
+    <button class="nav-tab" data-target="tab-cuenta" onclick="switchTab('tab-cuenta', this)">
+      <span class="tab-ico">💎</span>
+      <span>Plan Pro</span>
+    </button>
+  </nav>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script>
+    // =========================================================
+    // CONFIGURACIÓN DE COBRO Y CÓDIGOS PRO (Edita aquí tus datos)
+    // =========================================================
+    const WHATSAPP_NUMERO = "593999999999"; // Cambia por tu número real (593 + número sin el 0)
+    const CODIGOS_VALIDOS = [
+      "EVMJ23-PRO",
+      "NIMBO-PRO-01",
+      "NIMBO-PRO-02",
+      "NIMBO-PRO-03",
+      "NIMBO-PRO-04",
+      "NIMBO-PRO-05"
+    ];
+    const DIAS_DURACION = 30;
+
+    // Configurar enlace de compra por WhatsApp
+    const waMsg = encodeURIComponent("Hola, quiero adquirir mi código de activación de NimboSignal Pro ($2,99/mes).");
+    document.getElementById("buyCodeWaLink").href = `https://wa.me/${WHATSAPP_NUMERO}?text=${waMsg}`;
+
+    // =========================================================
+    // CONTROL DE LICENCIA PRO
+    // =========================================================
+    function checkLicense() {
+      const saved = localStorage.getItem("nimbosignal_pro_license");
+      if (!saved) return false;
+      try {
+        const parsed = JSON.parse(saved);
+        const now = Date.now();
+        if (parsed.expiresAt && now < parsed.expiresAt && CODIGOS_VALIDOS.includes(parsed.code)) {
+          const daysLeft = Math.max(1, Math.ceil((parsed.expiresAt - now) / (1000 * 60 * 60 * 24)));
+          document.getElementById("licenseGate").classList.add("unlocked");
+          document.getElementById("licenseStatusText").textContent = `Licencia activa • ${daysLeft} días restantes`;
+          document.getElementById("activeCodeLabel").textContent = parsed.code;
+          return true;
+        }
+      } catch (e) {}
+      localStorage.removeItem("nimbosignal_pro_license");
+      return false;
+    }
+
+    function activateLicense() {
+      const input = document.getElementById("licenseCodeInput").value.trim().toUpperCase();
+      const errEl = document.getElementById("licenseError");
+      if (CODIGOS_VALIDOS.includes(input)) {
+        const expiresAt = Date.now() + DIAS_DURACION * 24 * 60 * 60 * 1000;
+        localStorage.setItem("nimbosignal_pro_license", JSON.stringify({ code: input, expiresAt }));
+        errEl.style.display = "none";
+        checkLicense();
+      } else {
+        errEl.textContent = "Código inválido o expirado. Verifica tu código o solicítalo abajo.";
+        errEl.style.display = "block";
+      }
+    }
+
+    function logoutLicense() {
+      localStorage.removeItem("nimbosignal_pro_license");
+      document.getElementById("licenseCodeInput").value = "";
+      document.getElementById("licenseGate").classList.remove("unlocked");
+    }
+
+    // =========================================================
+    // NAVEGACIÓN TIPO APP MÓVIL Y AJUSTES PRO
+    // =========================================================
+    let currentPlace = {
+      name: "Pasaje, El Oro",
+      country: "Ecuador",
+      lat: -3.3256,
+      lon: -79.8069,
+      isEcuador: true
+    };
+    let isLiteMode = localStorage.getItem("nimbosignal_lite") === "true";
+    let priorityAlerts = true;
+
+    if (isLiteMode) {
+      document.body.classList.add("lite-mode");
+      document.getElementById("liteModeToggle").checked = true;
+    }
+
+    function toggleLiteMode(enabled) {
+      isLiteMode = enabled;
+      localStorage.setItem("nimbosignal_lite", enabled ? "true" : "false");
+      document.body.classList.toggle("lite-mode", enabled);
+    }
+
+    function togglePriorityAlerts(enabled) {
+      priorityAlerts = enabled;
+      if (enabled && "Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+    }
+
+    function switchTab(tabId, btnEl) {
+      document.querySelectorAll(".app-view").forEach(v => v.classList.remove("active"));
+      document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      btnEl.classList.add("active");
+
+      if (tabId === "tab-mapa") {
+        setTimeout(() => {
+          map.invalidateSize();
+          map.setView([currentPlace.lat, currentPlace.lon], 13);
+        }, 120);
+      }
+    }
+
+    // =========================================================
+    // MAPA LEAFLET + CLIMA EN VIVO (OPEN-METEO)
+    // =========================================================
+    const map = L.map("map", { zoomControl: true }).setView([currentPlace.lat, currentPlace.lon], 13);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: "&copy; OpenStreetMap"
+    }).addTo(map);
+    const marker = L.marker([currentPlace.lat, currentPlace.lon]).addTo(map);
+
+    const cityInput = document.getElementById("cityInput");
+    const searchDropdown = document.getElementById("searchDropdown");
+    let searchTimer = null;
+
+    cityInput.addEventListener("input", () => {
+      clearTimeout(searchTimer);
+      const q = cityInput.value.trim();
+      if (q.length < 2) {
+        searchDropdown.style.display = "none";
+        return;
+      }
+      searchTimer = setTimeout(() => searchCities(q), 320);
+    });
+
+    async function searchCities(q) {
+      try {
+        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=es&format=json`);
+        const data = await res.json();
+        if (!data.results || data.results.length === 0) {
+          searchDropdown.innerHTML = '<div class="search-option">Sin resultados para esa búsqueda.</div>';
+          searchDropdown.style.display = "block";
+          return;
+        }
+        searchDropdown.innerHTML = data.results.map(item => {
+          const reg = item.admin1 ? `, ${item.admin1}` : "";
+          const cty = item.country || "";
+          const isEc = item.country_code === "EC";
+          const safeN = `${item.name}${reg}`.replace(/'/g, "\\'");
+          const safeC = cty.replace(/'/g, "\\'");
+          return `<div class="search-option" onclick="pickCity('${safeN}','${safeC}',${item.latitude},${item.longitude},${isEc})">
+            <strong>${item.name}</strong>${reg} • <span style="color:var(--cyan)">${cty}</span>
+          </div>`;
+        }).join("");
+        searchDropdown.style.display = "block";
+      } catch (e) {
+        searchDropdown.style.display = "none";
+      }
+    }
+
+    function pickCity(name, country, lat, lon, isEcuador) {
+      searchDropdown.style.display = "none";
+      cityInput.value = "";
+      loadLocation(name, country, lat, lon, isEcuador);
+    }
+
+    function useGPS() {
+      if (!navigator.geolocation) {
+        alert("Tu dispositivo no permite geolocalización.");
+        return;
+      }
+      document.getElementById("verdictBadge").textContent = "Obteniendo GPS exacto...";
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const isEc = lat >= -5.1 && lat <= 1.5 && lon >= -81.2 && lon <= -75.0;
+          loadLocation("Mi Ubicación GPS", isEc ? "Ecuador" : "Ubicación Exacta", lat, lon, isEc);
+        },
+        () => alert("Activa el permiso de ubicación en tu teléfono para usar el GPS exacto.")
+      );
+    }
+
+    async function loadLocation(name, country, lat, lon, isEcuador) {
+      currentPlace = { name, country, lat, lon, isEcuador };
+      document.getElementById("locName").textContent = `${name} — ${country}`;
+      document.getElementById("locCoords").textContent = `GPS Exacto: ${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
+      document.getElementById("mapInfoText").textContent = `Ubicación exacta: ${name} (${lat.toFixed(4)}°, ${lon.toFixed(4)}°)`;
+
+      marker.setLatLng([lat, lon]);
+      map.setView([lat, lon], 13);
+
+      const cacheDuration = isLiteMode ? 30 * 60 * 1000 : 10 * 60 * 1000;
+      const cacheKey = `nimbopro_${lat.toFixed(3)}_${lon.toFixed(3)}`;
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Date.now() - parsed.ts < cacheDuration) {
+          renderWeather(parsed.data);
+          return;
+        }
+      }
+
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation,rain,weather_code,wind_speed_10m,wind_gusts_10m,uv_index&hourly=temperature_2m,precipitation_probability,precipitation,weather_code&timezone=auto&forecast_days=2`;
+        const res = await fetch(url);
+        const data = await res.json();
+        localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data }));
+        renderWeather(data);
+      } catch (e) {
+        document.getElementById("verdictBadge").textContent = "Sin conexión a internet";
+        document.getElementById("verdictReason").textContent = "Revisa tus datos móviles o Wi-Fi para actualizar el clima.";
+      }
+    }
+
+    function renderWeather(data) {
+      const cur = data.current;
+      const temp = Math.round(cur.temperature_2m);
+      const rain = cur.rain || cur.precipitation || 0;
+      const uv = cur.uv_index || 0;
+      const gusts = Math.round(cur.wind_gusts_10m || cur.wind_speed_10m || 0);
+      const code = cur.weather_code;
+
+      document.getElementById("tempDisplay").textContent = `${temp}°`;
+      document.getElementById("rainVal").textContent = `${rain.toFixed(1)} mm`;
+      document.getElementById("uvVal").textContent = uv.toFixed(1);
+      document.getElementById("windVal").textContent = `${gusts} km/h`;
+
+      const nowIso = cur.time ? cur.time.slice(0, 13) : "";
+      let startIdx = data.hourly.time.findIndex(t => t.startsWith(nowIso));
+      if (startIdx < 0) startIdx = 0;
+
+      const next6Probs = data.hourly.precipitation_probability.slice(startIdx, startIdx + 6);
+      const maxProb6h = Math.max(...next6Probs, 0);
+      const next24Rain = data.hourly.precipitation.slice(startIdx, startIdx + 24).reduce((a, b) => a + (b || 0), 0);
+
+      const isThunderNow = [95, 96, 99].includes(code);
+      const thunderSoon = data.hourly.weather_code.slice(startIdx, startIdx + 6).some(c => [95, 96, 99].includes(c));
+      const heavyRainNow = [65, 82].includes(code) || rain >= 4.0;
+      const lightRainNow = [51, 53, 55, 61, 63, 80, 81].includes(code) || rain > 0.2;
+
+      document.getElementById("stormVal").textContent = isThunderNow ? "ACTIVA ⚡" : (thunderSoon ? "Posible ⚡" : "Baja");
+
+      const hero = document.getElementById("heroWeather");
+      const badge = document.getElementById("verdictBadge");
+      const reason = document.getElementById("verdictReason");
+      hero.className = "hero-weather";
+
+      let level = "green";
+      let statusTxt = "🟢 VERDE: SAL TRANQUILO";
+      let reasonTxt = `Clima estable (${temp}°C). Probabilidad máxima de lluvia en 6h: ${maxProb6h}%.`;
+
+      if (isThunderNow || heavyRainNow || gusts >= 55) {
+        level = "red";
+        statusTxt = "🔴 ROJO: MEJOR NO SALIR";
+        reasonTxt = isThunderNow
+          ? "Tormenta eléctrica activa en tu ubicación. Evita zonas abiertas y traslados innecesarios."
+          : "Lluvia intensa o ráfagas fuertes en curso. Espera antes de salir.";
+      } else if (lightRainNow || thunderSoon || maxProb6h >= 55 || uv >= 8 || gusts >= 38) {
+        level = "amber";
+        statusTxt = "🟡 AMARILLO: CON PRECAUCIÓN";
+        if (thunderSoon || maxProb6h >= 55) {
+          reasonTxt = `Puedes salir ahora, pero hay ${maxProb6h}% de probabilidad de lluvia${thunderSoon ? " y posible tormenta eléctrica" : ""} pronto.`;
+        } else if (uv >= 8) {
+          reasonTxt = `Radiación UV muy alta (${uv.toFixed(1)}). Protégete bien del sol.`;
+        } else {
+          reasonTxt = `Llovizna o viento moderado (${gusts} km/h). Conduce con cuidado.`;
+        }
+      }
+
+      hero.classList.add(level);
+      document.body.className = isLiteMode ? `theme-${level} lite-mode` : `theme-${level}`;
+      badge.textContent = statusTxt;
+      reason.textContent = reasonTxt;
+
+      // 12-Hour Strip (Unlocked)
+      const hoursHtml = [];
+      for (let i = startIdx; i < startIdx + 12 && i < data.hourly.time.length; i++) {
+        const hr = data.hourly.time[i].slice(11, 16);
+        const hTemp = Math.round(data.hourly.temperature_2m[i]);
+        const hProb = data.hourly.precipitation_probability[i] || 0;
+        const hCode = data.hourly.weather_code[i];
+        const ico = [95, 96, 99].includes(hCode) ? "⛈️" : (hProb >= 50 ? "🌧️" : (hTemp >= 25 ? "☀️" : "⛅"));
+        hoursHtml.push(`
+          <div class="h-item">
+            <span>${hr}</span>
+            <strong>${ico} ${hTemp}°</strong>
+            <em>💧 ${hProb}%</em>
+          </div>
+        `);
+      }
+      document.getElementById("hourlyScroll").innerHTML = hoursHtml.join("");
+
+      // Gear list
+      const gear = [];
+      if (uv >= 6 || (temp >= 25 && !lightRainNow && !heavyRainNow)) {
+        gear.push({ ico: "🕶️", title: "Gafas y bloqueador solar", sub: `Índice UV en ${uv.toFixed(1)}. Usa protección solar.` });
+      }
+      if (temp >= 26) {
+        gear.push({ ico: "👕", title: "Ropa fresca y transpirable", sub: "Prendas ligeras e hidratación constante." });
+      } else if (temp <= 16) {
+        gear.push({ ico: "🧥", title: "Abrigo o chompa", sub: `Temperatura fresca de ${temp}°C.` });
+      } else {
+        gear.push({ ico: "👟", title: "Ropa cómoda de diario", sub: `Temperatura agradable (${temp}°C).` });
+      }
+      if (lightRainNow || heavyRainNow || maxProb6h >= 45) {
+        gear.push({ ico: "☂️", title: "Paraguas o impermeable", sub: `Probabilidad de lluvia del ${maxProb6h}% en próximas horas.` });
+      }
+      if (isThunderNow || thunderSoon) {
+        gear.push({ ico: "⚡", title: "Alerta eléctrica prioritaria", sub: "Resguárdate bajo techo si escuchas truenos." });
+      }
+
+      document.getElementById("gearList").innerHTML = gear.slice(0, 4).map(g => `
+        <div class="gear-row">
+          <div class="gear-ico">${g.ico}</div>
+          <div>
+            <strong style="font-size:0.86rem; display:block;">${g.title}</strong>
+            <span style="font-size:0.77rem; color:var(--text-sec);">${g.sub}</span>
+          </div>
+        </div>
+      `).join("");
+
+      // El Niño 24h Risk
+      const ecTitle = document.getElementById("ecRiskTitle");
+      const ecDesc = document.getElementById("ecRiskDesc");
+      if (next24Rain >= 25) {
+        ecTitle.textContent = `🔴 Riesgo Alto (${next24Rain.toFixed(1)} mm en 24h) — ${currentPlace.name}`;
+        ecDesc.textContent = "Lluvias acumuladas significativas previstas. Evita zonas inundables y revisa boletines del INAMHI.";
+      } else if (next24Rain >= 8) {
+        ecTitle.textContent = `🟡 Riesgo Moderado (${next24Rain.toFixed(1)} mm en 24h) — ${currentPlace.name}`;
+        ecDesc.textContent = "Lluvias intermitentes en las próximas 24 horas. Precaución al circular.";
+      } else {
+        ecTitle.textContent = `🟢 Riesgo Bajo (${next24Rain.toFixed(1)} mm en 24h) — ${currentPlace.name}`;
+        ecDesc.textContent = "Sin acumulados extremos proyectados en las próximas 24 horas.";
+      }
+
+      const now = new Date();
+      document.getElementById("updatedTag").textContent = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    document.addEventListener("click", e => {
+      if (!e.target.closest(".mobile-search-wrap")) {
+        searchDropdown.style.display = "none";
+      }
+    });
+
+    // Boot App
+    checkLicense();
+    loadLocation(currentPlace.name, currentPlace.country, currentPlace.lat, currentPlace.lon, true);
+  </script>
+</body>
+</html>
