@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0b1120" />
-  <title>NimboSignal Pro — App Móvil</title>
+  <title>NimboSignal — App Móvil</title>
   <style>
     :root,
     [data-theme="dark"] {
@@ -28,7 +28,6 @@
       --text-main: #f8fafc;
       --text-body: #e2e8f0;
       --text-muted: #94a3b8;
-      --chip-text: #bae6fd;
     }
 
     [data-theme="light"] {
@@ -52,7 +51,6 @@
       --text-main: #0f172a;
       --text-body: #1e293b;
       --text-muted: #475569;
-      --chip-text: #0369a1;
     }
 
     * {
@@ -215,6 +213,7 @@
       align-items: center;
       gap: 0.45rem;
       min-width: 0;
+      cursor: pointer;
     }
 
     .brand-icon {
@@ -239,7 +238,7 @@
 
     .brand-info span {
       font-size: 0.68rem;
-      color: var(--teal);
+      color: var(--cyan);
       font-weight: 700;
       display: block;
     }
@@ -780,10 +779,10 @@
   <!-- MODAL INICIAL MÓVIL: ECUADOR O GLOBAL -->
   <div class="welcome-overlay" id="welcomeOverlay">
     <div class="welcome-box">
-      <span class="badge badge-teal"><span class="status-dot dot-green"></span> NimboSignal Pro • Android</span>
+      <span class="badge badge-cyan"><span class="status-dot dot-cyan"></span> NimboSignal • Android</span>
       <h2 style="font-size:1.25rem; margin-top:0.5rem;">Elige tu entorno inicial</h2>
       <p style="color:var(--text-muted); font-size:0.82rem; margin-top:0.25rem;">
-        Tu sesión móvil cuenta con acceso <strong>Pro Premium</strong> activo.
+        Inicias con el <strong>Plan Gratuito</strong> completo. Puedes activar Pro Premium cuando desees.
       </p>
 
       <div class="mode-stack">
@@ -820,7 +819,7 @@
         <div class="brand-icon">NS</div>
         <div class="brand-info">
           <strong>NimboSignal</strong>
-          <span id="headerSubBadge">PRO PREMIUM • ∞</span>
+          <span id="headerSubBadge">GRATUITO • 5/5</span>
         </div>
       </div>
     </div>
@@ -909,12 +908,13 @@
     </div>
 
     <div>
-      <div class="drawer-group-title">IA, Noticias y Suscripción</div>
+      <div class="drawer-group-title">IA, Noticias y Planes</div>
       <button class="nav-btn" data-target="sec-ai" onclick="showSection('sec-ai')">
         <span class="nav-label">
           <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
-          Nimbo AI (Infinito)
+          Nimbo AI
         </span>
+        <span id="drawerTokenPill" style="font-size:0.72rem; color:var(--cyan);">5/5</span>
       </button>
       <button class="nav-btn" data-target="sec-noticias" onclick="showSection('sec-noticias')">
         <span class="nav-label">
@@ -925,7 +925,7 @@
       <button class="nav-btn" data-target="sec-planes" onclick="showSection('sec-planes')">
         <span class="nav-label">
           <svg class="ico" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          Mi Plan Premium
+          Planes y Suscripción
         </span>
       </button>
       <button class="nav-btn" data-target="sec-ajustes" onclick="showSection('sec-ajustes')">
@@ -940,7 +940,7 @@
   <!-- CONTENEDOR PRINCIPAL MÓVIL -->
   <main class="container">
 
-    <!-- 1. VEREDICTO ECUADOR (CON ESTADO DE INUNDACIÓN Y SECTORES POR CIUDAD) -->
+    <!-- 1. VEREDICTO ECUADOR -->
     <section id="sec-veredicto" class="view-section active">
       <div class="section-head">
         <h2>
@@ -1093,7 +1093,7 @@
       </div>
     </section>
 
-    <!-- 4. EL FENÓMENO DEL NIÑO (CON MONITOR EN VIVO DE ZONAS MÁS AFECTADAS EN ECUADOR) -->
+    <!-- 4. EL FENÓMENO DEL NIÑO -->
     <section id="sec-elnino" class="view-section">
       <div class="section-head">
         <h2>
@@ -1103,7 +1103,6 @@
         <p>Vigilancia continua de zonas afectadas en Ecuador (Actualización cada 60s).</p>
       </div>
 
-      <!-- PANEL EN VIVO DE ZONAS MÁS AFECTADAS EN ECUADOR -->
       <div class="enso-live-ecuador">
         <div class="card-top">
           <span class="badge badge-amber"><span class="status-dot dot-amber"></span> Radar Nacional ENOS • En Vivo</span>
@@ -1360,16 +1359,21 @@
       <div class="section-head">
         <h2>
           <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
-          Nimbo AI — Consultas Ilimitadas
+          Nimbo AI — Asistente Climático
         </h2>
-        <p id="aiPlanSubtitle">Sesión Pro Premium activa • Tokens infinitos 24/7.</p>
+        <p id="aiPlanSubtitle">Plan Gratuito activo: 5 consultas diarias incluidas.</p>
       </div>
 
       <div class="stack-list">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="badge badge-cyan" id="aiTokenBadge">Tokens hoy: 5 / 5</span>
+          <button class="btn btn-outline" style="padding:0.35rem 0.65rem; font-size:0.75rem;" onclick="showSection('sec-planes')">Activar Pro</button>
+        </div>
+
         <div class="chat-box" id="chatBox">
           <div class="msg msg-ai">
-            <strong>Nimbo AI Pro Activo.</strong><br>
-            Consulta el clima de ríos (La Cocha, Jubones), colegios de Pasaje, países del mundo o protocolos de seguridad sin límite de tokens.
+            <strong>Hola, soy Nimbo AI.</strong><br>
+            Consulta el clima de ríos (La Cocha, Jubones), colegios de Pasaje, países del mundo o protocolos de seguridad.
           </div>
         </div>
 
@@ -1387,7 +1391,7 @@
       </div>
     </section>
 
-    <!-- 11. NOTICIAS OFICIALES POR PAÍS Y REGIÓN (ENLACE DIRECTO A LA NOTICIA ESPECÍFICA) -->
+    <!-- 11. NOTICIAS OFICIALES POR PAÍS Y REGIÓN -->
     <section id="sec-noticias" class="view-section">
       <div class="section-head">
         <h2>
@@ -1437,51 +1441,69 @@
       </div>
     </section>
 
-    <!-- 12. PLANES EN APP MÓVIL: SOLO SESIÓN PREMIUM ACTIVA + FECHA DE VENCIMIENTO + CÓDIGO MAESTRO -->
+    <!-- 12. PLANES: PLAN GRATUITO ACTIVO POR DEFECTO + OPCIÓN DE ACTIVAR PLAN PRO PREMIUM -->
     <section id="sec-planes" class="view-section">
       <div class="section-head">
         <h2>
           <svg class="ico" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          Estado de Suscripción — App Móvil
+          Planes NimboSignal
         </h2>
-        <p>Tu aplicación Android tiene habilitada la sesión Pro Premium.</p>
+        <p>Usa la app gratis con todas sus funciones o activa el Plan Pro Premium cuando quieras.</p>
       </div>
 
       <div class="stack-list">
-        <div class="card" style="border: 2px solid var(--teal);">
+        <!-- PLAN GRATUITO (ACTIVO POR DEFECTO) -->
+        <div class="card" id="mobileFreeCard" style="border: 2px solid var(--cyan);">
           <div class="card-top">
-            <span class="badge badge-teal" id="mobilePlanStatusBadge">
-              <span class="status-dot dot-green"></span> Sesión Activa: Pro Premium
-            </span>
-            <span class="badge badge-cyan" id="mobileLicenseTypeTag">App Canjeada</span>
+            <span class="badge badge-teal" id="mobileFreeBadge"><span class="status-dot dot-green"></span> Plan Activo</span>
+            <span style="font-size:0.78rem; color:var(--text-muted);">Sin costo</span>
           </div>
 
-          <h3 style="font-size:1.2rem;" id="mobilePlanTitle">Plan Pro Premium Activo</h3>
-          <p style="font-size:0.84rem; color:var(--text-muted);" id="mobilePlanDesc">
-            Al contar con la aplicación móvil instalada, tu sesión disfruta de todos los beneficios Pro Premium desbloqueados.
+          <h3 style="font-size:1.15rem;">Plan Gratuito — $0 / siempre</h3>
+          <p style="font-size:0.83rem; color:var(--text-muted);">
+            Acceso completo al monitoreo climático, alertas de inundación por sectores, Radar El Niño, colegios, ríos y noticias oficiales.
           </p>
 
-          <div class="verdict-box" id="subscriptionExpiryBox" style="border-left-color: var(--cyan);">
-            <strong id="expiryHeadline" style="color:var(--cyan);">Vencimiento de Suscripción</strong>
-            <span id="expiryDateText" style="font-size:0.86rem; color:var(--text-body); display:block; margin-top:0.2rem;">
-              Calculando fecha de finalización...
-            </span>
-            <span id="expiryDaysLeft" style="font-size:0.78rem; color:var(--text-muted); display:block; margin-top:0.2rem;"></span>
+          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.4rem;">
+            <div><strong>• Monitoreo Completo:</strong> Ecuador, Clima Global y Mapa Interactivo.</div>
+            <div><strong>• Inundaciones y ENOS:</strong> Barrios vulnerables por ciudad y radar nacional cada 60s.</div>
+            <div><strong>• Nimbo AI:</strong> 5 consultas diarias incluidas.</div>
+            <div><strong>• Emergencias y Noticias:</strong> Marcación rápida al 911 y prensa oficial.</div>
+          </div>
+
+          <button class="btn btn-outline btn-full" id="btnUseFreePlan" onclick="activateMobileFreePlan()">Plan Gratuito Activo</button>
+        </div>
+
+        <!-- PLAN PRO PREMIUM (OPCIONAL - ACTIVABLE CUANDO TÚ QUIERAS) -->
+        <div class="card" id="mobileProCard">
+          <div class="card-top">
+            <span class="badge badge-amber" id="mobileProBadge"><span class="status-dot dot-amber"></span> Opcional</span>
+            <span style="font-size:0.78rem; color:var(--text-muted);">$1,99 / mes</span>
+          </div>
+
+          <h3 style="font-size:1.15rem;">Plan Pro Premium</h3>
+          <p style="font-size:0.83rem; color:var(--text-muted);">
+            Activa este plan cuando desees obtener consultas ilimitadas en Nimbo AI sin límite diario.
+          </p>
+
+          <div class="verdict-box" id="subscriptionExpiryBox" style="display:none; border-left-color: var(--cyan);">
+            <strong id="expiryHeadline" style="color:var(--cyan);">Estado de Suscripción Pro</strong>
+            <span id="expiryDateText" style="font-size:0.84rem; color:var(--text-body); display:block; margin-top:0.2rem;"></span>
+            <span id="expiryDaysLeft" style="font-size:0.76rem; color:var(--text-muted); display:block; margin-top:0.15rem;"></span>
           </div>
 
           <div class="card-meta" style="display:flex; flex-direction:column; gap:0.4rem;">
-            <div><strong>• Nimbo AI:</strong> Tokens Infinitos habilitados 24/7.</div>
-            <div><strong>• Noticias Oficiales:</strong> Boletines directos por país y región de Ecuador desbloqueados.</div>
-            <div><strong>• Monitoreo Completo:</strong> Radar ENOS, Inundaciones por Sectores, Colegios, Ríos y Mapa.</div>
+            <div><strong>• Nimbo AI Ilimitado:</strong> Tokens Infinitos habilitados 24/7.</div>
+            <div><strong>• Todo lo del Plan Gratuito:</strong> Sin restricciones ni pausas.</div>
           </div>
 
-          <div style="border-top:1px solid var(--border); padding-top:0.85rem; margin-top:0.2rem; display:flex; flex-direction:column; gap:0.55rem;">
-            <strong style="font-size:0.9rem;">Renovar Suscripción ($1,99/mes) o Ingresar Código</strong>
-            <span style="font-size:0.78rem; color:var(--text-muted);">
-              Cuando finalice tu suscripción, ingresa tu código de renovación mensual ($1,99) o tu Código Maestro:
+          <div style="border-top:1px solid var(--border); padding-top:0.75rem; display:flex; flex-direction:column; gap:0.5rem;">
+            <strong style="font-size:0.86rem;">Activar Plan Pro Premium con Código</strong>
+            <span style="font-size:0.76rem; color:var(--text-muted);">
+              Ingresa tu código de suscripción (<code>NS-PRO-XXXX-YY</code>) o tu Código Maestro:
             </span>
             <input type="text" id="mobileCodeInput" class="mobile-input" placeholder="Ej. NS-PRO-XXXX-YY" style="text-transform:uppercase;" />
-            <button class="btn btn-primary btn-full" onclick="applyMobileLicenseCode()">Validar y Aplicar Código</button>
+            <button class="btn btn-primary btn-full" onclick="applyMobileLicenseCode()">Activar Plan Pro Premium</button>
             <span id="mobileCodeFeedback" style="font-size:0.8rem;"></span>
           </div>
         </div>
@@ -1571,7 +1593,7 @@
     </button>
     <button class="bnav-item" data-btarget="sec-planes" onclick="showSection('sec-planes')">
       <svg class="ico" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      <span>Plan Pro</span>
+      <span>Planes</span>
     </button>
   </nav>
 
@@ -1640,12 +1662,14 @@
     }
 
     // ==========================================
-    // 2. LICENCIA PREMIUM DE APP MÓVIL + VENCIMIENTO + CÓDIGO MAESTRO
+    // 2. SISTEMA DE PLANES: GRATUITO POR DEFECTO / PRO PREMIUM OPCIONAL
     // ==========================================
-    const MOBILE_SUB_KEY = 'nimbosignal_mobile_sub_v1';
+    const MOBILE_SUB_KEY = 'nimbosignal_mobile_sub_v2';
+    const MOBILE_TOKENS_KEY = 'nimbosignal_mobile_tokens_v2';
     const ACCOUNT_KEY = 'nimbosignal_mobile_acc_v1';
     const NOTIF_KEY = 'nimbosignal_mobile_notif_v1';
     const MASTER_CODE = 'JAIRO-MASTER-23';
+    const DAILY_FREE_TOKENS = 5;
     const SUB_DAYS = 30;
 
     function computeChecksum(digits4) {
@@ -1665,74 +1689,142 @@
     function getMobileSubscription() {
       try {
         const saved = JSON.parse(localStorage.getItem(MOBILE_SUB_KEY));
-        if (saved && saved.expiresAt) return saved;
+        if (saved && saved.tier) {
+          if (saved.tier === 'PRO' && !saved.isMaster && saved.expiresAt) {
+            if (new Date(saved.expiresAt).getTime() <= Date.now()) {
+              return { tier: 'FREE', isMaster: false, expiredFromPro: true, lastExpiredAt: saved.expiresAt };
+            }
+          }
+          return saved;
+        }
       } catch (e) {}
 
-      const now = new Date();
-      const expiry = new Date(now.getTime() + SUB_DAYS * 24 * 60 * 60 * 1000);
-      const initial = {
-        tier: 'PRO',
-        isMaster: false,
-        startedAt: now.toISOString(),
-        expiresAt: expiry.toISOString()
-      };
-      localStorage.setItem(MOBILE_SUB_KEY, JSON.stringify(initial));
-      return initial;
+      // Por defecto inicia en Plan Gratuito
+      return { tier: 'FREE', isMaster: false };
+    }
+
+    function isProActive() {
+      const sub = getMobileSubscription();
+      return sub.tier === 'PRO' || sub.tier === 'MASTER';
+    }
+
+    function getRemainingTokens() {
+      if (isProActive()) return Infinity;
+      const today = new Date().toISOString().slice(0, 10);
+      try {
+        const saved = JSON.parse(localStorage.getItem(MOBILE_TOKENS_KEY));
+        if (saved && saved.date === today) return saved.remaining;
+      } catch (e) {}
+      localStorage.setItem(MOBILE_TOKENS_KEY, JSON.stringify({ date: today, remaining: DAILY_FREE_TOKENS }));
+      return DAILY_FREE_TOKENS;
+    }
+
+    function consumeOneToken() {
+      if (isProActive()) return true;
+      const today = new Date().toISOString().slice(0, 10);
+      const rem = getRemainingTokens();
+      if (rem <= 0) return false;
+      localStorage.setItem(MOBILE_TOKENS_KEY, JSON.stringify({ date: today, remaining: rem - 1 }));
+      renderMobileSubscriptionUI();
+      return true;
+    }
+
+    function activateMobileFreePlan() {
+      localStorage.setItem(MOBILE_SUB_KEY, JSON.stringify({ tier: 'FREE', isMaster: false }));
+      document.getElementById('mobileCodeFeedback').textContent = '';
+      renderMobileSubscriptionUI();
     }
 
     function renderMobileSubscriptionUI() {
       const sub = getMobileSubscription();
-      const badge = document.getElementById('mobilePlanStatusBadge');
-      const tag = document.getElementById('mobileLicenseTypeTag');
-      const title = document.getElementById('mobilePlanTitle');
+      const proActive = isProActive();
+      const rem = getRemainingTokens();
+
+      const headerSubBadge = document.getElementById('headerSubBadge');
+      const drawerTokenPill = document.getElementById('drawerTokenPill');
+      const aiSub = document.getElementById('aiPlanSubtitle');
+      const aiTokenBadge = document.getElementById('aiTokenBadge');
+
+      const freeCard = document.getElementById('mobileFreeCard');
+      const freeBadge = document.getElementById('mobileFreeBadge');
+      const btnFree = document.getElementById('btnUseFreePlan');
+
+      const proCard = document.getElementById('mobileProCard');
+      const proBadge = document.getElementById('mobileProBadge');
+      const expiryBox = document.getElementById('subscriptionExpiryBox');
       const expiryHeadline = document.getElementById('expiryHeadline');
       const expiryDateText = document.getElementById('expiryDateText');
       const expiryDaysLeft = document.getElementById('expiryDaysLeft');
-      const headerSubBadge = document.getElementById('headerSubBadge');
 
-      if (sub.isMaster) {
-        badge.className = 'badge badge-teal';
-        badge.innerHTML = '<span class="status-dot dot-green"></span> Sesión Activa: Pro Premium Maestro';
-        tag.textContent = 'Licencia Vitalicia';
-        title.textContent = 'Plan Pro Premium — Acceso Vitalicio';
-        expiryHeadline.textContent = 'Vigencia de Suscripción: Permanente';
-        expiryHeadline.style.color = 'var(--teal)';
-        expiryDateText.textContent = 'Sin fecha de caducidad (Código Maestro activo).';
-        expiryDaysLeft.textContent = 'Renovación automática sin costo habilitada.';
-        headerSubBadge.textContent = 'MAESTRO PRO • ∞';
+      if (!proActive) {
+        headerSubBadge.style.color = 'var(--cyan)';
+        headerSubBadge.textContent = `GRATUITO • ${rem}/${DAILY_FREE_TOKENS}`;
+        drawerTokenPill.textContent = `${rem}/${DAILY_FREE_TOKENS}`;
+        aiSub.textContent = `Plan Gratuito activo: ${rem} de ${DAILY_FREE_TOKENS} consultas diarias disponibles.`;
+        aiTokenBadge.textContent = `Tokens hoy: ${rem} / ${DAILY_FREE_TOKENS}`;
+
+        freeCard.style.border = '2px solid var(--cyan)';
+        freeBadge.className = 'badge badge-teal';
+        freeBadge.innerHTML = '<span class="status-dot dot-green"></span> Plan Activo';
+        btnFree.textContent = 'Plan Gratuito Activo';
+
+        proCard.style.border = '1px solid var(--border)';
+        proBadge.className = 'badge badge-amber';
+        proBadge.innerHTML = '<span class="status-dot dot-amber"></span> Opcional';
+
+        if (sub.expiredFromPro && sub.lastExpiredAt) {
+          expiryBox.style.display = 'block';
+          expiryBox.style.borderLeftColor = 'var(--red)';
+          expiryHeadline.style.color = 'var(--red)';
+          expiryHeadline.textContent = 'Tu periodo Pro anterior finalizó';
+          expiryDateText.textContent = 'Has vuelto automáticamente al Plan Gratuito sin interrupciones.';
+          expiryDaysLeft.textContent = 'Ingresa un nuevo código cuando desees reactivar Pro Premium.';
+        } else {
+          expiryBox.style.display = 'none';
+        }
         return;
       }
 
-      const expDate = new Date(sub.expiresAt);
-      const diffMs = expDate.getTime() - Date.now();
-      const daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-      const formattedDate = expDate.toLocaleDateString('es-EC', {
-        weekday: 'long',
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-      });
+      // Modo Pro Premium o Maestro activo
+      freeCard.style.border = '1px solid var(--border)';
+      freeBadge.className = 'badge badge-cyan';
+      freeBadge.textContent = 'Disponible';
+      btnFree.textContent = 'Cambiar a Plan Gratuito';
 
-      if (daysLeft > 0) {
-        badge.className = 'badge badge-teal';
-        badge.innerHTML = '<span class="status-dot dot-green"></span> Sesión Activa: Pro Premium';
-        tag.textContent = 'App Canjeada';
-        title.textContent = 'Plan Pro Premium Activo';
-        expiryHeadline.textContent = 'Tu suscripción finaliza el:';
-        expiryHeadline.style.color = 'var(--cyan)';
-        expiryDateText.textContent = formattedDate;
-        expiryDaysLeft.textContent = `Tiempo restante: ${daysLeft} día${daysLeft === 1 ? '' : 's'} (Renovación: $1,99/mes).`;
-        headerSubBadge.textContent = `PRO • ${daysLeft}d`;
+      proCard.style.border = '2px solid var(--teal)';
+      proBadge.className = 'badge badge-teal';
+      expiryBox.style.display = 'block';
+
+      drawerTokenPill.textContent = '∞';
+      aiSub.textContent = 'Plan Pro Premium activo: Tokens infinitos 24/7.';
+      aiTokenBadge.textContent = 'Tokens: Infinitos (∞)';
+
+      if (sub.isMaster) {
+        headerSubBadge.style.color = 'var(--teal)';
+        headerSubBadge.textContent = 'MAESTRO PRO • ∞';
+        proBadge.innerHTML = '<span class="status-dot dot-green"></span> Activo (Vitalicio)';
+        expiryBox.style.borderLeftColor = 'var(--teal)';
+        expiryHeadline.style.color = 'var(--teal)';
+        expiryHeadline.textContent = 'Licencia Vitalicia Activa';
+        expiryDateText.textContent = 'Sin fecha de caducidad (Código Maestro activo).';
+        expiryDaysLeft.textContent = 'Acceso ilimitado permanente.';
       } else {
-        badge.className = 'badge badge-red';
-        badge.innerHTML = '<span class="status-dot dot-red"></span> Suscripción Vencida';
-        tag.textContent = 'Requiere Renovación';
-        title.textContent = 'Suscripción Pro Premium Finalizada';
-        expiryHeadline.textContent = 'Suscripción vencida el:';
-        expiryHeadline.style.color = 'var(--red)';
+        const expDate = new Date(sub.expiresAt);
+        const daysLeft = Math.max(1, Math.ceil((expDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+        const formattedDate = expDate.toLocaleDateString('es-EC', {
+          weekday: 'long',
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        });
+        headerSubBadge.style.color = 'var(--teal)';
+        headerSubBadge.textContent = `PRO • ${daysLeft}d`;
+        proBadge.innerHTML = '<span class="status-dot dot-green"></span> Plan Activo';
+        expiryBox.style.borderLeftColor = 'var(--cyan)';
+        expiryHeadline.style.color = 'var(--cyan)';
+        expiryHeadline.textContent = 'Suscripción Pro Premium Activa hasta:';
         expiryDateText.textContent = formattedDate;
-        expiryDaysLeft.textContent = 'Ingresa un código de renovación ($1,99/mes) debajo para reactivar.';
-        headerSubBadge.textContent = 'RENOVAR PRO';
+        expiryDaysLeft.textContent = `Tiempo restante: ${daysLeft} día${daysLeft === 1 ? '' : 's'}.`;
       }
     }
 
@@ -1755,10 +1847,10 @@
           expiresAt: '2099-12-31T23:59:59.000Z'
         }));
         feedback.style.color = 'var(--teal)';
-        feedback.textContent = 'Código Maestro aceptado. Licencia Vitalicia activada sin costo.';
+        feedback.textContent = 'Código Maestro aceptado. Plan Pro Premium Vitalicio activado.';
       } else {
         const current = getMobileSubscription();
-        const baseTime = Math.max(Date.now(), new Date(current.expiresAt).getTime());
+        const baseTime = current.expiresAt ? Math.max(Date.now(), new Date(current.expiresAt).getTime()) : Date.now();
         const newExpiry = new Date(baseTime + SUB_DAYS * 24 * 60 * 60 * 1000);
         localStorage.setItem(MOBILE_SUB_KEY, JSON.stringify({
           tier: 'PRO',
@@ -1767,7 +1859,7 @@
           expiresAt: newExpiry.toISOString()
         }));
         feedback.style.color = 'var(--teal)';
-        feedback.textContent = 'Suscripción Pro Premium renovada por 30 días adicionales.';
+        feedback.textContent = 'Plan Pro Premium activado por 30 días.';
       }
 
       document.getElementById('mobileCodeInput').value = '';
@@ -1775,7 +1867,7 @@
     }
 
     // ==========================================
-    // 3. NOTICIAS OFICIALES POR PAÍS Y REGIÓN (ENLACE DIRECTO A LA NOTICIA ESPECÍFICA)
+    // 3. NOTICIAS OFICIALES POR PAÍS Y REGIÓN
     // ==========================================
     const OFFICIAL_NEWS_DB = {
       EC: {
@@ -2087,7 +2179,6 @@
       }
     }
 
-    // MONITOR EN VIVO DE ZONAS MÁS AFECTADAS POR EL NIÑO EN ECUADOR (ACTUALIZACIÓN CADA 60s)
     const ENSO_ECUADOR_REGIONS = [
       { name: 'Costa Sur (El Oro / Pasaje / Machala)', lat: -3.3256, lon: -79.8069, detail: 'Cuenca río Jubones, La Cocha y perfil costero sur.' },
       { name: 'Litoral Centro (Guayas / Manabí / Los Ríos)', lat: -2.1894, lon: -79.8891, detail: 'Cuenca baja río Guayas, Portoviejo y zonas bajas.' },
@@ -2245,12 +2336,12 @@
     }
 
     const SCHOOLS_DB = [
-      { name: 'Unidad Educativa "Carmen Mora de Encalada"', canton: 'Pasaje', sector: 'Av. Rocafuerte, Pasaje', lat: -3.3256, lon: -79.8069, status: 'Jornada Normal', badgeClass: 'badge-teal', keywords: ['carmen mora'], access: 'Vías asfaltadas transitables.' },
-      { name: 'Unidad Educativa Particular "Juan Pablo II"', canton: 'Pasaje', sector: 'Zona Urbana, Pasaje', lat: -3.3242, lon: -79.8082, status: 'Jornada Normal', badgeClass: 'badge-teal', keywords: ['juan pablo'], access: 'Acceso urbano pavimentado.' },
-      { name: 'Unidad Educativa "Dr. José Ochoa León"', canton: 'Pasaje', sector: 'Zona Norte, Pasaje', lat: -3.3210, lon: -79.8045, status: 'Jornada Normal', badgeClass: 'badge-teal', keywords: ['ochoa'], access: 'Acceso despejado.' },
-      { name: 'Unidad Educativa "Aurelio Prieto Muelas"', canton: 'Pasaje', sector: 'Loma de Franco, Pasaje', lat: -3.3335, lon: -79.8120, status: 'Precaución Vías Bajas', badgeClass: 'badge-amber', keywords: ['aurelio prieto'], access: 'Evitar calles bajas en lluvias fuertes.' },
-      { name: 'Unidad Educativa "Casacay"', canton: 'Pasaje', sector: 'Parroquia Casacay, Pasaje', lat: -3.3189, lon: -79.7365, status: 'Vigilancia Fluvial', badgeClass: 'badge-amber', keywords: ['casacay'], access: 'Monitoreo preventivo río Jubones.' },
-      { name: 'Colegio "Kléber Franco Cruz"', canton: 'El Oro', sector: 'Machala, El Oro', lat: -3.2581, lon: -79.9554, status: 'Jornada Normal', badgeClass: 'badge-teal', keywords: ['kléber', 'kleber'], access: 'Ruta Pasaje–Machala operativa.' }
+      { name: 'Unidad Educativa "Carmen Mora de Encalada"', canton: 'Pasaje', sector: 'Av. Rocafuerte, Pasaje', status: 'Jornada Normal', badgeClass: 'badge-teal', access: 'Vías asfaltadas transitables.' },
+      { name: 'Unidad Educativa Particular "Juan Pablo II"', canton: 'Pasaje', sector: 'Zona Urbana, Pasaje', status: 'Jornada Normal', badgeClass: 'badge-teal', access: 'Acceso urbano pavimentado.' },
+      { name: 'Unidad Educativa "Dr. José Ochoa León"', canton: 'Pasaje', sector: 'Zona Norte, Pasaje', status: 'Jornada Normal', badgeClass: 'badge-teal', access: 'Acceso despejado.' },
+      { name: 'Unidad Educativa "Aurelio Prieto Muelas"', canton: 'Pasaje', sector: 'Loma de Franco, Pasaje', status: 'Precaución Vías Bajas', badgeClass: 'badge-amber', access: 'Evitar calles bajas en lluvias fuertes.' },
+      { name: 'Unidad Educativa "Casacay"', canton: 'Pasaje', sector: 'Parroquia Casacay, Pasaje', status: 'Vigilancia Fluvial', badgeClass: 'badge-amber', access: 'Monitoreo preventivo río Jubones.' },
+      { name: 'Colegio "Kléber Franco Cruz"', canton: 'El Oro', sector: 'Machala, El Oro', status: 'Jornada Normal', badgeClass: 'badge-teal', access: 'Ruta Pasaje–Machala operativa.' }
     ];
 
     let currentSchoolFilter = 'todos';
@@ -2283,7 +2374,7 @@
     }
 
     // ==========================================
-    // 6. NIMBO AI MÓVIL (TOKENS INFINITOS)
+    // 6. NIMBO AI MÓVIL (5 CONSULTAS DIARIAS EN GRATIS / INFINITO EN PRO)
     // ==========================================
     function appendMessage(sender, html) {
       const box = document.getElementById('chatBox');
@@ -2310,6 +2401,15 @@
 
     async function processNimboAIQuery(question) {
       appendMessage('user', question);
+
+      if (!consumeOneToken()) {
+        appendMessage(
+          'ai',
+          '<strong>Límite diario alcanzado (Plan Gratuito):</strong><br>Has usado tus 5 consultas diarias de Nimbo AI. Ve a la pestaña <strong>Planes</strong> si deseas activar el <strong>Plan Pro Premium</strong> para obtener consultas ilimitadas.'
+        );
+        return;
+      }
+
       const qLower = question.toLowerCase();
 
       if (/(tormenta|rayo|inundaci|desbord|emergencia)/i.test(qLower)) {
