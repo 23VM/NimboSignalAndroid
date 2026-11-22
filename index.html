@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>NimboSignal App Móvil — Ecuador & Global</title>
+  <title>NimboSignal App — Ecuador & Global</title>
   <style>
     :root,
     [data-theme="dark"] {
       --bg: #090e1a;
       --surface: #111827;
+      --sidebar: #0d1424;
       --card: #1e293b;
-      --sub: rgba(9, 14, 26, 0.78);
+      --sub: rgba(9, 14, 26, 0.84);
       --border: rgba(148, 163, 184, 0.22);
       --cyan: #06b6d4;
       --cyan-soft: rgba(6, 182, 212, 0.16);
@@ -19,6 +20,7 @@
       --amber: #f59e0b;
       --amber-soft: rgba(245, 158, 11, 0.16);
       --red: #ef4444;
+      --red-soft: rgba(239, 68, 68, 0.16);
       --text: #f8fafc;
       --body: #e2e8f0;
       --muted: #94a3b8;
@@ -27,6 +29,7 @@
     [data-theme="light"] {
       --bg: #f1f5f9;
       --surface: #ffffff;
+      --sidebar: #ffffff;
       --card: #ffffff;
       --sub: #f8fafc;
       --border: rgba(15, 23, 42, 0.14);
@@ -37,6 +40,7 @@
       --amber: #d97706;
       --amber-soft: rgba(217, 119, 6, 0.12);
       --red: #dc2626;
+      --red-soft: rgba(220, 38, 38, 0.12);
       --text: #0f172a;
       --body: #1e293b;
       --muted: #475569;
@@ -60,7 +64,7 @@
       transition: background-color 0.25s ease, color 0.25s ease;
     }
 
-    /* PANTALLA DE ACTIVACIÓN POR CÓDIGO */
+    /* PANTALLA DE ACTIVACIÓN POR CÓDIGO (PRO PREMIUM $1,99 OBLIGATORIO) */
     .lock-overlay {
       position: fixed;
       inset: 0;
@@ -69,27 +73,25 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 1.2rem;
+      padding: 1.1rem;
       overflow-y: auto;
     }
 
-    .lock-overlay.hidden {
-      display: none;
-    }
+    .lock-overlay.hidden { display: none; }
 
     .lock-card {
       background: rgba(17, 24, 39, 0.97);
       border: 1px solid rgba(6, 182, 212, 0.45);
       border-radius: 22px;
-      padding: 1.4rem;
-      max-width: 420px;
+      padding: 1.35rem;
+      max-width: 410px;
       width: 100%;
       margin: auto;
       color: #f8fafc;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.65);
       display: flex;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 0.8rem;
     }
 
     .lock-input {
@@ -97,9 +99,9 @@
       background: #090e1a;
       border: 1px solid rgba(6, 182, 212, 0.45);
       color: #f8fafc;
-      padding: 0.85rem 1rem;
+      padding: 0.82rem 1rem;
       border-radius: 12px;
-      font-size: 0.95rem;
+      font-size: 0.94rem;
       font-weight: 700;
       letter-spacing: 0.8px;
       text-transform: uppercase;
@@ -113,7 +115,7 @@
       color: #fca5a5;
       padding: 0.6rem 0.8rem;
       border-radius: 10px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       display: none;
     }
 
@@ -127,24 +129,22 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1.2rem;
+      padding: 1.1rem;
     }
 
-    .mode-overlay.hidden {
-      display: none;
-    }
+    .mode-overlay.hidden { display: none; }
 
     .mode-modal {
       background: var(--surface);
       border: 1px solid rgba(6, 182, 212, 0.45);
       border-radius: 22px;
-      padding: 1.4rem;
-      max-width: 400px;
+      padding: 1.35rem;
+      max-width: 390px;
       width: 100%;
       text-align: center;
       display: flex;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 0.8rem;
     }
 
     .mode-card-btn {
@@ -152,12 +152,12 @@
       border: 2px solid var(--border);
       color: var(--text);
       border-radius: 16px;
-      padding: 1rem;
+      padding: 0.95rem;
       cursor: pointer;
       text-align: left;
       display: flex;
       align-items: center;
-      gap: 0.8rem;
+      gap: 0.75rem;
     }
 
     .mode-card-btn:active {
@@ -165,11 +165,11 @@
       background: var(--cyan-soft);
     }
 
-    /* BARRA SUPERIOR */
+    /* BARRA SUPERIOR DE TELÉFONO */
     .app-header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 0.55rem 0.75rem;
+      padding: 0.52rem 0.7rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -177,21 +177,40 @@
       gap: 0.35rem;
     }
 
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .m-menu-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 1.05rem;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
     .m-region-switch {
       display: inline-flex;
       background: var(--sub);
       border: 1px solid var(--border);
       border-radius: 999px;
-      padding: 0.16rem;
+      padding: 0.14rem;
     }
 
     .m-reg-btn {
       border: none;
       background: transparent;
       color: var(--muted);
-      padding: 0.24rem 0.55rem;
+      padding: 0.24rem 0.52rem;
       border-radius: 999px;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 700;
       cursor: pointer;
     }
@@ -204,7 +223,7 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 0.32rem;
+      gap: 0.3rem;
     }
 
     .m-theme-btn {
@@ -212,8 +231,8 @@
       border: 1px solid var(--border);
       color: var(--text);
       border-radius: 999px;
-      padding: 0.24rem 0.5rem;
-      font-size: 0.72rem;
+      padding: 0.24rem 0.48rem;
+      font-size: 0.7rem;
       font-weight: 700;
       cursor: pointer;
     }
@@ -222,52 +241,114 @@
       background: var(--cyan-soft);
       border: 1px solid rgba(6, 182, 212, 0.45);
       border-radius: 999px;
-      padding: 0.24rem 0.55rem;
-      font-size: 0.69rem;
+      padding: 0.24rem 0.52rem;
+      font-size: 0.68rem;
       display: flex;
       align-items: center;
-      gap: 0.22rem;
+      gap: 0.2rem;
     }
 
-    .token-pill strong {
+    .token-pill strong { color: var(--cyan); }
+
+    /* VENTANA DESPLEGABLE IZQUIERDA EN TELÉFONO */
+    .m-drawer-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 6, 14, 0.72);
+      z-index: 3000;
+    }
+
+    .m-drawer-backdrop.open { display: block; }
+
+    .m-left-drawer {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 265px;
+      max-width: 82vw;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      z-index: 3100;
+      transform: translateX(-100%);
+      transition: transform 0.24s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0.95rem 0.75rem;
+      overflow-y: auto;
+    }
+
+    .m-left-drawer.open { transform: translateX(0); }
+
+    .m-drawer-group {
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 700;
+      padding: 0 0.55rem;
+      margin: 0.55rem 0 0.25rem;
+    }
+
+    .m-drawer-btn {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text);
+      padding: 0.55rem 0.65rem;
+      border-radius: 11px;
+      font-size: 0.83rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .m-drawer-btn.active {
+      background: var(--cyan-soft);
+      border-color: rgba(6, 182, 212, 0.45);
       color: var(--cyan);
+      font-weight: 700;
     }
 
-    /* CONTENEDOR ESTRICTO POR SECCIÓN */
+    /* CONTENEDOR PRINCIPAL POR SECCIÓN */
     .app-body {
       flex: 1;
       overflow-y: auto;
-      padding: 0.85rem 0.85rem 1.2rem;
+      padding: 0.8rem 0.8rem 1rem;
     }
 
     .view {
       display: none;
       flex-direction: column;
-      gap: 0.8rem;
+      gap: 0.75rem;
     }
 
-    .view.active {
-      display: flex;
-    }
+    .view.active { display: flex; }
 
     .card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 0.95rem;
+      padding: 0.92rem;
     }
 
     .badge {
       display: inline-block;
-      padding: 0.22rem 0.56rem;
+      padding: 0.2rem 0.54rem;
       border-radius: 999px;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 700;
     }
 
     .b-cyan { background: var(--cyan-soft); color: var(--cyan); }
     .b-teal { background: var(--teal-soft); color: var(--teal); }
     .b-amber { background: var(--amber-soft); color: var(--amber); }
+    .b-red { background: var(--red-soft); color: var(--red); }
 
     .verdict-mobile {
       background: var(--sub);
@@ -275,39 +356,32 @@
       border-top: 1px solid var(--border);
       border-right: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      padding: 0.8rem;
+      padding: 0.78rem;
       border-radius: 10px;
-      margin-top: 0.55rem;
+      margin-top: 0.5rem;
     }
 
     .kpi-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-      margin-top: 0.7rem;
+      gap: 0.48rem;
+      margin-top: 0.65rem;
     }
 
     .kpi {
       background: var(--sub);
-      padding: 0.55rem 0.4rem;
+      padding: 0.52rem 0.35rem;
       border-radius: 12px;
       text-align: center;
       border: 1px solid var(--border);
     }
 
-    .kpi span {
-      display: block;
-      font-size: 0.67rem;
-      color: var(--muted);
-    }
-
-    .kpi strong {
-      font-size: 0.98rem;
-    }
+    .kpi span { display: block; font-size: 0.65rem; color: var(--muted); }
+    .kpi strong { font-size: 0.96rem; }
 
     .pill-scroll {
       display: flex;
-      gap: 0.4rem;
+      gap: 0.38rem;
       overflow-x: auto;
       padding-bottom: 0.15rem;
     }
@@ -316,9 +390,9 @@
       background: var(--surface);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 0.38rem 0.7rem;
+      padding: 0.36rem 0.68rem;
       border-radius: 999px;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       white-space: nowrap;
       cursor: pointer;
     }
@@ -332,18 +406,26 @@
 
     .btn-full {
       width: 100%;
-      padding: 0.66rem;
+      padding: 0.65rem;
       border-radius: 11px;
       border: none;
       font-weight: 700;
-      font-size: 0.83rem;
+      font-size: 0.82rem;
       cursor: pointer;
-      margin-top: 0.55rem;
+      margin-top: 0.5rem;
+      display: block;
+      text-align: center;
+      text-decoration: none;
     }
 
     .btn-cyan {
       background: linear-gradient(135deg, #06b6d4, #10b981);
       color: #06131f;
+    }
+
+    .btn-red {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #ffffff;
     }
 
     .btn-dark {
@@ -352,11 +434,74 @@
       border: 1px solid rgba(6, 182, 212, 0.38);
     }
 
+    /* MAPA MÓVIL */
+    .m-map-wrap {
+      width: 100%;
+      height: 295px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-top: 0.55rem;
+    }
+
+    .m-map-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* SWITCHES EN AJUSTES MÓVIL */
+    .m-setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.6rem 0.72rem;
+      background: var(--sub);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      font-size: 0.8rem;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 42px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #475569;
+      transition: 0.25s;
+      border-radius: 999px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.25s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider { background-color: #06b6d4; }
+    input:checked + .slider:before { transform: translateX(18px); }
+
     /* CHAT NIMBO AI MÓVIL */
     .mobile-chat-container {
       display: flex;
       flex-direction: column;
-      height: calc(100dvh - 125px);
+      height: calc(100dvh - 135px);
       background: var(--surface);
       border: 1px solid rgba(6, 182, 212, 0.4);
       border-radius: 16px;
@@ -364,30 +509,30 @@
     }
 
     .mobile-chat-head {
-      padding: 0.58rem 0.8rem;
+      padding: 0.55rem 0.78rem;
       background: var(--cyan-soft);
       border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
     }
 
     .mobile-messages {
       flex: 1;
       overflow-y: auto;
-      padding: 0.75rem;
+      padding: 0.72rem;
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 0.58rem;
       background: var(--bg);
     }
 
     .m-msg {
-      max-width: 89%;
-      padding: 0.7rem 0.85rem;
+      max-width: 90%;
+      padding: 0.68rem 0.82rem;
       border-radius: 14px;
-      font-size: 0.83rem;
+      font-size: 0.82rem;
       line-height: 1.45;
     }
 
@@ -408,7 +553,7 @@
     .mobile-input-row {
       display: flex;
       gap: 0.4rem;
-      padding: 0.55rem;
+      padding: 0.52rem;
       background: var(--surface);
       border-top: 1px solid var(--border);
     }
@@ -418,18 +563,30 @@
       background: var(--sub);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 0.62rem 0.8rem;
+      padding: 0.6rem 0.78rem;
       border-radius: 11px;
-      font-size: 0.84rem;
+      font-size: 0.83rem;
       outline: none;
+      width: 100%;
+    }
+
+    .watermark-bar {
+      text-align: center;
+      font-size: 0.66rem;
+      color: var(--muted);
+      background: var(--surface);
+      padding: 0.16rem 0;
+      border-top: 1px solid var(--border);
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
     }
 
     .bottom-nav {
       background: var(--surface);
       border-top: 1px solid var(--border);
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      padding: 0.34rem 0.1rem calc(0.38rem + env(safe-area-inset-bottom));
+      grid-template-columns: repeat(5, 1fr);
+      padding: 0.3rem 0.1rem calc(0.35rem + env(safe-area-inset-bottom));
       flex-shrink: 0;
     }
 
@@ -440,37 +597,32 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.15rem;
+      gap: 0.14rem;
       font-size: 0.61rem;
       font-weight: 600;
       cursor: pointer;
-      padding: 0.2rem 0;
+      padding: 0.18rem 0;
     }
 
-    .nav-tab span.ico {
-      font-size: 1.1rem;
-    }
-
-    .nav-tab.active {
-      color: var(--cyan);
-    }
+    .nav-tab span.ico { font-size: 1.08rem; }
+    .nav-tab.active { color: var(--cyan); }
   </style>
 </head>
 <body>
 
-  <!-- PANTALLA DE ACTIVACIÓN POR CÓDIGO (PRO PREMIUM / CÓDIGO MAESTRO) -->
+  <!-- PANTALLA DE ACTIVACIÓN POR CÓDIGO (PRO PREMIUM $1,99 OBLIGATORIO EN LA APP) -->
   <div class="lock-overlay" id="lockOverlay">
     <div class="lock-card">
       <div style="display:flex; align-items:center; gap:0.7rem;">
         <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,#06b6d4,#10b981); color:#06131f; font-weight:900; display:grid; place-items:center;">NS</div>
         <div>
-          <strong style="font-size:1.1rem; display:block;">NimboSignal App • Pro Premium</strong>
-          <span style="font-size:0.76rem; color:#06b6d4;">Acceso Exclusivo con Código</span>
+          <strong style="font-size:1.08rem; display:block;">NimboSignal App • Pro Premium</strong>
+          <span style="font-size:0.75rem; color:#06b6d4;">Tokens Infinitos + Noticias de Última Hora</span>
         </div>
       </div>
 
-      <p style="font-size:0.83rem; color:#94a3b8; line-height:1.45;">
-        🔒 La App Móvil forma parte del <strong>Plan Pro Premium ($2,99/mes)</strong> con <strong>Nimbo AI Ilimitada</strong>. Ingresa tu código de activación o adquiere tu licencia aquí:
+      <p style="font-size:0.82rem; color:#94a3b8; line-height:1.45;">
+        🔒 La aplicación móvil incluye el <strong>Plan Pro Premium ($1,99/mes)</strong> con <strong>tokens infinitos</strong> en Nimbo AI y <strong>Noticias de Última Hora</strong>. Ingresa tu código o adquiere tu licencia aquí:
       </p>
 
       <input
@@ -488,12 +640,12 @@
       </button>
 
       <button class="btn-full" style="margin-top:0; background:#1e293b; color:#06b6d4; border:1px solid rgba(6,182,212,0.4);" onclick="buyProMobileNow()">
-        💎 Comprar Pro Premium ($2,99) y Generar Código
+        💎 Comprar Pro Premium ($1,99/mes) y Generar Código
       </button>
 
-      <div id="mGeneratedBox" style="display:none; background:rgba(16,185,129,0.16); border:1px dashed #10b981; border-radius:12px; padding:0.75rem; text-align:center;">
-        <span style="font-size:0.74rem; color:#a7f3d0; display:block;">🎉 Tu Código Pro Premium es:</span>
-        <strong id="mGeneratedCode" style="font-size:1.12rem; color:#fff; letter-spacing:1px; display:block; margin:0.25rem 0;"></strong>
+      <div id="mGeneratedBox" style="display:none; background:rgba(16,185,129,0.16); border:1px dashed #10b981; border-radius:12px; padding:0.72rem; text-align:center;">
+        <span style="font-size:0.73rem; color:#a7f3d0; display:block;">🎉 Tu Código Pro Premium ($1,99) es:</span>
+        <strong id="mGeneratedCode" style="font-size:1.1rem; color:#fff; letter-spacing:1px; display:block; margin:0.22rem 0;"></strong>
         <button class="btn-full" style="margin-top:0.2rem; padding:0.42rem; background:#090e1a; color:#10b981; border:1px solid #10b981;" onclick="useGeneratedCodeNow()">
           Entrar ahora a la App
         </button>
@@ -504,38 +656,75 @@
   <!-- SELECTOR INICIAL: ECUADOR O GLOBAL -->
   <div class="mode-overlay hidden" id="modeOverlay">
     <div class="mode-modal">
-      <span class="badge b-cyan" style="align-self:center;">NimboSignal</span>
-      <h2 style="font-size:1.25rem;">¿Qué clima deseas ver primero?</h2>
-      <p style="font-size:0.8rem; color:var(--muted);">Puedes cambiar entre Ecuador y Global en cualquier momento desde arriba.</p>
+      <span class="badge b-cyan" style="align-self:center;">NimboSignal Pro</span>
+      <h2 style="font-size:1.22rem;">¿Qué clima deseas ver primero?</h2>
+      <p style="font-size:0.79rem; color:var(--muted);">Puedes cambiar entre Ecuador y Global o abrir el menú lateral ☰ en cualquier momento.</p>
 
       <button class="mode-card-btn" onclick="chooseMobileStartMode('ecuador')">
-        <span style="font-size:2rem;">🇪🇨</span>
+        <span style="font-size:1.95rem;">🇪🇨</span>
         <div>
-          <strong style="display:block; font-size:0.98rem;">Ecuador (Pasaje & El Oro)</strong>
-          <span style="font-size:0.76rem; color:var(--muted);">Clima local, colegios, ríos (La Cocha, Jubones) y rutas.</span>
+          <strong style="display:block; font-size:0.96rem;">Ecuador (Pasaje & El Oro)</strong>
+          <span style="font-size:0.75rem; color:var(--muted);">Clima local, colegios, ríos, mapa y alertas.</span>
         </div>
       </button>
 
       <button class="mode-card-btn" onclick="chooseMobileStartMode('global')">
-        <span style="font-size:2rem;">🌍</span>
+        <span style="font-size:1.95rem;">🌍</span>
         <div>
-          <strong style="display:block; font-size:0.98rem;">Global (Todo el Mundo)</strong>
-          <span style="font-size:0.76rem; color:var(--muted);">Todos los países y ciudades del mundo en vivo.</span>
+          <strong style="display:block; font-size:0.96rem;">Global (Todo el Mundo)</strong>
+          <span style="font-size:0.75rem; color:var(--muted);">Todos los países y ciudades del mundo en vivo.</span>
         </div>
       </button>
     </div>
   </div>
 
+  <!-- MENÚ DESPLEGABLE IZQUIERDO PARA TELÉFONO -->
+  <div class="m-drawer-backdrop" id="mDrawerBackdrop" onclick="closeMobileDrawer()"></div>
+  <aside class="m-left-drawer" id="mLeftDrawer">
+    <div>
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:0 0.4rem 0.65rem; border-bottom:1px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div style="width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,#06b6d4,#10b981); color:#06131f; font-weight:900; display:grid; place-items:center; font-size:0.85rem;">NS</div>
+          <strong style="font-size:0.95rem;">NimboSignal</strong>
+        </div>
+        <button onclick="closeMobileDrawer()" style="background:none; border:none; color:var(--muted); font-size:1.1rem; cursor:pointer;">✕</button>
+      </div>
+
+      <div class="m-drawer-group">Clima y Radar</div>
+      <button class="m-drawer-btn active" data-tab="clima" onclick="switchTab('clima')"><span>🇪🇨 Veredicto Ecuador</span></button>
+      <button class="m-drawer-btn" data-tab="global" onclick="switchTab('global')"><span>🌍 Clima Global</span></button>
+      <button class="m-drawer-btn" data-tab="mapa" onclick="switchTab('mapa')"><span>🗺️ Mapa Interactivo</span></button>
+      <button class="m-drawer-btn" data-tab="noticias" onclick="switchTab('noticias')"><span>📰 Noticias Última Hora</span><span class="badge b-amber">PRO</span></button>
+
+      <div class="m-drawer-group">Comunidad y Emergencias</div>
+      <button class="m-drawer-btn" data-tab="colegios" onclick="switchTab('colegios')"><span>🏫 Colegios</span></button>
+      <button class="m-drawer-btn" data-tab="rios" onclick="switchTab('rios')"><span>🌴 Ríos y Pasaje</span></button>
+      <button class="m-drawer-btn" data-tab="recomendaciones" onclick="switchTab('recomendaciones')"><span>⚠️ Recomendaciones</span></button>
+      <button class="m-drawer-btn" data-tab="emergencias" onclick="switchTab('emergencias')"><span>🚨 Emergencias</span></button>
+
+      <div class="m-drawer-group">Asistente y Cuenta</div>
+      <button class="m-drawer-btn" data-tab="ai" onclick="switchTab('ai')"><span>🤖 Nimbo AI (Infinito)</span></button>
+      <button class="m-drawer-btn" data-tab="ajustes" onclick="switchTab('ajustes')"><span>⚙️ Ajustes y Cuenta</span></button>
+    </div>
+
+    <div style="padding-top:0.75rem; border-top:1px solid var(--border); text-align:center; font-size:0.72rem; color:var(--muted);">
+      <strong>EvMJ23</strong> • Plan Pro Premium ($1,99)
+    </div>
+  </aside>
+
   <!-- BARRA SUPERIOR -->
   <header class="app-header">
-    <div class="m-region-switch">
-      <button class="m-reg-btn active" id="mRegEcBtn" onclick="switchMobileRegion('ecuador')">🇪🇨 Ecuador</button>
-      <button class="m-reg-btn" id="mRegGlBtn" onclick="switchMobileRegion('global')">🌍 Global</button>
+    <div class="header-left">
+      <button class="m-menu-btn" onclick="openMobileDrawer()" title="Abrir menú">☰</button>
+      <div class="m-region-switch">
+        <button class="m-reg-btn active" id="mRegEcBtn" onclick="switchMobileRegion('ecuador')">🇪🇨 Ecuador</button>
+        <button class="m-reg-btn" id="mRegGlBtn" onclick="switchMobileRegion('global')">🌍 Global</button>
+      </div>
     </div>
 
     <div class="header-right">
       <button class="m-theme-btn" id="mThemeBtn" onclick="toggleMobileTheme()">☀️</button>
-      <div class="token-pill">
+      <div class="token-pill" onclick="switchTab('ai')">
         <span>⚡</span>
         <strong id="mTokensLeft">∞/∞</strong>
       </div>
@@ -556,40 +745,44 @@
 
       <div class="card">
         <span class="badge b-cyan">🇪🇨 Veredicto Climático Ecuador</span>
-        <h2 id="mCityTitle" style="font-size:1.18rem; margin-top:0.4rem;">Pasaje, El Oro</h2>
+        <h2 id="mCityTitle" style="font-size:1.15rem; margin-top:0.38rem;">Pasaje, El Oro</h2>
         <div class="verdict-mobile">
-          <strong id="mVerdictHead" style="color:var(--amber); font-size:0.92rem; display:block;">Consultando satélite...</strong>
-          <span id="mVerdictText" style="font-size:0.81rem; color:var(--body);">Obteniendo datos en tiempo real...</span>
+          <strong id="mVerdictHead" style="color:var(--amber); font-size:0.9rem; display:block;">Consultando satélite...</strong>
+          <span id="mVerdictText" style="font-size:0.8rem; color:var(--body);">Obteniendo datos en tiempo real...</span>
         </div>
         <div class="kpi-row">
           <div class="kpi"><span>Temp.</span><strong id="mTemp">--°C</strong></div>
           <div class="kpi"><span>Lluvia</span><strong id="mRain">--%</strong></div>
           <div class="kpi"><span>Riesgo</span><strong id="mRisk" style="color:var(--teal);">Bajo</strong></div>
         </div>
-        <button class="btn-full btn-cyan" onclick="switchTab('ai')">🤖 Preguntar a Nimbo AI</button>
+        <div style="display:flex; gap:0.45rem; margin-top:0.5rem;">
+          <button class="btn-full btn-cyan" style="margin-top:0;" onclick="switchTab('ai')">🤖 Nimbo AI</button>
+          <button class="btn-full btn-dark" style="margin-top:0;" onclick="switchTab('mapa')">🗺️ Mapa</button>
+        </div>
       </div>
 
       <div class="card">
-        <span class="badge b-amber">🟡 Semáforo El Niño: Nivel 2 (Vigilancia)</span>
-        <h3 style="font-size:0.95rem; margin-top:0.4rem;">Alerta Preventiva Costera</h3>
-        <p style="font-size:0.8rem; color:var(--muted); margin-top:0.28rem;">
-          Monitoreo activo de lluvias vespertinas en Pasaje y cuenca del río Jubones. Lleva poncho impermeable si circulas en moto en la tarde.
+        <span class="badge b-amber">🟡 Semáforo El fenómeno del Niño: Vigilancia</span>
+        <h3 style="font-size:0.94rem; margin-top:0.38rem;">Alerta Preventiva Costera</h3>
+        <p style="font-size:0.79rem; color:var(--muted); margin-top:0.25rem;">
+          Monitoreo activo de lluvias vespertinas en Pasaje y cuenca del río Jubones asociadas a El fenómeno del Niño.
         </p>
+        <button class="btn-full btn-dark" onclick="switchTab('recomendaciones')">⚠️ Ver Protocolos Tormentas / Ríos</button>
       </div>
     </div>
 
-    <!-- SECCIÓN 2: GLOBAL (TODOS LOS PAÍSES Y CIUDADES DEL MUNDO) -->
+    <!-- SECCIÓN 2: GLOBAL -->
     <div id="view-global" class="view">
-      <h2 style="font-size:1.12rem;">🌍 Climas Globales — Todo el Mundo</h2>
+      <h2 style="font-size:1.1rem;">🌍 Climas Globales — Todo el Mundo</h2>
 
       <div class="card">
         <form style="display:flex; gap:0.4rem;" onsubmit="searchMobileGlobal(event)">
           <input type="text" id="mGlobalInput" class="mobile-search" placeholder="País o ciudad (ej. Japón, París, Bogotá)..." required />
           <button type="submit" style="background:#06b6d4; color:#04121d; border:none; border-radius:11px; padding:0 0.85rem; font-weight:800;">Ir</button>
         </form>
-        <div class="verdict-mobile" style="margin-top:0.65rem;">
-          <strong id="mGlobalTitle" style="color:var(--cyan); font-size:0.9rem; display:block;">🌐 Busca cualquier país o ciudad</strong>
-          <span id="mGlobalBody" style="font-size:0.8rem; color:var(--body);">Toca una ciudad abajo o escribe cualquier destino mundial.</span>
+        <div class="verdict-mobile" style="margin-top:0.6rem;">
+          <strong id="mGlobalTitle" style="color:var(--cyan); font-size:0.89rem; display:block;">🌐 Busca cualquier país o ciudad</strong>
+          <span id="mGlobalBody" style="font-size:0.79rem; color:var(--body);">Toca una ciudad abajo o escribe cualquier destino mundial.</span>
         </div>
       </div>
 
@@ -601,42 +794,103 @@
         <button class="pill-btn" onclick="filterMobileContinent('Oceanía y África', this)">🌍 Oceanía/África</button>
       </div>
 
-      <div id="mGlobalList" style="display:flex; flex-direction:column; gap:0.7rem;"></div>
+      <div id="mGlobalList" style="display:flex; flex-direction:column; gap:0.68rem;"></div>
     </div>
 
-    <!-- SECCIÓN 3: NIMBO AI -->
+    <!-- SECCIÓN 3: NOTICIAS DE ÚLTIMA HORA (PRO PREMIUM) -->
+    <div id="view-noticias" class="view">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 style="font-size:1.1rem;">📰 Noticias de Última Hora</h2>
+        <span class="badge b-amber">💎 Pro Premium</span>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--red);">
+        <span class="badge b-red">🔴 EN VIVO • ÚLTIMA HORA</span>
+        <h3 style="font-size:0.96rem; margin-top:0.35rem;" id="mNewsHeadline">Reporte Satelital Pasaje & El Oro</h3>
+        <p style="font-size:0.8rem; color:var(--body); margin-top:0.25rem;" id="mNewsBody">
+          Sincronizando boletín climático de última hora...
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="badge b-amber">🌊 El fenómeno del Niño</span>
+        <h3 style="font-size:0.93rem; margin-top:0.35rem;">Vigilancia Costera en Ecuador</h3>
+        <p style="font-size:0.79rem; color:var(--muted); margin-top:0.22rem;">
+          Monitoreo continuo de temperatura superficial del mar frente a El Oro. Se mantienen lluvias dispersas vespertinas en la zona baja y estribaciones.
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="badge b-cyan">🏞️ Ríos y Vías</span>
+        <h3 style="font-size:0.93rem; margin-top:0.35rem;">Cuenca Río Jubones y Balneario La Cocha</h3>
+        <p style="font-size:0.79rem; color:var(--muted); margin-top:0.22rem;">
+          Caudal estable durante la mañana. Precaución en la tarde si se observan nubes cargadas hacia Uzhcurrumi y Girón.
+        </p>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 4: MAPA INTERACTIVO -->
+    <div id="view-mapa" class="view">
+      <h2 style="font-size:1.1rem;">🗺️ Mapa Interactivo</h2>
+
+      <div class="pill-scroll">
+        <button class="pill-btn active" onclick="focusMobileMap('Pasaje Centro', -3.3256, -79.8069, 14, this)">📍 Pasaje</button>
+        <button class="pill-btn" onclick="focusMobileMap('Balneario La Cocha', -3.3415, -79.7820, 15, this)">🏞️ La Cocha</button>
+        <button class="pill-btn" onclick="focusMobileMap('Río Jubones / Casacay', -3.3189, -79.7365, 14, this)">🌊 Río Jubones</button>
+        <button class="pill-btn" onclick="focusMobileMap('Machala', -3.2581, -79.9554, 13, this)">⚓ Machala</button>
+        <button class="pill-btn" onclick="focusMobileMap('Ecuador', -1.8312, -78.1834, 6, this)">🇪🇨 Ecuador</button>
+      </div>
+
+      <div class="card">
+        <form style="display:flex; gap:0.4rem;" onsubmit="searchMobileMap(event)">
+          <input type="text" id="mMapInput" class="mobile-search" placeholder="Buscar lugar en el mapa..." required />
+          <button type="submit" style="background:#06b6d4; color:#04121d; border:none; border-radius:11px; padding:0 0.8rem; font-weight:800;">Ir</button>
+        </form>
+        <div style="font-size:0.78rem; color:var(--cyan); font-weight:700; margin-top:0.45rem;" id="mMapLabel">📍 Pasaje Centro, El Oro</div>
+        <div class="m-map-wrap">
+          <iframe
+            id="mOsmFrame"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=-79.8369%2C-3.3506%2C-79.7769%2C-3.3006&layer=mapnik&marker=-3.3256%2C-79.8069"
+            loading="lazy"
+            title="Mapa Móvil"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 5: NIMBO AI -->
     <div id="view-ai" class="view">
       <div class="mobile-chat-container">
         <div class="mobile-chat-head">
-          <span id="mChatSubtitle">🤖 <strong>Nimbo AI</strong> • Pro Premium Ilimitada</span>
-          <span class="badge b-teal" id="mAiBadge">Ilimitada</span>
+          <span id="mChatSubtitle">🤖 <strong>Nimbo AI</strong> • Tokens Infinitos</span>
+          <span class="badge b-teal">Ilimitada</span>
         </div>
 
         <div class="mobile-messages" id="mChatBox">
           <div class="m-msg m-ai">
             👋 ¡Hola! Soy <strong>Nimbo AI</strong>.<br>
-            Pregúntame por cualquier <strong>río</strong> (La Cocha, Río Jubones, Casacay, Dos Bocas, Río Palenque), cualquier <strong>colegio</strong> (Juan Pablo II, Carmen Mora, Ochoa León) o cualquier <strong>país o ciudad del mundo</strong>.
+            Pregúntame por cualquier <strong>río</strong> (La Cocha, Río Jubones, Casacay, Dos Bocas), <strong>colegios</strong> (Juan Pablo II, Carmen Mora), <strong>países del mundo</strong> o <strong>qué hacer ante tormentas eléctricas, inundaciones o ríos desbordados</strong>.
           </div>
         </div>
 
-        <div class="pill-scroll" style="padding: 0.4rem 0.55rem; background: var(--surface); border-top:1px solid var(--border);">
+        <div class="pill-scroll" style="padding: 0.38rem 0.5rem; background: var(--surface); border-top:1px solid var(--border);">
           <button class="pill-btn" onclick="mQuickAsk('¿Cómo está el Balneario La Cocha, Pasaje?')">🏞️ La Cocha</button>
           <button class="pill-btn" onclick="mQuickAsk('¿Cómo está el Río Jubones y Casacay?')">🌊 Río Jubones</button>
           <button class="pill-btn" onclick="mQuickAsk('¿Cómo está el colegio Juan Pablo II?')">🏫 Juan Pablo II</button>
-          <button class="pill-btn" onclick="mQuickAsk('¿Cómo está el colegio Carmen Mora de Encalada?')">🏫 Carmen Mora</button>
+          <button class="pill-btn" onclick="mQuickAsk('¿Qué hacer ante tormentas eléctricas o ríos desbordados?')">⚡ Protocolo</button>
           <button class="pill-btn" onclick="mQuickAsk('¿Cómo está el clima en Tokio, Japón?')">🌍 Tokio</button>
         </div>
 
         <form class="mobile-input-row" onsubmit="handleMobileChat(event)">
-          <input type="text" id="mAiInput" placeholder="Ej: ¿Cómo está La Cocha? o ¿Juan Pablo II?" required />
+          <input type="text" id="mAiInput" placeholder="Consulta ilimitada..." required />
           <button type="submit" style="background:#06b6d4; color:#04121d; border:none; border-radius:11px; padding:0 0.85rem; font-weight:800;">Enviar</button>
         </form>
       </div>
     </div>
 
-    <!-- SECCIÓN 4: COLEGIOS -->
+    <!-- SECCIÓN 6: COLEGIOS -->
     <div id="view-colegios" class="view">
-      <h2 style="font-size:1.12rem;">🏫 Colegios e Instituciones</h2>
+      <h2 style="font-size:1.1rem;">🏫 Colegios e Instituciones</h2>
       <input
         type="text"
         id="mSchoolSearch"
@@ -644,89 +898,181 @@
         placeholder="🔍 Buscar colegio (Carmen Mora, Juan Pablo II, Ochoa León)..."
         oninput="renderMobileSchools()"
       />
-      <div id="mSchoolList" style="display:flex; flex-direction:column; gap:0.75rem;"></div>
+      <div id="mSchoolList" style="display:flex; flex-direction:column; gap:0.7rem;"></div>
     </div>
 
-    <!-- SECCIÓN 5: RÍOS Y RUTAS DE PASAJE -->
+    <!-- SECCIÓN 7: RÍOS Y PASAJE -->
     <div id="view-rios" class="view">
-      <h2 style="font-size:1.12rem;">🌴 Ríos, Balnearios y Vías de Pasaje</h2>
+      <h2 style="font-size:1.1rem;">🌴 Ríos, Balnearios y Vías de Pasaje</h2>
 
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <strong style="font-size:0.94rem;">🏞️ Balneario La Cocha (Pasaje)</strong>
+          <strong style="font-size:0.93rem;">🏞️ Balneario La Cocha (Pasaje)</strong>
           <span class="badge b-teal">08:00–13:30</span>
         </div>
-        <p style="font-size:0.8rem; color:var(--muted); margin-top:0.3rem;">Aguas claras en la mañana; salir de la orilla si se nubla hacia la cordillera.</p>
+        <p style="font-size:0.79rem; color:var(--muted); margin-top:0.28rem;">Aguas claras en la mañana; salir de la orilla si se nubla hacia la cordillera.</p>
         <button class="btn-full btn-dark" onclick="mQuickAsk('¿Cómo está el Balneario La Cocha, Pasaje?')">🤖 Ver clima en La Cocha</button>
       </div>
 
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <strong style="font-size:0.94rem;">🌊 Río Jubones y Casacay</strong>
+          <strong style="font-size:0.93rem;">🌊 Río Jubones y Casacay</strong>
           <span class="badge b-amber">Vigilancia</span>
         </div>
-        <p style="font-size:0.8rem; color:var(--muted); margin-top:0.3rem;">Caudal estable con monitoreo preventivo en cuenca alta.</p>
+        <p style="font-size:0.79rem; color:var(--muted); margin-top:0.28rem;">Caudal estable con monitoreo preventivo en cuenca alta.</p>
         <button class="btn-full btn-dark" onclick="mQuickAsk('¿Cómo está el Río Jubones y Casacay?')">🤖 Ver clima en Río Jubones</button>
       </div>
 
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <strong style="font-size:0.94rem;">🌿 Dos Bocas y Río Buenavista</strong>
+          <strong style="font-size:0.93rem;">🌿 Dos Bocas y Río Buenavista</strong>
           <span class="badge b-teal">Favorable</span>
         </div>
-        <p style="font-size:0.8rem; color:var(--muted); margin-top:0.3rem;">Aguas tranquilas aptas para recreación familiar.</p>
+        <p style="font-size:0.79rem; color:var(--muted); margin-top:0.28rem;">Aguas tranquilas aptas para recreación familiar.</p>
         <button class="btn-full btn-dark" onclick="mQuickAsk('¿Cómo está Dos Bocas y Río Buenavista?')">🤖 Ver clima en Dos Bocas</button>
       </div>
 
       <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <strong style="font-size:0.94rem;">💧 Río Palenque y Chaguana</strong>
-          <span class="badge b-teal">Normal</span>
-        </div>
-        <p style="font-size:0.8rem; color:var(--muted); margin-top:0.3rem;">Corriente suave en la mañana y vías rurales transitables.</p>
-        <button class="btn-full btn-dark" onclick="mQuickAsk('¿Cómo está el Río Palenque en Pasaje?')">🤖 Ver clima en Río Palenque</button>
-      </div>
-
-      <div class="card">
-        <strong style="font-size:0.94rem;">🚌 Pasajes: Pasaje – Machala / Santa Rosa / Cuenca</strong>
-        <p style="font-size:0.8rem; color:var(--muted); margin-top:0.3rem;">Rutas intercantonales operativas 100%; precaución por neblina vía a Cuenca.</p>
+        <strong style="font-size:0.93rem;">🚌 Pasajes: Pasaje – Machala / Santa Rosa / Cuenca</strong>
+        <p style="font-size:0.79rem; color:var(--muted); margin-top:0.28rem;">Rutas intercantonales operativas 100%; precaución por neblina vía a Cuenca.</p>
         <button class="btn-full btn-dark" onclick="mQuickAsk('¿Cómo están los pasajes y carreteras desde Pasaje hoy?')">🤖 Ver estado de vías</button>
       </div>
     </div>
 
-    <!-- SECCIÓN 6: PLANES Y CONFIGURACIÓN -->
-    <div id="view-planes" class="view">
-      <h2 style="font-size:1.12rem;">💎 Planes, Tema y Licencia</h2>
+    <!-- SECCIÓN 8: RECOMENDACIONES ANTE TORMENTAS, INUNDACIONES Y RÍOS DESBORDADOS -->
+    <div id="view-recomendaciones" class="view">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 style="font-size:1.1rem;">⚠️ Recomendaciones Riesgo</h2>
+        <button class="pill-btn" style="border-color:var(--red); color:var(--red);" onclick="switchTab('emergencias')">🚨 Emergencias</button>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--amber);">
+        <span class="badge b-amber">⚡ Tormentas Eléctricas</span>
+        <p style="font-size:0.8rem; color:var(--body); margin-top:0.35rem; line-height:1.48;">
+          • <strong>Refugio inmediato:</strong> Entra a un edificio cerrado; jamás te cubras bajo árboles aislados ni postes.<br>
+          • <strong>Sal del agua:</strong> Aléjate de ríos, piscinas y canchas abiertas al oír truenos.<br>
+          • <strong>En casa:</strong> Desconecta cargadores y electrodomésticos sensibles.
+        </p>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--cyan);">
+        <span class="badge b-cyan">🌊 Inundaciones Urbanas</span>
+        <p style="font-size:0.8rem; color:var(--body); margin-top:0.35rem; line-height:1.48;">
+          • <strong>No cruces corrientes:</strong> 30 cm de agua en movimiento pueden arrastrar una motocicleta.<br>
+          • <strong>Corta la luz:</strong> Si el agua entra a la vivienda, baja el breaker principal.<br>
+          • <strong>Protege documentos:</strong> Guarda cédulas, medicinas y baterías en bolsas herméticas en zonas altas.
+        </p>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--red);">
+        <span class="badge b-red">🏞️ Ríos Desbordados</span>
+        <p style="font-size:0.8rem; color:var(--body); margin-top:0.35rem; line-height:1.48;">
+          • <strong>Vigila el color del agua:</strong> Si el río se torna marrón turbio o arrastra ramas, sube a terreno alto de inmediato.<br>
+          • <strong>Evita puentes bajos:</strong> No intentes cruzar puentes cubiertos por la corriente.<br>
+          • <strong>Emergencia:</strong> Llama de inmediato al 911 o al 102 (Bomberos).
+        </p>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 9: NÚMEROS DE EMERGENCIA -->
+    <div id="view-emergencias" class="view">
+      <h2 style="font-size:1.1rem;">🚨 Números de Emergencia (Ecuador)</h2>
+
+      <div class="card" style="border: 2px solid var(--red);">
+        <span class="badge b-red">Línea Única 24/7</span>
+        <h3 style="font-size:1.05rem; margin-top:0.3rem;">ECU 911 — Emergencias</h3>
+        <p style="font-size:0.79rem; color:var(--muted); margin-top:0.2rem;">Policía, Ambulancia, Bomberos y Gestión de Riesgos.</p>
+        <a href="tel:911" class="btn-full btn-red">📞 Llamar al 911</a>
+      </div>
 
       <div class="card">
-        <span class="badge b-cyan" id="mLicBadge">Estado de Licencia</span>
-        <h3 style="font-size:0.96rem; margin-top:0.35rem;" id="mLicTitle">Pro Premium Activo</h3>
-        <p style="font-size:0.8rem; color:var(--muted); margin-top:0.25rem;" id="mLicDesc">Nimbo AI Ilimitada y App Móvil desbloqueada.</p>
+        <span class="badge b-amber">Rescate e Inundaciones</span>
+        <h3 style="font-size:1rem; margin-top:0.3rem;">Cuerpo de Bomberos (102)</h3>
+        <p style="font-size:0.79rem; color:var(--muted); margin-top:0.2rem;">Rescate en ríos desbordados, inundaciones y árboles caídos.</p>
+        <a href="tel:102" class="btn-full btn-cyan">🚒 Llamar al 102</a>
+      </div>
+
+      <div class="card">
+        <span class="badge b-cyan">Orden y Vías</span>
+        <h3 style="font-size:1rem; margin-top:0.3rem;">Policía Nacional (101)</h3>
+        <a href="tel:101" class="btn-full btn-dark">🚓 Llamar al 101</a>
+      </div>
+
+      <div class="card">
+        <span class="badge b-red">Primeros Auxilios</span>
+        <h3 style="font-size:1rem; margin-top:0.3rem;">Cruz Roja Ecuatoriana (131)</h3>
+        <a href="tel:131" class="btn-full btn-dark">🚑 Llamar al 131</a>
+      </div>
+
+      <div class="card">
+        <span class="badge b-amber">Cables Caídos / Electricidad</span>
+        <h3 style="font-size:1rem; margin-top:0.3rem;">CNEL EP El Oro (1800-263537)</h3>
+        <a href="tel:1800263537" class="btn-full btn-dark">⚡ Llamar 1800-263537</a>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 10: AJUSTES, NOTIFICACIONES, CUENTA Y SUSCRIPCIONES -->
+    <div id="view-ajustes" class="view">
+      <h2 style="font-size:1.1rem;">⚙️ Ajustes, Cuenta y Suscripciones</h2>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.45rem;">
+          <strong style="font-size:0.93rem;">🔔 Notificaciones</strong>
+          <span class="badge b-cyan">Activas</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:0.45rem;">
+          <div class="m-setting-row">
+            <span>⚡ Tormentas Eléctricas</span>
+            <label class="switch"><input type="checkbox" id="mChkStorms" checked onchange="saveMSettings()" /><span class="slider"></span></label>
+          </div>
+          <div class="m-setting-row">
+            <span>🏞️ Ríos Desbordados</span>
+            <label class="switch"><input type="checkbox" id="mChkRivers" checked onchange="saveMSettings()" /><span class="slider"></span></label>
+          </div>
+          <div class="m-setting-row">
+            <span>🌊 El fenómeno del Niño</span>
+            <label class="switch"><input type="checkbox" id="mChkElNino" checked onchange="saveMSettings()" /><span class="slider"></span></label>
+          </div>
+          <div class="m-setting-row">
+            <span>📰 Noticias Última Hora</span>
+            <label class="switch"><input type="checkbox" id="mChkNews" checked onchange="saveMSettings()" /><span class="slider"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="font-size:0.93rem;">👤 Su Cuenta y Suscripción</strong>
+          <span class="badge b-teal" id="mLicBadge">Pro $1,99</span>
+        </div>
+        <p style="font-size:0.79rem; color:var(--muted); margin-top:0.25rem;" id="mLicDesc">Plan Pro Premium ($1,99/mes) • Tokens Infinitos + Noticias.</p>
+
+        <div style="margin-top:0.55rem; display:flex; flex-direction:column; gap:0.45rem;">
+          <input type="text" id="mAccName" class="mobile-search" placeholder="Tu nombre (ej. Jairo Martínez)" />
+          <button class="btn-full btn-cyan" style="margin-top:0;" onclick="saveMAccount()">💾 Guardar Cuenta</button>
+        </div>
+
+        <div style="margin-top:0.65rem; padding-top:0.6rem; border-top:1px solid var(--border);">
+          <strong style="font-size:0.84rem; display:block; margin-bottom:0.35rem;">📋 Suscripciones Pedidas</strong>
+          <div id="mOrdersBox" style="font-size:0.77rem; color:var(--body);"></div>
+        </div>
+
         <button class="btn-full btn-dark" onclick="toggleMobileTheme()">🌓 Cambiar Tema (Claro / Oscuro)</button>
         <button class="btn-full btn-dark" onclick="openModeOverlay()">🌍 Elegir Inicio (Ecuador / Global)</button>
         <button class="btn-full btn-dark" onclick="lockAppAgain()">🔒 Bloquear App / Ver Pantalla de Código</button>
-      </div>
-
-      <div class="card">
-        <span class="badge b-teal">Plan 1 • Normal (Gratis)</span>
-        <p style="font-size:0.8rem; color:var(--muted); margin-top:0.3rem;">Incluye clima de Ecuador y Global, colegios, ríos y <strong>5 tokens diarios</strong> en Nimbo AI.</p>
-      </div>
-
-      <div class="card" style="border-color:var(--cyan);">
-        <span class="badge b-amber">Plan 2 • Pro Premium ($2,99/mes)</span>
-        <p style="font-size:0.8rem; color:var(--muted); margin-top:0.3rem;">Incluye <strong>Nimbo AI Ilimitada</strong>, acceso completo a la web Pro y <strong>código de activación para la App Android</strong>.</p>
       </div>
     </div>
 
   </main>
 
+  <div class="watermark-bar"><strong>EvMJ23</strong></div>
+
   <nav class="bottom-nav">
     <button class="nav-tab active" id="tab-clima" onclick="switchTab('clima')"><span class="ico">🇪🇨</span>Ecuador</button>
     <button class="nav-tab" id="tab-global" onclick="switchTab('global')"><span class="ico">🌍</span>Global</button>
+    <button class="nav-tab" id="tab-noticias" onclick="switchTab('noticias')"><span class="ico">📰</span>Noticias</button>
     <button class="nav-tab" id="tab-ai" onclick="switchTab('ai')"><span class="ico">🤖</span>Nimbo AI</button>
-    <button class="nav-tab" id="tab-colegios" onclick="switchTab('colegios')"><span class="ico">🏫</span>Colegios</button>
-    <button class="nav-tab" id="tab-rios" onclick="switchTab('rios')"><span class="ico">🌴</span>Ríos/Vías</button>
-    <button class="nav-tab" id="tab-planes" onclick="switchTab('planes')"><span class="ico">💎</span>Pro</button>
+    <button class="nav-tab" id="tab-ajustes" onclick="switchTab('ajustes')"><span class="ico">⚙️</span>Ajustes</button>
   </nav>
 
   <script>
@@ -749,9 +1095,12 @@
     }
 
     // =========================================================
-    // 1. LICENCIA PRO PREMIUM Y CÓDIGO MAESTRO (JAIRO-MASTER-23)
+    // 1. LICENCIA PRO PREMIUM ($1,99) Y CÓDIGO MAESTRO (JAIRO-MASTER-23)
     // =========================================================
     const LICENSE_STORAGE_KEY = 'nimbosignal_license_v1';
+    const M_ORDERS_KEY = 'nimbosignal_orders_v1';
+    const M_ACCOUNT_KEY = 'nimbosignal_account_v1';
+    const M_NOTIF_KEY = 'nimbosignal_notif_v1';
     const MASTER_SECRET_CODE = 'JAIRO-MASTER-23';
     let lastGeneratedCode = '';
 
@@ -770,11 +1119,44 @@
     }
 
     function getSavedLicense() {
-      try {
-        return JSON.parse(localStorage.getItem(LICENSE_STORAGE_KEY));
-      } catch (e) {
-        return null;
+      try { return JSON.parse(localStorage.getItem(LICENSE_STORAGE_KEY)); } catch (e) { return null; }
+    }
+
+    function recordMobileOrder(planName, priceStr, codeStr) {
+      let orders = [];
+      try { orders = JSON.parse(localStorage.getItem(M_ORDERS_KEY)) || []; } catch (e) {}
+      orders.unshift({
+        plan: planName,
+        price: priceStr,
+        code: codeStr,
+        date: new Date().toLocaleDateString('es-EC', { day: '2-digit', month: 'short', year: 'numeric' }),
+        status: 'Activo'
+      });
+      localStorage.setItem(M_ORDERS_KEY, JSON.stringify(orders.slice(0, 8)));
+      renderMobileOrders();
+    }
+
+    function renderMobileOrders() {
+      const box = document.getElementById('mOrdersBox');
+      if (!box) return;
+      let orders = [];
+      try { orders = JSON.parse(localStorage.getItem(M_ORDERS_KEY)) || []; } catch (e) {}
+      if (!orders.length) {
+        const lic = getSavedLicense();
+        orders = [{
+          plan: 'Plan Pro Premium App',
+          price: '$1,99 / mes',
+          code: lic ? lic.code : 'ACTIVO',
+          date: 'Vigente',
+          status: 'Activo'
+        }];
       }
+      box.innerHTML = orders.map(o => `
+        <div style="padding:0.45rem 0.6rem; background:var(--sub); border:1px solid var(--border); border-radius:9px; margin-bottom:0.35rem; display:flex; justify-content:space-between; align-items:center;">
+          <div><strong>${o.plan}</strong> (${o.price})<br><span style="color:var(--muted); font-size:0.7rem;">${o.code} • ${o.date}</span></div>
+          <span class="badge b-teal">${o.status}</span>
+        </div>
+      `).join('');
     }
 
     function applyLicenseUI() {
@@ -789,13 +1171,15 @@
       const isMaster = lic.tier === 'MASTER';
       document.getElementById('mTokensLeft').textContent = '∞/∞';
       document.getElementById('mChatSubtitle').innerHTML = isMaster
-        ? '🤖 <strong>Nimbo AI</strong> • 👑 Maestro Ilimitado'
-        : '🤖 <strong>Nimbo AI</strong> • 💎 Pro Ilimitado';
-      document.getElementById('mLicBadge').textContent = isMaster ? '👑 MODO MAESTRO' : '💎 PRO PREMIUM';
-      document.getElementById('mLicTitle').textContent = isMaster ? 'Acceso Maestro Activado' : 'Plan Pro Premium Activo';
+        ? '🤖 <strong>Nimbo AI</strong> • 👑 Maestro Infinito'
+        : '🤖 <strong>Nimbo AI</strong> • 💎 Pro Infinito';
+      document.getElementById('mLicBadge').textContent = isMaster ? '👑 MODO MAESTRO' : '💎 PRO $1,99';
       document.getElementById('mLicDesc').textContent = isMaster
-        ? 'Desbloqueado con tu Código Maestro privado.'
-        : `Código registrado: ${lic.code}`;
+        ? 'Desbloqueado con tu Código Maestro privado • Tokens Infinitos + Noticias.'
+        : `Código registrado: ${lic.code} • Plan Pro Premium ($1,99/mes).`;
+
+      renderMobileOrders();
+      loadMobileBreakingNews();
 
       if (!sessionStorage.getItem('m_mode_chosen')) {
         document.getElementById('modeOverlay').classList.remove('hidden');
@@ -809,17 +1193,19 @@
 
       const tier = isValidProCode(raw);
       if (!tier) {
-        errBox.textContent = '❌ Código inválido. Adquiere Pro Premium ($2,99) abajo para generar tu código oficial.';
+        errBox.textContent = '❌ Código inválido. Adquiere Pro Premium ($1,99/mes) abajo para generar tu código oficial.';
         errBox.style.display = 'block';
         return;
       }
 
+      const codeSaved = tier === 'MASTER' ? 'MASTER-KEY' : raw;
       localStorage.setItem(LICENSE_STORAGE_KEY, JSON.stringify({
         active: true,
         tier: tier,
-        code: tier === 'MASTER' ? 'MASTER-KEY' : raw,
+        code: codeSaved,
         activatedAt: new Date().toISOString()
       }));
+      recordMobileOrder(tier === 'MASTER' ? 'Licencia Maestra App' : 'Plan Pro Premium App', '$1,99 / mes', codeSaved);
       document.getElementById('activationCodeInput').value = '';
       applyLicenseUI();
     }
@@ -845,22 +1231,41 @@
       sessionStorage.removeItem('m_mode_chosen');
       document.getElementById('mGeneratedBox').style.display = 'none';
       document.getElementById('lockError').style.display = 'none';
+      closeMobileDrawer();
       applyLicenseUI();
     }
 
     // =========================================================
-    // 2. NAVEGACIÓN ESTRICTA POR SECCIÓN Y MODO ECUADOR/GLOBAL
+    // 2. MENÚ DESPLEGABLE IZQUIERDO Y NAVEGACIÓN
     // =========================================================
+    function openMobileDrawer() {
+      document.getElementById('mLeftDrawer').classList.add('open');
+      document.getElementById('mDrawerBackdrop').classList.add('open');
+    }
+
+    function closeMobileDrawer() {
+      document.getElementById('mLeftDrawer').classList.remove('open');
+      document.getElementById('mDrawerBackdrop').classList.remove('open');
+    }
+
     function switchTab(tabName) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      const targetView = document.getElementById(`view-${tabName}`);
+      if (targetView) targetView.classList.add('active');
+
       document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-      document.getElementById(`view-${tabName}`).classList.add('active');
-      document.getElementById(`tab-${tabName}`).classList.add('active');
+      const bottomTab = document.getElementById(`tab-${tabName}`);
+      if (bottomTab) bottomTab.classList.add('active');
+
+      document.querySelectorAll('.m-drawer-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-tab') === tabName);
+      });
 
       const isGlobal = tabName === 'global';
       document.getElementById('mRegEcBtn').classList.toggle('active', !isGlobal);
       document.getElementById('mRegGlBtn').classList.toggle('active', isGlobal);
 
+      closeMobileDrawer();
       document.getElementById('mobileBody').scrollTop = 0;
     }
 
@@ -875,11 +1280,84 @@
     }
 
     function openModeOverlay() {
+      closeMobileDrawer();
       document.getElementById('modeOverlay').classList.remove('hidden');
     }
 
     // =========================================================
-    // 3. SECCIÓN GLOBAL EN MÓVIL
+    // 3. NOTICIAS DE ÚLTIMA HORA Y AJUSTES EN TELÉFONO
+    // =========================================================
+    async function loadMobileBreakingNews() {
+      try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-3.3256&longitude=-79.8069&current=temperature_2m,weather_code&hourly=precipitation_probability&forecast_days=1&timezone=auto');
+        const data = await res.json();
+        const temp = Math.round(data.current.temperature_2m);
+        const rain = Math.max(...data.hourly.precipitation_probability.slice(0, 6));
+        const inf = mWeatherInfo(data.current.weather_code);
+        document.getElementById('mNewsHeadline').textContent = `Última Hora Pasaje: ${inf.verdict} (${temp}°C)`;
+        document.getElementById('mNewsBody').textContent = `${inf.label} • Prob. lluvia próximas horas: ${rain}%. ${inf.tip}`;
+      } catch (e) {}
+    }
+
+    function saveMSettings() {
+      localStorage.setItem(M_NOTIF_KEY, JSON.stringify({
+        storms: document.getElementById('mChkStorms').checked,
+        rivers: document.getElementById('mChkRivers').checked,
+        elNino: document.getElementById('mChkElNino').checked,
+        news: document.getElementById('mChkNews').checked
+      }));
+    }
+
+    function saveMAccount() {
+      const name = document.getElementById('mAccName').value.trim();
+      localStorage.setItem(M_ACCOUNT_KEY, JSON.stringify({ name }));
+      alert('✔ Cuenta guardada');
+    }
+
+    function loadMSettings() {
+      try {
+        const n = JSON.parse(localStorage.getItem(M_NOTIF_KEY));
+        if (n) {
+          document.getElementById('mChkStorms').checked = !!n.storms;
+          document.getElementById('mChkRivers').checked = !!n.rivers;
+          document.getElementById('mChkElNino').checked = !!n.elNino;
+          document.getElementById('mChkNews').checked = !!n.news;
+        }
+        const a = JSON.parse(localStorage.getItem(M_ACCOUNT_KEY));
+        if (a && a.name) document.getElementById('mAccName').value = a.name;
+      } catch (e) {}
+    }
+
+    // =========================================================
+    // 4. MAPA EN TELÉFONO
+    // =========================================================
+    function focusMobileMap(label, lat, lon, zoom, btn) {
+      if (btn) {
+        document.querySelectorAll('#view-mapa .pill-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+      const delta = zoom >= 14 ? 0.025 : zoom >= 12 ? 0.08 : 2.5;
+      const bbox = `${(lon - delta).toFixed(4)}%2C${(lat - delta).toFixed(4)}%2C${(lon + delta).toFixed(4)}%2C${(lat + delta).toFixed(4)}`;
+      document.getElementById('mOsmFrame').src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lon}`;
+      document.getElementById('mMapLabel').textContent = `📍 ${label}`;
+    }
+
+    async function searchMobileMap(e) {
+      e.preventDefault();
+      const q = document.getElementById('mMapInput').value.trim();
+      if (!q) return;
+      try {
+        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=es&format=json`);
+        const geo = await res.json();
+        if (geo.results && geo.results.length) {
+          const p = geo.results[0];
+          focusMobileMap(`${p.name}, ${p.country || ''}`, p.latitude, p.longitude, 13, null);
+        }
+      } catch (err) {}
+    }
+
+    // =========================================================
+    // 5. SECCIÓN GLOBAL EN TELÉFONO
     // =========================================================
     const M_GLOBAL_CITIES = [
       { city: 'Nueva York', country: 'EE. UU.', continent: 'América', lat: 40.7128, lon: -74.0060 },
@@ -911,10 +1389,10 @@
       list.innerHTML = items.map(c => `
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <strong style="font-size:0.93rem;">${c.city}, ${c.country}</strong>
+            <strong style="font-size:0.92rem;">${c.city}, ${c.country}</strong>
             <span class="badge b-cyan">${c.continent}</span>
           </div>
-          <div style="display:flex; gap:0.45rem; margin-top:0.5rem;">
+          <div style="display:flex; gap:0.45rem; margin-top:0.48rem;">
             <button class="btn-full btn-cyan" style="margin-top:0;" onclick="loadMobileGlobalWeather('${c.city}, ${c.country}', ${c.lat}, ${c.lon})">🌡️ Ver Clima</button>
             <button class="btn-full btn-dark" style="margin-top:0;" onclick="mQuickAsk('¿Cómo está el clima en ${c.city}, ${c.country}?')">🤖 AI</button>
           </div>
@@ -959,7 +1437,7 @@
     }
 
     // =========================================================
-    // 4. COLEGIOS (INCLUYE JUAN PABLO II) Y RÍOS
+    // 6. COLEGIOS Y RÍOS
     // =========================================================
     const M_SCHOOLS = [
       { name: 'U.E. "Carmen Mora de Encalada"', sector: 'Centro / Av. Rocafuerte, Pasaje', lat: -3.3256, lon: -79.8069, status: 'Jornada Normal', keywords: ['carmen mora'] },
@@ -976,56 +1454,11 @@
     ];
 
     const M_RIVERS = [
-      {
-        name: 'Balneario La Cocha (Pasaje)',
-        location: 'Vía a Casacay / La Cocha, Pasaje',
-        lat: -3.3415,
-        lon: -79.7820,
-        keywords: ['la cocha', 'cocha'],
-        riverStatus: 'Caudal moderado y aguas cristalinas en la mañana.',
-        safeHours: '08:00 a 13:30 (horario recomendado).',
-        tip: 'Si se nubla hacia la montaña o el agua se enturbia, sal de la orilla por posible crecida.'
-      },
-      {
-        name: 'Río Jubones y Balneario Casacay',
-        location: 'Parroquia Casacay, Pasaje',
-        lat: -3.3189,
-        lon: -79.7365,
-        keywords: ['jubones', 'casacay', 'rio jubones', 'río jubones'],
-        riverStatus: 'Caudal estable con vigilancia preventiva en cuenca alta.',
-        safeHours: '08:30 a 14:00 en zonas habilitadas.',
-        tip: 'Vigila el color del agua ante lluvias en la sierra (Uzhcurrumi / Azuay).'
-      },
-      {
-        name: 'Balneario Dos Bocas y Río Buenavista',
-        location: 'Parroquia Buenavista, Pasaje',
-        lat: -3.3562,
-        lon: -79.8390,
-        keywords: ['dos bocas', 'buenavista', 'rio buenavista', 'río buenavista'],
-        riverStatus: 'Aguas tranquilas aptas para recreación familiar.',
-        safeHours: '09:00 a 15:30.',
-        tip: 'Lleva hidratación, bloqueador solar y protector impermeable.'
-      },
-      {
-        name: 'Río Palenque y Sector El Bosque',
-        location: 'Sector El Bosque / Palenque, Pasaje',
-        lat: -3.3490,
-        lon: -79.7940,
-        keywords: ['palenque', 'el bosque'],
-        riverStatus: 'Corriente suave y agua fresca en la mañana.',
-        safeHours: '08:30 a 14:00.',
-        tip: 'Evita permanecer en piedras resbaladizas si llovizna en la tarde.'
-      },
-      {
-        name: 'Río Chaguana y Cañaquemada',
-        location: 'Sector Cañaquemada / Chaguana, Pasaje',
-        lat: -3.3680,
-        lon: -79.8450,
-        keywords: ['chaguana', 'cañaquemada', 'canaquemada'],
-        riverStatus: 'Nivel normal con vigilancia ante lluvias locales.',
-        safeHours: '08:30 a 14:30.',
-        tip: 'Precaución en moto si la vía rural está húmeda.'
-      }
+      { name: 'Balneario La Cocha (Pasaje)', location: 'Vía a Casacay / La Cocha, Pasaje', lat: -3.3415, lon: -79.7820, keywords: ['la cocha', 'cocha'], riverStatus: 'Caudal moderado y aguas cristalinas en la mañana.', safeHours: '08:00 a 13:30 (horario recomendado).', tip: 'Si se nubla hacia la montaña o el agua se enturbia, sal de la orilla por posible crecida.' },
+      { name: 'Río Jubones y Balneario Casacay', location: 'Parroquia Casacay, Pasaje', lat: -3.3189, lon: -79.7365, keywords: ['jubones', 'casacay', 'rio jubones', 'río jubones'], riverStatus: 'Caudal estable con vigilancia preventiva en cuenca alta.', safeHours: '08:30 a 14:00 en zonas habilitadas.', tip: 'Vigila el color del agua ante lluvias en la sierra (Uzhcurrumi / Azuay).' },
+      { name: 'Balneario Dos Bocas y Río Buenavista', location: 'Parroquia Buenavista, Pasaje', lat: -3.3562, lon: -79.8390, keywords: ['dos bocas', 'buenavista', 'rio buenavista', 'río buenavista'], riverStatus: 'Aguas tranquilas aptas para recreación familiar.', safeHours: '09:00 a 15:30.', tip: 'Lleva hidratación, bloqueador solar y protector impermeable.' },
+      { name: 'Río Palenque y Sector El Bosque', location: 'Sector El Bosque / Palenque, Pasaje', lat: -3.3490, lon: -79.7940, keywords: ['palenque', 'el bosque'], riverStatus: 'Corriente suave y agua fresca en la mañana.', safeHours: '08:30 a 14:00.', tip: 'Evita permanecer en piedras resbaladizas si llovizna en la tarde.' },
+      { name: 'Río Chaguana y Cañaquemada', location: 'Sector Cañaquemada / Chaguana, Pasaje', lat: -3.3680, lon: -79.8450, keywords: ['chaguana', 'cañaquemada', 'canaquemada'], riverStatus: 'Nivel normal con vigilancia ante lluvias locales.', safeHours: '08:30 a 14:30.', tip: 'Precaución en moto si la vía rural está húmeda.' }
     ];
 
     function mAskSchoolByIndex(idx) {
@@ -1044,17 +1477,17 @@
       list.innerHTML = filtered.map(s => `
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
-            <strong style="font-size:0.93rem;">${s.name}</strong>
+            <strong style="font-size:0.92rem;">${s.name}</strong>
             <span class="badge b-teal">${s.status}</span>
           </div>
-          <p style="font-size:0.79rem; color:var(--muted); margin-top:0.25rem;">📍 ${s.sector}</p>
+          <p style="font-size:0.78rem; color:var(--muted); margin-top:0.25rem;">📍 ${s.sector}</p>
           <button class="btn-full btn-dark" onclick="mAskSchoolByIndex(${s.idx})">🤖 Ver clima escolar en Nimbo AI</button>
         </div>
       `).join('');
     }
 
     // =========================================================
-    // 5. CLIMA ECUADOR + NIMBO AI ILIMITADA EN APP PRO
+    // 7. CLIMA ECUADOR + NIMBO AI INFINITO
     // =========================================================
     function mWeatherInfo(code) {
       if (code <= 3) return { label: 'Nubosidad parcial / Despejado', verdict: 'Tiempo estable para salir', risk: 'Bajo', tip: 'Tránsito normal para clases, ríos, buses y motos.' };
@@ -1126,8 +1559,13 @@
       const qLow = question.toLowerCase();
       const lic = getSavedLicense();
       const badgeNote = lic && lic.tier === 'MASTER'
-        ? '👑 Modo Maestro • IA Ilimitada'
-        : '💎 Pro Premium • IA Ilimitada';
+        ? '👑 Modo Maestro • Tokens Infinitos'
+        : '💎 Pro Premium • Tokens Infinitos';
+
+      if (/(tormenta|rayo|inundaci|desbord|emergencia|protocolo)/i.test(qLow)) {
+        addMChat('ai', `⚠️ <strong>Protocolo de Seguridad:</strong><br>• <strong>Tormentas:</strong> Entra a lugar cerrado, aléjate de árboles/ríos y desconecta equipos.<br>• <strong>Inundaciones:</strong> No cruces corrientes en moto o a pie y baja el breaker si entra agua.<br>• <strong>Ríos desbordados:</strong> Si el agua se vuelve marrón turbia, sube a terreno alto y llama al <strong>911</strong> o <strong>102</strong>.<br><span style="font-size:0.72rem; color:var(--cyan);">${badgeNote}</span>`);
+        return;
+      }
 
       const localSchool = M_SCHOOLS.find(s => s.keywords.some(kw => qLow.includes(kw)));
       const riverMatch = M_RIVERS.find(r => r.keywords.some(kw => qLow.includes(kw)));
@@ -1189,6 +1627,7 @@
 
     // Inicializar
     applyMobileTheme(localStorage.getItem(M_THEME_KEY) || 'dark');
+    loadMSettings();
     applyLicenseUI();
     renderMobileGlobalList();
     renderMobileSchools();
