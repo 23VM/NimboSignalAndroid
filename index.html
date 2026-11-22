@@ -2,1497 +2,679 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#0f2027" />
-  <title>NimboSignal — Clima, El Niño y Turismo Ecuador</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>NimboSignal App Móvil</title>
   <style>
     :root {
-      color-scheme: dark;
-      --bg-gradient: linear-gradient(160deg, #0f2027 0%, #203a43 48%, #2c5364 100%);
-      --glass-bg: rgba(255, 255, 255, 0.12);
-      --glass-border: rgba(255, 255, 255, 0.22);
-      --text-primary: #ffffff;
-      --text-secondary: rgba(255, 255, 255, 0.80);
-      --text-muted: rgba(255, 255, 255, 0.58);
-      --accent: #38bdf8;
-      --green: #22c55e;
-      --yellow: #facc15;
+      --bg: #090e1a;
+      --surface: #111827;
+      --card: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --cyan: #06b6d4;
+      --teal: #10b981;
+      --amber: #f59e0b;
       --red: #ef4444;
-      --radius-lg: 24px;
-    }
-
-    body.theme-sunny {
-      --bg-gradient: linear-gradient(160deg, #1d4ed8 0%, #0284c7 52%, #38bdf8 100%);
-    }
-
-    body.theme-rain {
-      --bg-gradient: linear-gradient(160deg, #1e293b 0%, #334155 55%, #475569 100%);
-    }
-
-    body.theme-night {
-      --bg-gradient: linear-gradient(160deg, #090d16 0%, #111827 55%, #1e1b4b 100%);
+      --text: #f8fafc;
+      --muted: #94a3b8;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-
-    input, select, textarea {
-      user-select: text;
-    }
-
-    html, body {
-      overscroll-behavior-y: none;
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-gradient);
-      background-attachment: fixed;
-      color: var(--text-primary);
-      min-height: 100dvh;
-      transition: background 0.6s ease;
-      overflow-x: hidden;
-    }
-
-    /* Native-style Toast Notification */
-    .toast {
-      position: fixed;
-      top: calc(14px + env(safe-area-inset-top));
-      left: 50%;
-      transform: translateX(-50%) translateY(-120%);
-      background: rgba(15, 23, 42, 0.94);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid var(--glass-border);
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      z-index: 999;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
-      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-      max-width: 90%;
-      text-align: center;
-      pointer-events: none;
-    }
-
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .app-shell {
-      max-width: 540px;
-      margin: 0 auto;
-      padding: calc(16px + env(safe-area-inset-top)) 16px calc(98px + env(safe-area-inset-bottom));
-    }
-
-    /* Header */
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.18);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border);
-      display: grid;
-      place-items: center;
-      font-size: 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-    }
-
-    .brand h1 {
-      font-size: 1.15rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-
-    .brand span {
-      display: block;
-      font-size: 0.72rem;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-
-    .loc-btn {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      backdrop-filter: blur(14px);
-      transition: transform 0.15s ease, background 0.2s ease;
-    }
-
-    .loc-btn:active {
-      transform: scale(0.95);
-    }
-
-    /* Glass Card */
-    .card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      padding: 18px;
-      margin-bottom: 14px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
-      animation: fadeUp 0.3s ease;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Search */
-    .search-box {
-      position: relative;
-      margin-bottom: 14px;
-    }
-
-    .search-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    .search-input {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.14);
-      border: 1px solid var(--glass-border);
-      border-radius: 14px;
-      padding: 12px 14px;
-      color: #fff;
-      font-size: 0.92rem;
-      outline: none;
-      backdrop-filter: blur(14px);
-    }
-
-    .search-input::placeholder {
-      color: var(--text-muted);
-    }
-
-    .search-btn {
-      background: #ffffff;
-      color: #0f172a;
-      border: none;
-      border-radius: 14px;
-      padding: 0 16px;
-      font-weight: 700;
-      font-size: 0.88rem;
-      cursor: pointer;
-    }
-
-    .search-btn:active {
-      transform: scale(0.96);
-    }
-
-    .search-results {
-      position: absolute;
-      top: calc(100% + 6px);
-      left: 0;
-      right: 0;
-      background: rgba(15, 23, 42, 0.96);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 14px;
-      overflow: hidden;
-      z-index: 60;
-      display: none;
-      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
-    }
-
-    .search-item {
-      padding: 12px 14px;
-      font-size: 0.86rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      cursor: pointer;
-    }
-
-    .search-item:last-child {
-      border-bottom: none;
-    }
-
-    .search-item:active {
-      background: rgba(255, 255, 255, 0.16);
-    }
-
-    /* Hero Weather */
-    .hero-weather {
-      text-align: center;
-      padding: 22px 18px;
-    }
-
-    .city-name {
-      font-size: 1.45rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .city-sub {
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
-
-    .temp-main {
-      font-size: 4.3rem;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1.05;
-      margin: 10px 0 6px;
-    }
-
-    .weather-desc {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-
-    .weather-metrics {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 18px;
-    }
-
-    .metric-pill {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 14px;
-      padding: 10px 8px;
-    }
-
-    .metric-pill small {
-      display: block;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-bottom: 3px;
-    }
-
-    .metric-pill strong {
-      font-size: 0.92rem;
-    }
-
-    /* Traffic Light (Semáforo) */
-    .section-title {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      font-weight: 700;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .traffic-box {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .traffic-lights {
+      background: var(--bg);
+      color: var(--text);
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      background: rgba(0, 0, 0, 0.28);
-      padding: 8px;
-      border-radius: 14px;
+      height: 100dvh;
+      overflow: hidden;
     }
 
-    .light-dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      opacity: 0.22;
-      transition: all 0.3s ease;
-    }
-
-    .light-dot.red { background: var(--red); }
-    .light-dot.yellow { background: var(--yellow); }
-    .light-dot.green { background: var(--green); }
-
-    .light-dot.active {
-      opacity: 1;
-      box-shadow: 0 0 12px currentColor;
-      transform: scale(1.1);
-    }
-
-    .traffic-info h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .traffic-info p {
-      font-size: 0.84rem;
-      color: var(--text-secondary);
-      line-height: 1.4;
-    }
-
-    /* Hourly Scroll */
-    .hourly-strip {
+    /* APP BAR SUPERIOR CON CONTADOR DE TOKENS */
+    .app-header {
+      background: rgba(17, 24, 39, 0.97);
+      border-bottom: 1px solid var(--border);
+      padding: 0.7rem 1rem;
       display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      scrollbar-width: none;
-    }
-
-    .hourly-strip::-webkit-scrollbar {
-      display: none;
-    }
-
-    .hour-item {
-      min-width: 68px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      padding: 10px 8px;
-      text-align: center;
+      justify-content: space-between;
+      align-items: center;
       flex-shrink: 0;
     }
 
-    .hour-item span {
-      display: block;
-      font-size: 0.74rem;
-      color: var(--text-secondary);
+    .app-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    .hour-item .h-icon {
-      font-size: 1.35rem;
-      margin: 6px 0;
+    .app-logo-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--cyan), var(--teal));
+      color: #06131f;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      font-size: 0.95rem;
     }
 
-    .hour-item strong {
-      font-size: 0.9rem;
+    .token-pill {
+      background: rgba(6, 182, 212, 0.16);
+      border: 1px solid rgba(6, 182, 212, 0.45);
+      border-radius: 999px;
+      padding: 0.32rem 0.7rem;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
     }
 
-    /* Views */
+    .token-pill strong {
+      color: var(--cyan);
+    }
+
+    /* CONTENEDOR DE VISTAS */
+    .app-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 1rem 1.5rem;
+    }
+
     .view {
       display: none;
+      flex-direction: column;
+      gap: 0.9rem;
     }
 
     .view.active {
-      display: block;
-    }
-
-    /* Tourist Section */
-    .tourist-tabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .t-tab {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--glass-border);
-      color: var(--text-secondary);
-      padding: 10px 6px;
-      border-radius: 14px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s ease;
-    }
-
-    .t-tab.active {
-      background: #ffffff;
-      color: #0f172a;
-      border-color: #ffffff;
-    }
-
-    .quick-ask-box {
-      background: rgba(15, 23, 42, 0.38);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px;
-      padding: 14px;
-      margin-bottom: 14px;
-    }
-
-    .quick-ask-label {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .tourist-select {
-      width: 100%;
-      background-color: #162235;
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 12px 36px 12px 12px;
-      color: #ffffff;
-      font-size: 0.88rem;
-      font-weight: 600;
-      outline: none;
-      margin-bottom: 10px;
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      background-size: 16px;
-    }
-
-    .tourist-select option {
-      background-color: #0f172a;
-      color: #ffffff;
-    }
-
-    .tourist-answer {
-      background: rgba(255, 255, 255, 0.12);
-      border-radius: 16px;
-      padding: 14px;
-      border-left: 4px solid var(--accent);
-    }
-
-    .tourist-answer-header {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 8px;
     }
 
-    .tourist-answer h3 {
-      font-size: 1.05rem;
-      font-weight: 800;
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1rem;
     }
 
-    .badge-status {
-      padding: 4px 10px;
+    .badge {
+      display: inline-block;
+      padding: 0.22rem 0.6rem;
       border-radius: 999px;
       font-size: 0.72rem;
       font-weight: 700;
-      white-space: nowrap;
     }
 
-    .badge-good { background: rgba(34, 197, 94, 0.25); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.5); }
-    .badge-warn { background: rgba(250, 204, 21, 0.25); color: #fde047; border: 1px solid rgba(250, 204, 21, 0.5); }
-    .badge-bad  { background: rgba(239, 68, 68, 0.25); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.5); }
+    .b-cyan { background: rgba(6, 182, 212, 0.16); color: var(--cyan); }
+    .b-teal { background: rgba(16, 185, 129, 0.16); color: var(--teal); }
+    .b-amber { background: rgba(245, 158, 11, 0.16); color: var(--amber); }
 
-    .tourist-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 10px 0;
-      font-size: 0.78rem;
-    }
-
-    .tourist-chip {
-      background: rgba(0, 0, 0, 0.26);
-      padding: 5px 10px;
+    .verdict-mobile {
+      background: rgba(9, 14, 26, 0.75);
+      border-left: 4px solid var(--amber);
+      padding: 0.85rem;
       border-radius: 10px;
+      margin-top: 0.7rem;
     }
 
-    .tourist-grid {
+    .kpi-row {
       display: grid;
-      gap: 10px;
-      margin-top: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.55rem;
+      margin-top: 0.75rem;
     }
 
-    .spot-card {
-      background: rgba(255, 255, 255, 0.09);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 16px;
-      padding: 13px 14px;
+    .kpi {
+      background: rgba(9, 14, 26, 0.7);
+      padding: 0.65rem 0.5rem;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .kpi span {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .kpi strong {
+      font-size: 1.05rem;
+    }
+
+    .pill-scroll {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      cursor: pointer;
-      transition: background 0.15s ease, transform 0.12s ease;
+      gap: 0.45rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
     }
 
-    .spot-card:active {
-      background: rgba(255, 255, 255, 0.2);
-      transform: scale(0.985);
-    }
-
-    .spot-card h4 {
-      font-size: 0.92rem;
-      font-weight: 700;
-      margin-bottom: 3px;
-    }
-
-    .spot-card p {
-      font-size: 0.77rem;
-      color: var(--text-secondary);
-      line-height: 1.35;
-    }
-
-    .spot-action {
-      background: rgba(255, 255, 255, 0.18);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 7px 10px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-
-    /* El Niño Module */
-    .nino-meter {
-      height: 10px;
+    .pill-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.45rem 0.8rem;
       border-radius: 999px;
-      background: linear-gradient(90deg, #22c55e 0%, #facc15 55%, #ef4444 100%);
-      position: relative;
-      margin: 14px 0 8px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      cursor: pointer;
     }
 
-    .nino-pin {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #fff;
-      border: 3px solid #0f172a;
-      position: absolute;
-      top: 50%;
-      left: 62%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    .pill-btn.active {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      font-weight: 700;
     }
 
-    .coast-list {
-      display: grid;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .coast-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.08);
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 0.84rem;
-    }
-
-    /* Map */
-    #weatherMap {
+    .btn-full {
       width: 100%;
-      height: 360px;
-      border-radius: 18px;
-      overflow: hidden;
-      background: #1e293b;
-      z-index: 1;
-    }
-
-    .custom-pin {
-      font-size: 28px;
-      line-height: 1;
-      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.55));
-    }
-
-    .leaflet-popup-content {
-      color: #0f172a;
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      font-size: 0.84rem;
-    }
-
-    /* Monetization Plans */
-    .plan-card {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 16px;
-      margin-bottom: 12px;
-    }
-
-    .plan-card.featured {
-      background: linear-gradient(145deg, rgba(56, 189, 248, 0.25), rgba(255, 255, 255, 0.14));
-      border-color: rgba(56, 189, 248, 0.65);
-    }
-
-    .plan-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .plan-price {
-      font-size: 1.35rem;
-      font-weight: 800;
-    }
-
-    .plan-list {
-      list-style: none;
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-      display: grid;
-      gap: 6px;
-      margin: 10px 0 14px;
-    }
-
-    .plan-btn {
-      width: 100%;
-      padding: 11px;
-      border-radius: 12px;
+      padding: 0.65rem;
+      border-radius: 11px;
       border: none;
       font-weight: 700;
-      font-size: 0.86rem;
+      font-size: 0.84rem;
       cursor: pointer;
-      background: #ffffff;
-      color: #0f172a;
+      margin-top: 0.65rem;
     }
 
-    .plan-btn:active {
-      transform: scale(0.98);
+    .btn-cyan {
+      background: linear-gradient(135deg, var(--cyan), var(--teal));
+      color: #06131f;
     }
 
-    /* Watermark */
-    .watermark {
-      position: fixed;
-      bottom: calc(74px + env(safe-area-inset-bottom));
-      right: 14px;
-      font-size: 0.66rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      color: rgba(255, 255, 255, 0.34);
-      pointer-events: none;
-      z-index: 40;
+    .btn-dark {
+      background: rgba(9, 14, 26, 0.8);
+      color: var(--cyan);
+      border: 1px solid rgba(6, 182, 212, 0.35);
     }
 
-    /* Bottom Navigation */
+    /* CHAT NIMBO AI MÓVIL */
+    .mobile-chat-container {
+      display: flex;
+      flex-direction: column;
+      height: calc(100dvh - 135px);
+      background: var(--surface);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .mobile-chat-head {
+      padding: 0.7rem 0.9rem;
+      background: rgba(6, 182, 212, 0.12);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
+    .mobile-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .m-msg {
+      max-width: 88%;
+      padding: 0.75rem 0.9rem;
+      border-radius: 14px;
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    .m-ai {
+      align-self: flex-start;
+      background: var(--card);
+      border: 1px solid var(--border);
+    }
+
+    .m-user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--cyan), #0284c7);
+      color: #04121d;
+      font-weight: 600;
+    }
+
+    .mobile-input-row {
+      display: flex;
+      gap: 0.45rem;
+      padding: 0.65rem;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .mobile-input-row input, .mobile-search {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.65rem 0.85rem;
+      border-radius: 11px;
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    /* BARRA INFERIOR TIPO APP ANDROID */
     .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 540px;
-      background: rgba(15, 23, 42, 0.90);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border-top: 1px solid var(--glass-border);
+      background: rgba(17, 24, 39, 0.98);
+      border-top: 1px solid var(--border);
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
-      z-index: 100;
+      padding: 0.4rem 0.25rem calc(0.45rem + env(safe-area-inset-bottom));
+      flex-shrink: 0;
     }
 
-    .nav-item {
+    .nav-tab {
       background: none;
       border: none;
-      color: var(--text-muted);
+      color: var(--muted);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
+      gap: 0.2rem;
       font-size: 0.68rem;
       font-weight: 600;
       cursor: pointer;
-      padding: 4px 2px;
-      transition: color 0.2s ease, transform 0.12s ease;
+      padding: 0.25rem 0;
     }
 
-    .nav-item:active {
-      transform: scale(0.92);
+    .nav-tab span.ico {
+      font-size: 1.2rem;
     }
 
-    .nav-item span.icon {
-      font-size: 1.22rem;
-    }
-
-    .nav-item.active {
-      color: #ffffff;
+    .nav-tab.active {
+      color: var(--cyan);
     }
   </style>
 </head>
 <body>
-  <div id="toast" class="toast"></div>
 
-  <div class="app-shell">
-    <!-- Top Header -->
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-logo">⛈️</div>
-        <div>
-          <h1>NimboSignal</h1>
-          <span>Alerta Climática &amp; Turismo EC</span>
-        </div>
+  <!-- BARRA SUPERIOR CON CONTADOR DE TOKENS -->
+  <header class="app-header">
+    <div class="app-logo">
+      <div class="app-logo-badge">NS</div>
+      <div>
+        <strong style="font-size:0.98rem; display:block; line-height:1.1;">NimboSignal</strong>
+        <span style="font-size:0.7rem; color:var(--cyan);">Pasaje • El Oro • Global</span>
       </div>
-      <button id="locBtn" class="loc-btn" onclick="useMyLocation()">📍 Mi ubicación</button>
-    </header>
+    </div>
 
-    <!-- VIEW 1: CLIMA & SEMÁFORO -->
-    <section id="view-weather" class="view active">
-      <div class="search-box" id="searchBox">
-        <div class="search-row">
-          <input
-            type="text"
-            id="cityInput"
-            class="search-input"
-            placeholder="Buscar ciudad (ej. Pasaje, Machala, Quito)..."
-            onkeydown="if(event.key==='Enter') searchCity()"
-          />
-          <button class="search-btn" onclick="searchCity()">Buscar</button>
-        </div>
-        <div id="searchResults" class="search-results"></div>
+    <div class="token-pill">
+      <span>⚡ Tokens:</span>
+      <strong id="mTokensLeft">10/10</strong>
+      <span style="color:var(--muted);">(Gastados: <b id="mTokensUsed" style="color:#fff;">0</b>)</span>
+    </div>
+  </header>
+
+  <main class="app-body">
+
+    <!-- VISTA 1: CLIMA Y VEREDICTO -->
+    <div id="view-clima" class="view active">
+      <div class="pill-scroll">
+        <button class="pill-btn active" onclick="loadMobileWeather('Pasaje, Ecuador', -3.3256, -79.8069, this)">📍 Pasaje</button>
+        <button class="pill-btn" onclick="loadMobileWeather('Machala, Ecuador', -3.2581, -79.9554, this)">📍 Machala</button>
+        <button class="pill-btn" onclick="loadMobileWeather('Santa Rosa, Ecuador', -3.4488, -79.9595, this)">📍 Santa Rosa</button>
+        <button class="pill-btn" onclick="loadMobileWeather('El Guabo, Ecuador', -3.2435, -79.8304, this)">📍 El Guabo</button>
       </div>
 
-      <div class="card hero-weather">
-        <div id="cityName" class="city-name">Pasaje, El Oro</div>
-        <div id="citySub" class="city-sub">Ecuador · Actualizando datos...</div>
-        <div id="tempMain" class="temp-main">--°</div>
-        <div id="weatherDesc" class="weather-desc">Cargando pronóstico</div>
-
-        <div class="weather-metrics">
-          <div class="metric-pill">
-            <small>Sensación</small>
-            <strong id="feelsLike">--°</strong>
-          </div>
-          <div class="metric-pill">
-            <small>Humedad</small>
-            <strong id="humidity">--%</strong>
-          </div>
-          <div class="metric-pill">
-            <small>Viento</small>
-            <strong id="windSpeed">-- km/h</strong>
-          </div>
-        </div>
-      </div>
-
-      <!-- Semáforo de Salida -->
       <div class="card">
-        <div class="section-title">
-          <span>Semáforo de Salida</span>
-          <span id="rainProbBadge">Lluvia: --%</span>
+        <span class="badge b-cyan">Veredicto Climático Honesto</span>
+        <h2 id="mCityTitle" style="font-size:1.25rem; margin-top:0.45rem;">Pasaje, El Oro</h2>
+        <div class="verdict-mobile">
+          <strong id="mVerdictHead" style="color:var(--amber); font-size:0.95rem; display:block;">Consultando satélite...</strong>
+          <span id="mVerdictText" style="font-size:0.84rem; color:#e2e8f0;">Obteniendo datos en tiempo real...</span>
         </div>
-        <div class="traffic-box">
-          <div class="traffic-lights">
-            <div id="lightRed" class="light-dot red"></div>
-            <div id="lightYellow" class="light-dot yellow"></div>
-            <div id="lightGreen" class="light-dot green"></div>
-          </div>
-          <div class="traffic-info">
-            <h3 id="trafficTitle">Analizando condiciones...</h3>
-            <p id="trafficText">Espera un momento mientras calculamos el riesgo climático.</p>
-          </div>
+        <div class="kpi-row">
+          <div class="kpi"><span>Temp.</span><strong id="mTemp">--°C</strong></div>
+          <div class="kpi"><span>Lluvia</span><strong id="mRain">--%</strong></div>
+          <div class="kpi"><span>Riesgo</span><strong id="mRisk" style="color:var(--teal);">Bajo</strong></div>
         </div>
+        <button class="btn-full btn-cyan" onclick="switchTab('ai')">🤖 Preguntar por un colegio a Nimbo AI</button>
       </div>
 
-      <!-- Recomendación de Vestimenta -->
       <div class="card">
-        <div class="section-title"><span>Recomendación de Vestimenta</span></div>
-        <p id="outfitText" style="font-size:0.88rem; color:var(--text-secondary); line-height:1.45;">
-          Calculando sugerencia según temperatura y humedad...
+        <span class="badge b-amber">🟡 Semáforo El Niño: Nivel 2 (Vigilancia)</span>
+        <h3 style="font-size:1rem; margin-top:0.45rem;">Alerta Preventiva Costera</h3>
+        <p style="font-size:0.83rem; color:var(--muted); margin-top:0.3rem;">
+          Monitoreo activo de lluvias vespertinas en Pasaje y cuenca del río Jubones. Lleva protección ligera si sales en moto después de las 14:30.
+        </p>
+      </div>
+    </div>
+
+    <!-- VISTA 2: COLEGIOS -->
+    <div id="view-colegios" class="view">
+      <h2 style="font-size:1.15rem;">🏫 Colegios e Instituciones</h2>
+      <input
+        type="text"
+        id="mSchoolSearch"
+        class="mobile-search"
+        placeholder="🔍 Buscar colegio (ej. Carmen Mora, Ochoa León)..."
+        oninput="renderMobileSchools()"
+      />
+      <div id="mSchoolList" style="display:flex; flex-direction:column; gap:0.75rem;"></div>
+    </div>
+
+    <!-- VISTA 3: NIMBO AI CHATBOX -->
+    <div id="view-ai" class="view">
+      <div class="mobile-chat-container">
+        <div class="mobile-chat-head">
+          <span>🤖 <strong>Nimbo AI</strong> • Guía Mundial (10/día)</span>
+          <button onclick="resetMobileDemo()" style="background:none; border:1px solid var(--border); color:var(--cyan); border-radius:8px; padding:0.2rem 0.45rem; font-size:0.72rem;">↻ Demo</button>
+        </div>
+
+        <div class="mobile-messages" id="mChatBox">
+          <div class="m-msg m-ai">
+            👋 ¡Hola! Soy <strong>Nimbo AI</strong>.<br>
+            Tienes <strong>10 tokens diarios</strong> (saldo visible arriba). Pregúntame cómo está cualquier <strong>colegio</strong> de Pasaje o cualquier <strong>ciudad del mundo</strong>.
+          </div>
+        </div>
+
+        <div class="pill-scroll" style="padding: 0.45rem 0.65rem; background: rgba(9,14,26,0.85);">
+          <button class="pill-btn" onclick="mQuickAsk('¿Cómo está el colegio Carmen Mora de Encalada?')">🏫 Carmen Mora</button>
+          <button class="pill-btn" onclick="mQuickAsk('¿Cómo está el colegio Ochoa León?')">🏫 Ochoa León</button>
+          <button class="pill-btn" onclick="mQuickAsk('¿Cómo están los pasajes y vía a Machala?')">🚌 Pasajes Machala</button>
+          <button class="pill-btn" onclick="mQuickAsk('¿Cómo está el clima en Madrid, España?')">🌍 Madrid</button>
+        </div>
+
+        <form class="mobile-input-row" onsubmit="handleMobileChat(event)">
+          <input type="text" id="mAiInput" placeholder="Ej: ¿Cómo está el colegio tal...?" required />
+          <button type="submit" style="background:var(--cyan); color:#04121d; border:none; border-radius:11px; padding:0 0.9rem; font-weight:800;">Enviar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- VISTA 4: PASAJE, RUTAS Y TURISMO -->
+    <div id="view-pasaje" class="view">
+      <h2 style="font-size:1.15rem;">🚌 Pasaje, Rutas y Turismo</h2>
+
+      <div class="card">
+        <span class="badge b-teal">Sectores de Pasaje y Río Jubones</span>
+        <h3 style="font-size:0.98rem; margin-top:0.4rem;">Monitoreo Urbano y Rural</h3>
+        <p style="font-size:0.83rem; color:var(--muted); margin-top:0.35rem;">
+          • <strong>Centro y Av. Rocafuerte:</strong> Tránsito normal.<br>
+          • <strong>Loma de Franco / La Peaña:</strong> Precaución en lluvias prolongadas.<br>
+          • <strong>Casacay y Río Jubones:</strong> Caudal estable en vigilancia preventiva.
+        </p>
+        <button class="btn-full btn-dark" onclick="mQuickAsk('¿Cómo están los sectores de Pasaje y el río Jubones?')">🤖 Consultar sectores en Nimbo AI</button>
+      </div>
+
+      <div class="card">
+        <span class="badge b-amber">Pasajes y Terminales</span>
+        <h3 style="font-size:0.98rem; margin-top:0.4rem;">Rutas Intercantonales</h3>
+        <p style="font-size:0.83rem; color:var(--muted); margin-top:0.35rem;">
+          • <strong>Pasaje – Machala:</strong> Vía operativa 100%.<br>
+          • <strong>Pasaje – Santa Rosa:</strong> Fluida con viento moderado.<br>
+          • <strong>Pasaje – Cuenca:</strong> Posible neblina en zona alta.
+        </p>
+        <button class="btn-full btn-dark" onclick="mQuickAsk('¿Cómo están los pasajes y carreteras desde Pasaje hoy?')">🤖 Consultar pasajes en Nimbo AI</button>
+      </div>
+
+      <div class="card">
+        <span class="badge b-cyan">Turismo Local</span>
+        <h3 style="font-size:0.98rem; margin-top:0.4rem;">La Cocha, Casacay y Buenavista</h3>
+        <p style="font-size:0.83rem; color:var(--muted); margin-top:0.35rem;">
+          Excelente en horario matutino (08:00 a 13:30). Si nubla en la montaña, retirarse de la orilla del río.
+        </p>
+      </div>
+    </div>
+
+    <!-- VISTA 5: GUÍAS Y PLANES -->
+    <div id="view-guias" class="view">
+      <h2 style="font-size:1.15rem;">🛡️ Guías y Planes NimboSignal</h2>
+
+      <div class="card">
+        <span class="badge b-teal">Guía Rápida Estudiante / Moto</span>
+        <p style="font-size:0.83rem; color:var(--muted); margin-top:0.4rem;">
+          1. Revisa el Veredicto Honesto antes de salir.<br>
+          2. Guarda funda impermeable para cuadernos y celular.<br>
+          3. Evita calles bajas con acumulación de agua.
         </p>
       </div>
 
-      <!-- Pronóstico por Horas -->
       <div class="card">
-        <div class="section-title"><span>Próximas Horas</span></div>
-        <div id="hourlyStrip" class="hourly-strip"></div>
-      </div>
-    </section>
-
-    <!-- VIEW 2: TURISTA (PLAYAS, RÍOS DE EL ORO Y RESTAURANTES) -->
-    <section id="view-tourist" class="view">
-      <div class="card">
-        <div class="section-title">
-          <span>Guía Turística en Vivo · Ecuador</span>
-          <span>🌤️ API Real</span>
-        </div>
-        <p style="font-size:0.83rem; color:var(--text-secondary); margin-bottom:12px;">
-          Consulta cómo está hoy cualquier playa famosa de Ecuador, río de El Oro o restaurante icónico.
-        </p>
-
-        <div class="tourist-tabs">
-          <button class="t-tab active" id="tab-beaches" onclick="setTouristCategory('beaches')">🏖️ Playas EC</button>
-          <button class="t-tab" id="tab-rivers" onclick="setTouristCategory('rivers')">🏞️ Ríos El Oro</button>
-          <button class="t-tab" id="tab-restaurants" onclick="setTouristCategory('restaurants')">🍽️ Restaurantes</button>
-        </div>
-
-        <div class="quick-ask-box">
-          <label class="quick-ask-label" id="touristAskLabel">🏖️ Pregunta: ¿Cómo está esta playa hoy?</label>
-          <select id="touristSelect" class="tourist-select" onchange="inspectSelectedSpot()"></select>
-          <input
-            type="text"
-            id="touristFilter"
-            class="search-input"
-            style="width:100%; font-size:0.84rem; padding:10px 12px;"
-            placeholder="Filtrar por nombre, cantón o ciudad..."
-            oninput="renderTouristList()"
-          />
-        </div>
-
-        <!-- Live Answer Card -->
-        <div id="touristAnswer" class="tourist-answer">
-          <div class="tourist-answer-header">
-            <div>
-              <h3 id="tSpotName">Montañita</h3>
-              <small id="tSpotLocation" style="color:var(--text-secondary);">Santa Elena · Costa</small>
-            </div>
-            <span id="tSpotBadge" class="badge-status badge-good">Consultando...</span>
-          </div>
-          <div class="tourist-meta" id="tSpotMeta"></div>
-          <p id="tSpotVerdict" style="font-size:0.86rem; line-height:1.45; color:var(--text-primary);"></p>
-          <button class="loc-btn" style="margin-top:12px; width:100%; padding:10px;" onclick="openSelectedOnMap()">
-            🗺️ Ver ubicación exacta en el mapa
-          </button>
-        </div>
-
-        <!-- List of All Places in Category -->
-        <div id="touristList" class="tourist-grid"></div>
-      </div>
-    </section>
-
-    <!-- VIEW 3: FENÓMENO DE EL NIÑO -->
-    <section id="view-nino" class="view">
-      <div class="card">
-        <div class="section-title">
-          <span>Monitor Fenómeno de El Niño</span>
-          <span>INOCAR / NOAA</span>
-        </div>
-        <h3 style="font-size:1.1rem; margin-bottom:6px;">Estado Actual: Vigilancia Moderada</h3>
-        <p style="font-size:0.84rem; color:var(--text-secondary); line-height:1.45;">
-          Monitoreo de anomalías térmicas en el Pacífico Oriental (Región Niño 1+2) y lluvias convectivas en el perfil costero ecuatoriano.
-        </p>
-
-        <div class="nino-meter">
-          <div class="nino-pin" title="Nivel actual: Vigilancia"></div>
-        </div>
-        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-muted);">
-          <span>Normal</span>
-          <span>Vigilancia</span>
-          <span>Alerta Roja</span>
-        </div>
-
-        <div class="coast-list">
-          <div class="coast-row">
-            <span><strong>El Oro</strong> (Pasaje, Machala, Jambelí)</span>
-            <span class="badge-status badge-warn">Precaución Lluvias</span>
-          </div>
-          <div class="coast-row">
-            <span><strong>Guayas &amp; Santa Elena</strong></span>
-            <span class="badge-status badge-good">Oleaje Normal</span>
-          </div>
-          <div class="coast-row">
-            <span><strong>Manabí &amp; Esmeraldas</strong></span>
-            <span class="badge-status badge-warn">Chubascos Aislados</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-title"><span>Protocolo Preventivo</span></div>
-        <p style="font-size:0.84rem; color:var(--text-secondary); line-height:1.5;">
-          • Revisa el estado de ríos y quebradas antes de viajar en carretera.<br />
-          • Evita cruzar corrientes crecientes en zonas bajas de El Oro.<br />
-          • Mantén activa la alerta de precipitaciones en NimboSignal.
+        <span class="badge b-cyan">Plan Gratuito ($0,00/mes)</span>
+        <p style="font-size:0.83rem; color:var(--muted); margin-top:0.35rem;">
+          Veredicto diario Pasaje + Colegios + <strong>10 tokens/día en Nimbo AI</strong>.
         </p>
       </div>
-    </section>
 
-    <!-- VIEW 4: MAPA INTERACTIVO -->
-    <section id="view-map" class="view">
-      <div class="card">
-        <div class="section-title">
-          <span>Mapa Climático &amp; Turístico</span>
-          <span id="mapTargetLabel">Pasaje, EC</span>
-        </div>
-        <div id="weatherMap"></div>
-        <p style="font-size:0.78rem; color:var(--text-secondary); margin-top:10px;">
-          Selecciona cualquier playa, río o restaurante en la pestaña Turista o busca una ciudad para ubicarla en el mapa.
+      <div class="card" style="border-color:var(--cyan);">
+        <span class="badge b-amber">Plan Plus ($1,99/mes) • Pro ($2,99/mes)</span>
+        <p style="font-size:0.83rem; color:var(--muted); margin-top:0.35rem;">
+          Alertas hiperlocales por barrios, pronóstico 72h, cobertura total El Oro y sin anuncios.
         </p>
       </div>
-    </section>
 
-    <!-- VIEW 5: PLANES -->
-    <section id="view-plans" class="view">
-      <div class="card">
-        <div class="section-title"><span>Planes NimboSignal</span></div>
+      <p style="text-align:center; font-size:0.75rem; color:var(--muted);">
+        Proyecto por Jairo Evander Martínez Ortega • U.E. "Carmen Mora de Encalada"
+      </p>
+    </div>
 
-        <div class="plan-card">
-          <div class="plan-head">
-            <h3>Plan Básico</h3>
-            <span class="plan-price">$0 <small style="font-size:0.75rem; font-weight:500;">/mes</small></span>
-          </div>
-          <ul class="plan-list">
-            <li>✓ Clima global en tiempo real y semáforo de salida</li>
-            <li>✓ Consulta de playas, ríos de El Oro y restaurantes</li>
-            <li>✓ Boletín general del Fenómeno de El Niño</li>
-          </ul>
-          <button class="plan-btn" onclick="selectPlan('Básico')">Plan Actual Activo</button>
-        </div>
+  </main>
 
-        <div class="plan-card featured">
-          <div class="plan-head">
-            <h3>NimboSignal Pro ⚡</h3>
-            <span class="plan-price">$2.99 <small style="font-size:0.75rem; font-weight:500;">/mes</small></span>
-          </div>
-          <ul class="plan-list">
-            <li>✓ Alertas tempranas de crecientes en ríos de El Oro</li>
-            <li>✓ Pronóstico de oleaje, marea y radiación UV por playa</li>
-            <li>✓ Sin anuncios y widgets exclusivos en Android</li>
-          </ul>
-          <button class="plan-btn" onclick="selectPlan('Pro')">Activar Pro</button>
-        </div>
-
-        <div class="plan-card">
-          <div class="plan-head">
-            <h3>Agro &amp; Turismo</h3>
-            <span class="plan-price">$9.99 <small style="font-size:0.75rem; font-weight:500;">/mes</small></span>
-          </div>
-          <ul class="plan-list">
-            <li>✓ Reportes para bananeras, camaroneras y operadoras</li>
-            <li>✓ Historial de precipitaciones por cantón</li>
-            <li>✓ Soporte prioritario 24/7</li>
-          </ul>
-          <button class="plan-btn" onclick="selectPlan('Agro & Turismo')">Solicitar Plan</button>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- Watermark -->
-  <div class="watermark">NIMBOSIGNAL · EVMJ23</div>
-
-  <!-- Bottom Navigation -->
+  <!-- NAVEGACIÓN INFERIOR TIPO APP -->
   <nav class="bottom-nav">
-    <button class="nav-item active" data-view="weather" onclick="switchView('weather', this)">
-      <span class="icon">🌤️</span>
-      <span>Clima</span>
-    </button>
-    <button class="nav-item" data-view="tourist" onclick="switchView('tourist', this)">
-      <span class="icon">🏖️</span>
-      <span>Turista</span>
-    </button>
-    <button class="nav-item" data-view="nino" onclick="switchView('nino', this)">
-      <span class="icon">🌊</span>
-      <span>El Niño</span>
-    </button>
-    <button class="nav-item" data-view="map" onclick="switchView('map', this)">
-      <span class="icon">🗺️</span>
-      <span>Mapa</span>
-    </button>
-    <button class="nav-item" data-view="plans" onclick="switchView('plans', this)">
-      <span class="icon">💎</span>
-      <span>Planes</span>
-    </button>
+    <button class="nav-tab active" id="tab-clima" onclick="switchTab('clima')"><span class="ico">🌤️</span>Clima</button>
+    <button class="nav-tab" id="tab-colegios" onclick="switchTab('colegios')"><span class="ico">🏫</span>Colegios</button>
+    <button class="nav-tab" id="tab-ai" onclick="switchTab('ai')"><span class="ico">🤖</span>Nimbo AI</button>
+    <button class="nav-tab" id="tab-pasaje" onclick="switchTab('pasaje')"><span class="ico">🚌</span>Pasaje</button>
+    <button class="nav-tab" id="tab-guias" onclick="switchTab('guias')"><span class="ico">🛡️</span>Guías</button>
   </nav>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // ==========================================
-    // BASE DE DATOS TURÍSTICA DE ECUADOR
-    // ==========================================
-    const TOURIST_DATA = {
-      beaches: [
-        { name: "Montañita", area: "Santa Elena", lat: -1.8266, lon: -80.7536, note: "Capital del surf y vida nocturna en la Ruta del Spondylus." },
-        { name: "Salinas", area: "Santa Elena", lat: -2.2145, lon: -80.9515, note: "Balneario principal con malecón, deportes náuticos y avistamiento de ballenas (jun-sep)." },
-        { name: "Ayangue", area: "Santa Elena", lat: -1.9814, lon: -80.7564, note: "Bahía de aguas tranquilas sin olas fuertes, ideal para familias y snorkel." },
-        { name: "Olón", area: "Santa Elena", lat: -1.7972, lon: -80.7611, note: "Playa extensa y relajada junto a Montañita, perfecta para caminar y surfear." },
-        { name: "General Villamil Playas", area: "Guayas", lat: -2.6317, lon: -80.3881, note: "Famosa por su clima cálido seco todo el año, ceviches y ostras." },
-        { name: "Mompiche", area: "Esmeraldas", lat: 0.5067, lon: -80.0233, note: "Rodeada de bosque tropical y olas largas de izquierda para surfistas." },
-        { name: "Atacames", area: "Esmeraldas", lat: 0.8672, lon: -79.8453, note: "Playa cálida muy concurrida con gastronomía esmeraldeña y música frente al mar." },
-        { name: "Same", area: "Esmeraldas", lat: 0.8442, lon: -79.9089, note: "Playa tranquila rodeada de palmeras y complejos turísticos familiares." },
-        { name: "Tonsupa", area: "Esmeraldas", lat: 0.8858, lon: -79.8225, note: "Amplia franja de arena ideal para descanso familiar cerca de Atacames." },
-        { name: "Canoa", area: "Manabí", lat: 0.4619, lon: -80.4564, note: "Famosa por parapente en sus acantilados, surf y ambiente bohemio." },
-        { name: "Crucita", area: "Manabí", lat: -0.8703, lon: -80.5389, note: "Destino icónico de vuelo en alas delta, parapente y pesca artesanal." },
-        { name: "Los Frailes", area: "Manabí (Parque Machalilla)", lat: -1.4958, lon: -80.7883, note: "Playa virgen de arena blanca y aguas turquesa dentro de área protegida." },
-        { name: "Puerto López", area: "Manabí", lat: -1.5567, lon: -80.8117, note: "Punto de partida hacia Isla de la Plata y tours de ballenas jorobadas." },
-        { name: "Playa El Murciélago", area: "Manta, Manabí", lat: -0.9414, lon: -80.7336, note: "Playa urbana moderna con malecón escénico y restaurantes de mariscos." },
-        { name: "Bahía de Caráquez", area: "Manabí", lat: -0.5986, lon: -80.4244, note: "Ciudad eco-turística en la desembocadura del río Chone con hermosos atardeceres." },
-        { name: "Isla Jambelí", area: "Santa Rosa, El Oro", lat: -3.2356, lon: -80.0319, note: "Principal destino playero de El Oro, accesible en lancha desde Puerto Bolívar." },
-        { name: "Playa Bajoalto", area: "El Guabo, El Oro", lat: -3.1667, lon: -79.9167, note: "Playa continental de El Oro ideal para paseos en familia y mariscos frescos." },
-        { name: "Tortuga Bay", area: "Santa Cruz, Galápagos", lat: -0.7636, lon: -90.3414, note: "Arena coralina blanca, iguanas marinas y kayak en aguas cristalinas." }
-      ],
-      rivers: [
-        { name: "Río Casacay", area: "Pasaje, El Oro", lat: -3.3264, lon: -79.7231, note: "El balneario de agua dulce más famoso de Pasaje, aguas cristalinas y cabañas." },
-        { name: "Río Buenaventura", area: "Pasaje / Piñas, El Oro", lat: -3.3389, lon: -79.7514, note: "Aguas frescas rodeadas de vegetación húmeda y senderos naturales." },
-        { name: "Río Jubones (Balneario La Cocha)", area: "Pasaje, El Oro", lat: -3.3186, lon: -79.8042, note: "Amplio caudal ideal para paseos de fin de semana cerca del centro de Pasaje." },
-        { name: "Río Palenque", area: "Pasaje, El Oro", lat: -3.3450, lon: -79.7780, note: "Zona tranquila de río con pozas naturales y gastronomía típica orense." },
-        { name: "Río Calichana", area: "Pasaje, El Oro", lat: -3.2980, lon: -79.7420, note: "Entorno natural cercano a zonas cacaoteras y bananeras de Pasaje." },
-        { name: "Río Puyango", area: "Las Lajas / Marcabelí, El Oro", lat: -3.8833, lon: -80.0833, note: "Junto al Bosque Petrificado de Puyango, atractivo ecoturístico único." },
-        { name: "Río Amarillo", area: "Portovelo / Zaruma, El Oro", lat: -3.7167, lon: -79.6167, note: "Río de montaña en la parte alta de El Oro, paisaje andino-subtropical." },
-        { name: "Río Siete", area: "El Guabo, El Oro", lat: -3.1417, lon: -79.7667, note: "Balneario tradicional del cantón El Guabo muy visitado en feriados." }
-      ],
-      restaurants: [
-        { name: "La Purísima", area: "Centro Histórico, Quito", lat: -0.2202, lon: -78.5123, dish: "Locro de papa, seco de chivo y cocina patrimonial quiteña." },
-        { name: "Zazu", area: "La Mariscal, Quito", lat: -0.1815, lon: -78.4847, dish: "Alta gastronomía ecuatoriana contemporánea (Latin America's 50 Best)." },
-        { name: "Casa Gangotena Restaurante", area: "Plaza San Francisco, Quito", lat: -0.2206, lon: -78.5156, dish: "Cocina mestiza de autor con vista panorámica al Centro Histórico." },
-        { name: "Lo Nuestro", area: "Urdesa, Guayaquil", lat: -2.1683, lon: -79.9114, dish: "Cazuela de mariscos, bolón mixto y platos típicos guayaquileños." },
-        { name: "La Canoa", area: "Centro, Guayaquil", lat: -2.1939, lon: -79.8814, dish: "Caldo de bola, encebollado y comida criolla tradicional." },
-        { name: "Casa Julián", area: "Parque Histórico, Samborondón / Guayaquil", lat: -2.1444, lon: -79.8669, dish: "Gastronomía litoral de lujo junto al río Daule." },
-        { name: "Tiestos", area: "Centro Histórico, Cuenca", lat: -2.8994, lon: -79.0044, dish: "Carnes y mariscos servidos en tiestos de barro con salsas artesanales." },
-        { name: "Dos Sucres", area: "Cuenca, Azuay", lat: -2.9012, lon: -79.0067, dish: "Cocina de kilómetro cero con ingredientes locales andinos." },
-        { name: "Restaurante Iche", area: "San Vicente, Manabí", lat: -0.6000, lon: -80.4250, dish: "Tonga manabita, viche de pescado y horno manabita patrimonial." },
-        { name: "Marisquerías del Malecón de Puerto Bolívar", area: "Machala, El Oro", lat: -3.2667, lon: -79.9986, dish: "Ceviche de concha negra, cangrejos y arroz marinero orense." }
-      ]
-    };
+    const M_SCHOOLS = [
+      { name: 'U.E. "Carmen Mora de Encalada"', sector: 'Centro / Av. Rocafuerte, Pasaje', lat: -3.3256, lon: -79.8069, status: 'Jornada Normal' },
+      { name: 'U.E. "Dr. José Ochoa León"', sector: 'Zona Urbana Norte, Pasaje', lat: -3.3210, lon: -79.8045, status: 'Jornada Normal' },
+      { name: 'Colegio Técnico Agropecuario "El Oro"', sector: 'Vía a Buenavista, Pasaje', lat: -3.3380, lon: -79.8210, status: 'Precaución Tarde' },
+      { name: 'U.E. "Jorge Icaza"', sector: 'Sector Urbano, Pasaje', lat: -3.3285, lon: -79.8092, status: 'Jornada Normal' },
+      { name: 'U.E. "Manuel González"', sector: 'Centro Sur, Pasaje', lat: -3.3302, lon: -79.8055, status: 'Jornada Normal' },
+      { name: 'U.E. "San José"', sector: 'Centro, Pasaje', lat: -3.3264, lon: -79.8078, status: 'Jornada Normal' },
+      { name: 'U.E. "Aurelio Prieto Muelas"', sector: 'Loma de Franco, Pasaje', lat: -3.3335, lon: -79.8120, status: 'Precaución Vías' },
+      { name: 'U.E. "Buenavista"', sector: 'Parroquia Buenavista, Pasaje', lat: -3.3562, lon: -79.8390, status: 'Jornada Normal' },
+      { name: 'U.E. "Casacay"', sector: 'Parroquia Casacay, Pasaje', lat: -3.3189, lon: -79.7365, status: 'Vigilancia Río' },
+      { name: 'U.E. "La Peaña"', sector: 'Parroquia La Peaña, Pasaje', lat: -3.2895, lon: -79.8520, status: 'Jornada Normal' },
+      { name: 'Colegio "Kléber Franco Cruz"', sector: 'Machala, El Oro', lat: -3.2581, lon: -79.9554, status: 'Jornada Normal' },
+      { name: 'U.E. "Zoila Ugarte de Landívar"', sector: 'Santa Rosa, El Oro', lat: -3.4488, lon: -79.9595, status: 'Jornada Normal' }
+    ];
 
-    let currentCategory = 'beaches';
-    let currentSelectedSpot = TOURIST_DATA.beaches[0];
-    let currentLat = -3.3256; // Pasaje, El Oro
-    let currentLon = -79.8069;
-    let currentMapLabel = "Pasaje, El Oro";
-    let map = null;
-    let activeMarker = null;
-    let toastTimer = null;
-
-    // ==========================================
-    // UTILIDADES UI (TOAST Y CIERRE BUSCADOR)
-    // ==========================================
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
-    }
-
-    document.addEventListener('click', (e) => {
-      const searchBox = document.getElementById('searchBox');
-      const results = document.getElementById('searchResults');
-      if (searchBox && results && !searchBox.contains(e.target)) {
-        results.style.display = 'none';
-      }
-    });
-
-    // ==========================================
-    // INICIALIZACIÓN
-    // ==========================================
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchWeather(currentLat, currentLon, "Pasaje, El Oro", "Ecuador");
-      initMap();
-      setTouristCategory('beaches');
-    });
-
-    // ==========================================
-    // NAVEGACIÓN ENTRE PESTAÑAS
-    // ==========================================
-    function switchView(viewName, btn) {
+    function switchTab(tabName) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-
-      const targetView = document.getElementById('view-' + viewName);
-      if (targetView) targetView.classList.add('active');
-      if (btn) btn.classList.add('active');
-
-      if (viewName === 'map') {
-        if (!map) initMap();
-        if (map) {
-          setTimeout(() => {
-            map.invalidateSize();
-            map.setView([currentLat, currentLon], 12);
-          }, 160);
-        }
-      }
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(`view-${tabName}`).classList.add('active');
+      document.getElementById(`tab-${tabName}`).classList.add('active');
     }
 
-    // ==========================================
-    // CLIMA GLOBAL (OPEN-METEO)
-    // ==========================================
-    function weatherCodeToInfo(code, isDay = 1) {
-      if (code === 0) return { text: "Despejado", icon: isDay === 0 ? "🌙" : "☀️", theme: "theme-sunny" };
-      if ([1, 2, 3].includes(code)) return { text: "Parcialmente nublado", icon: isDay === 0 ? "☁️" : "⛅", theme: "" };
-      if ([45, 48].includes(code)) return { text: "Neblina", icon: "🌫️", theme: "theme-rain" };
-      if ([51, 53, 55, 56, 57].includes(code)) return { text: "Llovizna", icon: "🌦️", theme: "theme-rain" };
-      if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return { text: "Lluvia", icon: "🌧️", theme: "theme-rain" };
-      if ([71, 73, 75, 77, 85, 86].includes(code)) return { text: "Nieve", icon: "❄️", theme: "theme-rain" };
-      if ([95, 96, 99].includes(code)) return { text: "Tormenta eléctrica", icon: "⛈️", theme: "theme-rain" };
-      return { text: "Nublado", icon: "☁️", theme: "" };
+    function mAskSchoolByIndex(idx) {
+      const s = M_SCHOOLS[idx];
+      if (!s) return;
+      mQuickAsk(`¿Cómo está el ${s.name.replace(/"/g, '')}?`);
     }
 
-    async function fetchWeather(lat, lon, cityLabel, subLabel) {
-      currentLat = lat;
-      currentLon = lon;
-      document.getElementById('cityName').textContent = cityLabel;
-      document.getElementById('citySub').textContent = subLabel;
-
-      try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation_probability,weather_code&timezone=auto`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("Error en API");
-        const data = await res.json();
-
-        const cur = data.current;
-        const info = weatherCodeToInfo(cur.weather_code, cur.is_day);
-
-        document.body.className = cur.is_day === 0 ? "theme-night" : info.theme;
-        document.getElementById('tempMain').textContent = `${Math.round(cur.temperature_2m)}°`;
-        document.getElementById('weatherDesc').textContent = `${info.icon} ${info.text}`;
-        document.getElementById('feelsLike').textContent = `${Math.round(cur.apparent_temperature)}°`;
-        document.getElementById('humidity').textContent = `${cur.relative_humidity_2m}%`;
-        document.getElementById('windSpeed').textContent = `${Math.round(cur.wind_speed_10m)} km/h`;
-
-        const startIndex = findCurrentHourIndex(data.hourly?.time, cur.time);
-        const rainProb = data.hourly?.precipitation_probability?.[startIndex] ?? 0;
-        document.getElementById('rainProbBadge').textContent = `Lluvia: ${rainProb}%`;
-
-        updateTrafficLight(cur.temperature_2m, rainProb, cur.weather_code);
-        updateOutfit(cur.temperature_2m, rainProb);
-        renderHourly(data.hourly, startIndex);
-        updateMapMarker(lat, lon, `${cityLabel}: ${Math.round(cur.temperature_2m)}° (${info.text})`);
-      } catch (err) {
-        document.getElementById('weatherDesc').textContent = "Sin conexión al servidor climático";
-        document.getElementById('trafficTitle').textContent = "No se pudo verificar";
-        document.getElementById('trafficText').textContent = "Revisa tu conexión a internet e intenta nuevamente.";
-      }
-    }
-
-    function findCurrentHourIndex(hourlyTimes, currentIsoTime) {
-      if (!hourlyTimes || !currentIsoTime) return 0;
-      const currentHourPrefix = currentIsoTime.slice(0, 13); // "YYYY-MM-DDTHH"
-      const idx = hourlyTimes.findIndex(t => t.startsWith(currentHourPrefix));
-      return idx >= 0 ? idx : 0;
-    }
-
-    function updateTrafficLight(temp, rainProb, code) {
-      const red = document.getElementById('lightRed');
-      const yellow = document.getElementById('lightYellow');
-      const green = document.getElementById('lightGreen');
-      [red, yellow, green].forEach(el => el.classList.remove('active'));
-
-      const title = document.getElementById('trafficTitle');
-      const text = document.getElementById('trafficText');
-
-      if ([95, 96, 99].includes(code) || rainProb >= 70) {
-        red.classList.add('active');
-        title.textContent = "Luz Roja · Evita salir sin protección";
-        text.textContent = "Alta probabilidad de lluvia o tormenta. Prioriza actividades bajo techo.";
-      } else if (rainProb >= 35 || temp >= 32) {
-        yellow.classList.add('active');
-        title.textContent = "Luz Amarilla · Sal con precaución";
-        text.textContent = temp >= 32
-          ? "Calor intenso: hidrátate bien y usa bloqueador solar."
-          : "Posibles lloviznas pasajeras. Lleva paraguas compacto.";
-      } else {
-        green.classList.add('active');
-        title.textContent = "Luz Verde · Excelente momento para salir";
-        text.textContent = "Condiciones estables y agradables para actividades al aire libre o deporte.";
-      }
-    }
-
-    function updateOutfit(temp, rainProb) {
-      const el = document.getElementById('outfitText');
-      let advice = "";
-      if (temp >= 27) {
-        advice = "Ropa ligera y transpirable (camiseta de algodón o deportiva), gafas de sol y protector solar.";
-      } else if (temp >= 19) {
-        advice = "Camiseta cómoda con una chaqueta ligera o buso fino por si refresca en la tarde.";
-      } else {
-        advice = "Abrigo o chompa térmica, pantalón largo y calzado cerrado.";
-      }
-      if (rainProb >= 40) {
-        advice += " Añade impermeable o paraguas por riesgo de lluvia.";
-      }
-      el.textContent = advice;
-    }
-
-    function renderHourly(hourly, startIndex) {
-      const strip = document.getElementById('hourlyStrip');
-      strip.innerHTML = "";
-      if (!hourly || !hourly.time) return;
-
-      for (let i = startIndex; i < Math.min(startIndex + 12, hourly.time.length); i++) {
-        const hourStr = hourly.time[i].split('T')[1].slice(0, 5);
-        const info = weatherCodeToInfo(hourly.weather_code[i], 1);
-        const temp = Math.round(hourly.temperature_2m[i]);
-        const prob = hourly.precipitation_probability[i] ?? 0;
-
-        strip.innerHTML += `
-          <div class="hour-item">
-            <span>${i === startIndex ? "Ahora" : hourStr}</span>
-            <div class="h-icon">${info.icon}</div>
-            <strong>${temp}°</strong>
-            <span style="font-size:0.68rem; margin-top:2px;">💧${prob}%</span>
-          </div>
-        `;
-      }
-    }
-
-    async function searchCity() {
-      const q = document.getElementById('cityInput').value.trim();
-      const box = document.getElementById('searchResults');
-      if (!q) return;
-
-      box.innerHTML = `<div class="search-item">Buscando "${q}"...</div>`;
-      box.style.display = "block";
-
-      try {
-        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=es&format=json`);
-        const data = await res.json();
-        if (!data.results || data.results.length === 0) {
-          box.innerHTML = `<div class="search-item">No se encontraron resultados para "${q}"</div>`;
-          return;
-        }
-
-        box.innerHTML = data.results.map(item => `
-          <div class="search-item" onclick='selectSearchedCity(${item.latitude}, ${item.longitude}, ${JSON.stringify(item.name)}, ${JSON.stringify((item.admin1 || "") + (item.country ? ", " + item.country : ""))})'>
-            <strong>${item.name}</strong>
-            <small style="color:var(--text-secondary); display:block;">${item.admin1 || ""} · ${item.country || ""}</small>
-          </div>
-        `).join('');
-      } catch (e) {
-        box.innerHTML = `<div class="search-item">Error de red al buscar ciudad</div>`;
-      }
-    }
-
-    function selectSearchedCity(lat, lon, name, sub) {
-      document.getElementById('searchResults').style.display = "none";
-      document.getElementById('cityInput').value = name;
-      fetchWeather(lat, lon, name, sub);
-    }
-
-    function useMyLocation() {
-      const btn = document.getElementById('locBtn');
-      if (!navigator.geolocation) {
-        showToast("GPS no disponible · Mostrando Pasaje, El Oro");
-        fetchWeather(-3.3256, -79.8069, "Pasaje, El Oro", "Ecuador");
-        return;
-      }
-
-      btn.textContent = "⏳ Ubicando...";
-      navigator.geolocation.getCurrentPosition(
-        pos => {
-          btn.textContent = "📍 Mi ubicación";
-          showToast("Ubicación GPS actualizada");
-          fetchWeather(pos.coords.latitude, pos.coords.longitude, "Mi Ubicación Actual", "GPS en tiempo real");
-        },
-        () => {
-          btn.textContent = "📍 Mi ubicación";
-          showToast("Permiso GPS desactivado · Mostrando Pasaje");
-          fetchWeather(-3.3256, -79.8069, "Pasaje, El Oro", "Ubicación predeterminada");
-        },
-        { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 }
-      );
-    }
-
-    // ==========================================
-    // SECCIÓN TURISTA (PLAYAS, RÍOS EL ORO, RESTAURANTES)
-    // ==========================================
-    function setTouristCategory(cat) {
-      currentCategory = cat;
-      document.querySelectorAll('.t-tab').forEach(t => t.classList.remove('active'));
-      document.getElementById('tab-' + cat).classList.add('active');
-
-      const label = document.getElementById('touristAskLabel');
-      if (cat === 'beaches') label.textContent = "🏖️ Pregunta: ¿Cómo está esta playa hoy?";
-      if (cat === 'rivers') label.textContent = "🏞️ Pregunta: ¿Cómo está este río de El Oro hoy?";
-      if (cat === 'restaurants') label.textContent = "🍽️ Consulta clima y plato estrella del restaurante:";
-
-      document.getElementById('touristFilter').value = "";
-      populateTouristSelect();
-      renderTouristList();
-      inspectSelectedSpot();
-    }
-
-    function populateTouristSelect() {
-      const select = document.getElementById('touristSelect');
-      const items = TOURIST_DATA[currentCategory];
-      select.innerHTML = items.map((spot, idx) =>
-        `<option value="${idx}">${spot.name} — ${spot.area}</option>`
-      ).join('');
-    }
-
-    function renderTouristList() {
-      const listEl = document.getElementById('touristList');
-      const filter = document.getElementById('touristFilter').value.toLowerCase().trim();
-      const items = TOURIST_DATA[currentCategory];
-
-      const filtered = items
-        .map((spot, idx) => ({ ...spot, idx }))
-        .filter(s => s.name.toLowerCase().includes(filter) || s.area.toLowerCase().includes(filter));
+    function renderMobileSchools() {
+      const q = document.getElementById('mSchoolSearch').value.toLowerCase().trim();
+      const list = document.getElementById('mSchoolList');
+      const filtered = M_SCHOOLS
+        .map((s, idx) => ({ ...s, idx }))
+        .filter(s => s.name.toLowerCase().includes(q) || s.sector.toLowerCase().includes(q));
 
       if (filtered.length === 0) {
-        listEl.innerHTML = `<p style="font-size:0.82rem; color:var(--text-muted); text-align:center; padding:12px;">No hay coincidencias con "${filter}"</p>`;
+        list.innerHTML = `<div class="card"><p style="font-size:0.85rem;">No está en la lista rápida, pero puedes consultarlo en Nimbo AI.</p><button class="btn-full btn-cyan" onclick="mQuickAsk('¿Cómo está el colegio ${q.replace(/'/g, '')}?')">🤖 Preguntar a Nimbo AI</button></div>`;
         return;
       }
 
-      listEl.innerHTML = filtered.map(spot => `
-        <div class="spot-card" onclick="pickSpot(${spot.idx})">
-          <div>
-            <h4>${spot.name}</h4>
-            <p>${spot.area} · ${spot.dish || spot.note}</p>
+      list.innerHTML = filtered.map(s => `
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
+            <strong style="font-size:0.94rem;">${s.name}</strong>
+            <span class="badge b-teal">${s.status}</span>
           </div>
-          <button class="spot-action" type="button">¿Cómo está?</button>
+          <p style="font-size:0.8rem; color:var(--muted); margin-top:0.25rem;">📍 ${s.sector}</p>
+          <button class="btn-full btn-dark" onclick="mAskSchoolByIndex(${s.idx})">🤖 Ver clima escolar en Nimbo AI</button>
         </div>
       `).join('');
     }
 
-    function pickSpot(idx) {
-      const select = document.getElementById('touristSelect');
-      select.value = idx;
-      inspectSelectedSpot();
-      document.getElementById('touristAnswer').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // TOKENS DIARIOS (10/DÍA)
+    const M_LIMIT = 10;
+    const M_KEY = 'nimbosignal_tokens_v2';
+
+    function getMState() {
+      const today = new Date().toISOString().slice(0, 10);
+      try {
+        const s = JSON.parse(localStorage.getItem(M_KEY));
+        if (s && s.date === today && typeof s.used === 'number') return s;
+      } catch (e) {}
+      const init = { date: today, used: 0 };
+      localStorage.setItem(M_KEY, JSON.stringify(init));
+      return init;
     }
 
-    async function inspectSelectedSpot() {
-      const idx = parseInt(document.getElementById('touristSelect').value, 10) || 0;
-      const spot = TOURIST_DATA[currentCategory][idx];
-      currentSelectedSpot = spot;
+    function updateMTokenUI() {
+      const st = getMState();
+      const left = Math.max(0, M_LIMIT - st.used);
+      document.getElementById('mTokensLeft').textContent = `${left}/${M_LIMIT}`;
+      document.getElementById('mTokensUsed').textContent = st.used;
+    }
 
-      document.getElementById('tSpotName').textContent = spot.name;
-      document.getElementById('tSpotLocation').textContent = spot.area;
-      const badge = document.getElementById('tSpotBadge');
-      badge.className = "badge-status badge-warn";
-      badge.textContent = "Consultando...";
-      document.getElementById('tSpotMeta').innerHTML = "";
-      document.getElementById('tSpotVerdict').textContent = "Obteniendo clima y condiciones en vivo...";
+    function resetMobileDemo() {
+      localStorage.setItem(M_KEY, JSON.stringify({ date: new Date().toISOString().slice(0, 10), used: 0 }));
+      updateMTokenUI();
+      addMChat('ai', '🔄 <strong>Demo reiniciada:</strong> Vuelves a tener <strong>10/10 tokens</strong> disponibles hoy.');
+    }
+
+    function mWeatherInfo(code) {
+      if (code <= 3) return { label: 'Nubosidad parcial / Despejado', verdict: 'Tiempo estable para salir y estudiar', risk: 'Bajo', tip: 'Tránsito normal para clases, buses y motos.' };
+      if (code <= 48) return { label: 'Neblina', verdict: 'Precaución por neblina en vía', risk: 'Moderado', tip: 'Conduce con luces encendidas.' };
+      if (code <= 67) return { label: 'Lluvia ligera/moderada', verdict: 'Lleva paraguas o poncho impermeable', risk: 'Moderado', tip: 'Calzada húmeda; sal con unos minutos de anticipación.' };
+      return { label: 'Lluvia fuerte / Tormenta', verdict: 'Lluvia intensa — Toma precauciones', risk: 'Alto', tip: 'Evita zonas bajas inundables y resguarda tus pertenencias.' };
+    }
+
+    async function loadMobileWeather(city, lat, lon, btn) {
+      if (btn) {
+        document.querySelectorAll('#view-clima .pill-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+      document.getElementById('mCityTitle').textContent = city;
+      try {
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&hourly=precipitation_probability&forecast_days=1&timezone=auto`);
+        const data = await res.json();
+        const temp = Math.round(data.current.temperature_2m);
+        const rain = Math.max(...data.hourly.precipitation_probability.slice(0, 6));
+        const inf = mWeatherInfo(data.current.weather_code);
+
+        document.getElementById('mTemp').textContent = `${temp}°C`;
+        document.getElementById('mRain').textContent = `${rain}%`;
+        document.getElementById('mRisk').textContent = inf.risk;
+        document.getElementById('mVerdictHead').textContent = `${inf.verdict} (${temp}°C)`;
+        document.getElementById('mVerdictText').textContent = `${inf.label}. Probabilidad de lluvia: ${rain}%. ${inf.tip}`;
+      } catch (e) {
+        document.getElementById('mTemp').textContent = '27°C';
+        document.getElementById('mRain').textContent = '30%';
+        document.getElementById('mVerdictHead').textContent = 'Tiempo estable con nubosidad parcial';
+        document.getElementById('mVerdictText').textContent = 'Modo offline: condiciones habituales en El Oro.';
+      }
+    }
+
+    function addMChat(who, html) {
+      const box = document.getElementById('mChatBox');
+      const div = document.createElement('div');
+      div.className = `m-msg ${who === 'user' ? 'm-user' : 'm-ai'}`;
+      div.innerHTML = html;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function mQuickAsk(q) {
+      switchTab('ai');
+      processMobileAI(q);
+    }
+
+    function handleMobileChat(e) {
+      e.preventDefault();
+      const inp = document.getElementById('mAiInput');
+      const q = inp.value.trim();
+      if (!q) return;
+      inp.value = '';
+      processMobileAI(q);
+    }
+
+    async function processMobileAI(question) {
+      const st = getMState();
+      if (st.used >= M_LIMIT) {
+        addMChat('user', question);
+        addMChat('ai', '⚠️ <strong>Agotaste tus 10 tokens diarios gratuitos.</strong> Vuelve mañana para recibir 10 nuevos tokens o activa Plan Plus.');
+        return;
+      }
+
+      st.used += 1;
+      localStorage.setItem(M_KEY, JSON.stringify(st));
+      updateMTokenUI();
+      const left = M_LIMIT - st.used;
+
+      addMChat('user', question);
+      const qLow = question.toLowerCase();
+
+      const localSchool = M_SCHOOLS.find(s =>
+        (qLow.includes('carmen mora') && s.name.toLowerCase().includes('carmen mora')) ||
+        (qLow.includes('ochoa') && s.name.toLowerCase().includes('ochoa')) ||
+        (qLow.includes('agropecuario') && s.name.toLowerCase().includes('agropecuario')) ||
+        (qLow.includes('buenavista') && s.name.toLowerCase().includes('buenavista')) ||
+        (qLow.includes('casacay') && s.name.toLowerCase().includes('casacay')) ||
+        (qLow.includes('peaña') && s.name.toLowerCase().includes('peaña'))
+      );
 
       try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${spot.lat}&longitude=${spot.lon}&current=temperature_2m,precipitation,weather_code,wind_speed_10m,is_day&daily=uv_index_max,precipitation_probability_max&timezone=auto`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("Error API");
-        const data = await res.json();
+        if (localSchool) {
+          const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${localSchool.lat}&longitude=${localSchool.lon}&current=temperature_2m,weather_code&hourly=precipitation_probability&forecast_days=1&timezone=auto`);
+          const data = await res.json();
+          const temp = Math.round(data.current.temperature_2m);
+          const rain = Math.max(...data.hourly.precipitation_probability.slice(0, 6));
+          const inf = mWeatherInfo(data.current.weather_code);
 
-        const temp = Math.round(data.current.temperature_2m);
-        const wind = Math.round(data.current.wind_speed_10m);
-        const rainNow = data.current.precipitation;
-        const rainProb = data.daily?.precipitation_probability_max?.[0] ?? 0;
-        const uv = data.daily?.uv_index_max?.[0] ?? 6;
-        const info = weatherCodeToInfo(data.current.weather_code, data.current.is_day);
-
-        document.getElementById('tSpotMeta').innerHTML = `
-          <span class="tourist-chip">${info.icon} ${temp}°C (${info.text})</span>
-          <span class="tourist-chip">💧 Lluvia: ${rainProb}%</span>
-          <span class="tourist-chip">💨 Viento: ${wind} km/h</span>
-          <span class="tourist-chip">☀️ UV Máx: ${uv}</span>
-        `;
-
-        if (currentCategory === 'beaches') {
-          if (rainNow > 0.5 || rainProb >= 65) {
-            badge.className = "badge-status badge-bad";
-            badge.textContent = "Playa con lluvia";
-            document.getElementById('tSpotVerdict').textContent =
-              `Hoy ${spot.name} presenta alta probabilidad de lluvia (${rainProb}%) y cielo ${info.text.toLowerCase()}. ${spot.note} Si vas, lleva rompevientos y precaución con el oleaje.`;
-          } else if (wind >= 24) {
-            badge.className = "badge-status badge-warn";
-            badge.textContent = "Viento / Oleaje activo";
-            document.getElementById('tSpotVerdict').textContent =
-              `${spot.name} está a ${temp}°C con vientos de ${wind} km/h (ideal para surf o parapente, precaución al nadar mar adentro). ${spot.note}`;
-          } else {
-            badge.className = "badge-status badge-good";
-            badge.textContent = "Playa Ideal Hoy";
-            document.getElementById('tSpotVerdict').textContent =
-              `¡Excelente día para visitar ${spot.name}! Temperatura de ${temp}°C, ${info.text.toLowerCase()} y brisa suave (${wind} km/h). ${spot.note} Usa bloqueador (UV ${uv}).`;
-          }
-        } else if (currentCategory === 'rivers') {
-          if (rainNow > 0.3 || rainProb >= 60) {
-            badge.className = "badge-status badge-bad";
-            badge.textContent = "Precaución Creciente";
-            document.getElementById('tSpotVerdict').textContent =
-              `Alerta en ${spot.name} (${spot.area}): se registran lluvias o probabilidad alta (${rainProb}%). Evita zonas profundas o piedras resbalosas ante posibles crecidas del caudal. ${spot.note}`;
-          } else {
-            badge.className = "badge-status badge-good";
-            badge.textContent = "Río Apto Hoy";
-            document.getElementById('tSpotVerdict').textContent =
-              `${spot.name} está en buenas condiciones para balneario hoy (${temp}°C, ${info.text.toLowerCase()}, lluvia ${rainProb}%). ${spot.note}`;
-          }
-        } else {
-          badge.className = "badge-status badge-good";
-          badge.textContent = "Clima Ideal";
-          document.getElementById('tSpotVerdict').textContent =
-            `Especialidad: ${spot.dish} El clima actual en ${spot.area} está a ${temp}°C (${info.text.toLowerCase()}, lluvia ${rainProb}%), perfecto para planificar tu visita.`;
+          addMChat('ai', `🏫 <strong>${localSchool.name}</strong><br>📍 ${localSchool.sector}<br>• <strong>Clima:</strong> ${inf.label} (${temp}°C, lluvia ${rain}%).<br>• <strong>Estado:</strong> ${localSchool.status}. ${inf.tip}<br><span style="font-size:0.74rem; color:var(--cyan);">⚡ Quedan ${left}/10 tokens hoy.</span>`);
+          return;
         }
+
+        let target = question.replace(/¿|\?|!|¡/g, '').replace(/^(cómo está|como esta|cómo están|como estan|clima en)\s+/gi, '').trim();
+        const enMatch = target.match(/\ben\s+([a-záéíóúñü\s,]+)$/i);
+        const isSchool = /colegio|escuela|unidad educativa|instituto/i.test(question);
+        const searchCity = enMatch ? enMatch[1].trim() : (isSchool ? 'Pasaje, Ecuador' : target);
+
+        const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchCity)}&count=1&language=es&format=json`);
+        const geo = await geoRes.json();
+
+        if (!geo.results || !geo.results.length) {
+          addMChat('ai', `🔎 No ubiqué "<strong>${target}</strong>". Prueba añadiendo la ciudad o país (ej. <em>"¿Cómo está el colegio San José en Quito?"</em>).<br><span style="font-size:0.74rem; color:var(--cyan);">⚡ Quedan ${left}/10 tokens hoy.</span>`);
+          return;
+        }
+
+        const p = geo.results[0];
+        const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.latitude}&longitude=${p.longitude}&current=temperature_2m,weather_code&hourly=precipitation_probability&forecast_days=1&timezone=auto`);
+        const wData = await wRes.json();
+        const temp = Math.round(wData.current.temperature_2m);
+        const rain = Math.max(...wData.hourly.precipitation_probability.slice(0, 6));
+        const inf = mWeatherInfo(wData.current.weather_code);
+
+        addMChat('ai', `🌍 <strong>${p.name}, ${p.country || ''}</strong><br>• <strong>Veredicto:</strong> ${inf.verdict} (${temp}°C, lluvia ${rain}%).<br>• <strong>Guía:</strong> ${inf.tip}<br><span style="font-size:0.74rem; color:var(--cyan);">⚡ Quedan ${left}/10 tokens hoy.</span>`);
       } catch (e) {
-        badge.className = "badge-status badge-warn";
-        badge.textContent = "Sin datos en vivo";
-        document.getElementById('tSpotVerdict').textContent =
-          `${spot.dish || spot.note} No se pudo conectar con el servidor climático en este momento.`;
+        addMChat('ai', `📡 Sin conexión satelital ahora mismo. En Pasaje se mantiene clima estable (27°C).<br><span style="font-size:0.74rem; color:var(--cyan);">⚡ Quedan ${left}/10 tokens hoy.</span>`);
       }
     }
 
-    function openSelectedOnMap() {
-      if (!currentSelectedSpot) return;
-      currentLat = currentSelectedSpot.lat;
-      currentLon = currentSelectedSpot.lon;
-      const mapBtn = document.querySelector('.nav-item[data-view="map"]');
-      switchView('map', mapBtn);
-      updateMapMarker(
-        currentSelectedSpot.lat,
-        currentSelectedSpot.lon,
-        `${currentSelectedSpot.name} (${currentSelectedSpot.area})`
-      );
-    }
-
-    // ==========================================
-    // MAPA INTERACTIVO (PIN VECTORIAL APTO APK)
-    // ==========================================
-    function getPinIcon() {
-      return L.divIcon({
-        className: 'custom-pin',
-        html: '📍',
-        iconSize: [28, 28],
-        iconAnchor: [14, 28],
-        popupAnchor: [0, -26]
-      });
-    }
-
-    function initMap() {
-      if (typeof L === 'undefined' || map) return;
-      map = L.map('weatherMap').setView([currentLat, currentLon], 11);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap'
-      }).addTo(map);
-
-      activeMarker = L.marker([currentLat, currentLon], { icon: getPinIcon() })
-        .addTo(map)
-        .bindPopup(currentMapLabel)
-        .openPopup();
-    }
-
-    function updateMapMarker(lat, lon, label) {
-      currentLat = lat;
-      currentLon = lon;
-      currentMapLabel = label;
-      document.getElementById('mapTargetLabel').textContent = label.split(':')[0];
-
-      if (!map) initMap();
-      if (!map || typeof L === 'undefined') return;
-
-      map.setView([lat, lon], 12);
-      if (activeMarker) {
-        activeMarker.setLatLng([lat, lon]).setPopupContent(label).openPopup();
-      } else {
-        activeMarker = L.marker([lat, lon], { icon: getPinIcon() }).addTo(map).bindPopup(label).openPopup();
-      }
-    }
-
-    function selectPlan(planName) {
-      showToast(`Has seleccionado el Plan ${planName} de NimboSignal`);
-    }
+    updateMTokenUI();
+    renderMobileSchools();
+    loadMobileWeather('Pasaje, Ecuador', -3.3256, -79.8069);
   </script>
 </body>
 </html>
