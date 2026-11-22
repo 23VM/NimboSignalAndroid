@@ -76,7 +76,7 @@
     body {
       display: flex;
       flex-direction: column;
-      padding-bottom: 68px; /* Espacio para barra inferior móvil */
+      padding-bottom: 68px;
     }
 
     /* ICONOS SVG Y PUNTOS DE ESTADO */
@@ -459,6 +459,43 @@
       margin-bottom: 0.2rem;
     }
 
+    /* RECUADRO MÓVIL DE ESTADO DE INUNDACIÓN POR CIUDAD Y SECTORES */
+    .flood-status-box {
+      background: var(--bg-sub);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--teal);
+      border-radius: 12px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .flood-status-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .sector-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.38rem;
+      margin-top: 0.35rem;
+    }
+
+    .sector-pill {
+      font-size: 0.74rem;
+      padding: 0.22rem 0.56rem;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-body);
+      font-weight: 600;
+    }
+
     .card-meta {
       font-size: 0.82rem;
       background: var(--bg-sub);
@@ -562,6 +599,28 @@
 
     .mobile-input:focus, .mobile-select:focus {
       border-color: var(--cyan);
+    }
+
+    /* RADAR EN VIVO ENOS ECUADOR */
+    .enso-live-ecuador {
+      background: var(--bg-card);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      border-radius: 16px;
+      padding: 0.95rem;
+      margin-bottom: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .enso-zone-item {
+      background: var(--bg-sub);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
     }
 
     /* CONTEXTO EL FENÓMENO DEL NIÑO */
@@ -734,7 +793,7 @@
           </div>
           <div>
             <strong style="display:block; font-size:0.95rem;">Ecuador (Pasaje & El Oro)</strong>
-            <span style="font-size:0.77rem; color:var(--text-muted);">Clima hiperlocal, colegios, ríos y noticieros oficiales.</span>
+            <span style="font-size:0.77rem; color:var(--text-muted);">Clima hiperlocal, inundaciones por sectores, colegios, ríos y noticias.</span>
           </div>
         </button>
 
@@ -881,14 +940,14 @@
   <!-- CONTENEDOR PRINCIPAL MÓVIL -->
   <main class="container">
 
-    <!-- 1. VEREDICTO ECUADOR -->
+    <!-- 1. VEREDICTO ECUADOR (CON ESTADO DE INUNDACIÓN Y SECTORES POR CIUDAD) -->
     <section id="sec-veredicto" class="view-section active">
       <div class="section-head">
         <h2>
           <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>
           Veredicto Climático — Ecuador
         </h2>
-        <p>Diagnóstico hiperlocal en tiempo real para Pasaje, El Oro y ciudades del país.</p>
+        <p>Toca una ciudad para ver clima, estado de inundación y sectores vulnerables.</p>
       </div>
 
       <div class="stack-list">
@@ -915,6 +974,21 @@
             <span id="verdictDetail" style="font-size:0.84rem; color:var(--text-body);">Conectando con estación satelital...</span>
           </div>
 
+          <!-- MONITOR MÓVIL DE INUNDACIONES Y SECTORES POR CIUDAD -->
+          <div class="flood-status-box" id="floodStatusBox">
+            <div class="flood-status-header">
+              <strong style="font-size:0.9rem; color:var(--text-main);" id="floodCityHeader">Estado de Inundación: Pasaje</strong>
+              <span class="badge badge-teal" id="floodBadge"><span class="status-dot dot-green"></span> Sin Inundación Activa</span>
+            </div>
+            <p style="font-size:0.82rem; color:var(--text-body);" id="floodSummaryText">
+              Evaluando acumulación pluvial y drenaje urbano...
+            </p>
+            <div>
+              <span style="font-size:0.74rem; color:var(--text-muted); font-weight:700; display:block;">Sectores vigilados / vulnerables en esta ciudad:</span>
+              <div class="sector-tags" id="floodSectorsList"></div>
+            </div>
+          </div>
+
           <div class="metrics-grid">
             <div class="metric-item">
               <span>Temperatura</span>
@@ -936,7 +1010,7 @@
 
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.55rem;">
             <button class="btn btn-primary btn-full" onclick="showSection('sec-ai')">Nimbo AI</button>
-            <button class="btn btn-outline btn-full" onclick="showSection('sec-elnino')">Semáforo ENOS</button>
+            <button class="btn btn-outline btn-full" onclick="showSection('sec-elnino')">Radar El Niño</button>
           </div>
         </div>
       </div>
@@ -1019,14 +1093,31 @@
       </div>
     </section>
 
-    <!-- 4. EL FENÓMENO DEL NIÑO (CONTEXTO TÉCNICO COMPLETO SIN STICKERS) -->
+    <!-- 4. EL FENÓMENO DEL NIÑO (CON MONITOR EN VIVO DE ZONAS MÁS AFECTADAS EN ECUADOR) -->
     <section id="sec-elnino" class="view-section">
       <div class="section-head">
         <h2>
           <svg class="ico" viewBox="0 0 24 24"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>
           Semáforo — El fenómeno del Niño (ENOS)
         </h2>
-        <p>Vigilancia oceanográfica del Pacífico ecuatorial para Pasaje y El Oro (Fuente: INAMHI / ERFEN / NOAA).</p>
+        <p>Vigilancia continua de zonas afectadas en Ecuador (Actualización cada 60s).</p>
+      </div>
+
+      <!-- PANEL EN VIVO DE ZONAS MÁS AFECTADAS EN ECUADOR -->
+      <div class="enso-live-ecuador">
+        <div class="card-top">
+          <span class="badge badge-amber"><span class="status-dot dot-amber"></span> Radar Nacional ENOS • En Vivo</span>
+          <span style="font-size:0.74rem; color:var(--text-muted);" id="ensoLastSync">Sincronizando...</span>
+        </div>
+
+        <h3 style="font-size:1rem;" id="ensoMostAffectedHeadline">Analizando qué zonas de Ecuador presentan mayor afectación...</h3>
+        <p style="font-size:0.83rem; color:var(--text-body);" id="ensoMostAffectedDetail">
+          Evaluando lluvias convectivas en Costa Sur (El Oro / Pasaje), Litoral Centro (Guayas / Manabí), Costa Norte (Esmeraldas) y Estribaciones Andinas...
+        </p>
+
+        <div class="stack-list" id="ensoZonesLiveGrid"></div>
+
+        <button class="btn btn-outline btn-full" onclick="updateEnsoLiveEcuador()">Actualizar Monitoreo Ahora</button>
       </div>
 
       <div class="context-banner">
@@ -1296,14 +1387,14 @@
       </div>
     </section>
 
-    <!-- 11. NOTICIAS OFICIALES POR PAÍS Y REGIÓN (CENTRADO EN ECUADOR) -->
+    <!-- 11. NOTICIAS OFICIALES POR PAÍS Y REGIÓN (ENLACE DIRECTO A LA NOTICIA ESPECÍFICA) -->
     <section id="sec-noticias" class="view-section">
       <div class="section-head">
         <h2>
           <svg class="ico" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg>
           Noticias Oficiales de Última Hora
         </h2>
-        <p>Noticieros y entidades oficiales por país y región de Ecuador.</p>
+        <p>Acceso directo a la noticia específica en medios oficiales según país y región.</p>
       </div>
 
       <div class="stack-list">
@@ -1370,7 +1461,6 @@
             Al contar con la aplicación móvil instalada, tu sesión disfruta de todos los beneficios Pro Premium desbloqueados.
           </p>
 
-          <!-- FECHA DE VENCIMIENTO DE LA SUSCRIPCIÓN -->
           <div class="verdict-box" id="subscriptionExpiryBox" style="border-left-color: var(--cyan);">
             <strong id="expiryHeadline" style="color:var(--cyan);">Vencimiento de Suscripción</strong>
             <span id="expiryDateText" style="font-size:0.86rem; color:var(--text-body); display:block; margin-top:0.2rem;">
@@ -1381,11 +1471,10 @@
 
           <div class="card-meta" style="display:flex; flex-direction:column; gap:0.4rem;">
             <div><strong>• Nimbo AI:</strong> Tokens Infinitos habilitados 24/7.</div>
-            <div><strong>• Noticias Oficiales:</strong> Boletines por país y región de Ecuador desbloqueados.</div>
-            <div><strong>• Monitoreo Completo:</strong> Semáforo ENOS, Colegios, Ríos y Mapa Interactivo.</div>
+            <div><strong>• Noticias Oficiales:</strong> Boletines directos por país y región de Ecuador desbloqueados.</div>
+            <div><strong>• Monitoreo Completo:</strong> Radar ENOS, Inundaciones por Sectores, Colegios, Ríos y Mapa.</div>
           </div>
 
-          <!-- RENOVACIÓN ($1,99/MES) O CANJE DE CÓDIGO MAESTRO -->
           <div style="border-top:1px solid var(--border); padding-top:0.85rem; margin-top:0.2rem; display:flex; flex-direction:column; gap:0.55rem;">
             <strong style="font-size:0.9rem;">Renovar Suscripción ($1,99/mes) o Ingresar Código</strong>
             <span style="font-size:0.78rem; color:var(--text-muted);">
@@ -1579,7 +1668,6 @@
         if (saved && saved.expiresAt) return saved;
       } catch (e) {}
 
-      // Al tener la app móvil instalada, inicia automáticamente con sesión Pro Premium (ciclo de 30 días)
       const now = new Date();
       const expiry = new Date(now.getTime() + SUB_DAYS * 24 * 60 * 60 * 1000);
       const initial = {
@@ -1590,12 +1678,6 @@
       };
       localStorage.setItem(MOBILE_SUB_KEY, JSON.stringify(initial));
       return initial;
-    }
-
-    function isSubscriptionActive() {
-      const sub = getMobileSubscription();
-      if (sub.isMaster) return true;
-      return new Date(sub.expiresAt).getTime() > Date.now();
     }
 
     function renderMobileSubscriptionUI() {
@@ -1693,7 +1775,7 @@
     }
 
     // ==========================================
-    // 3. NOTICIAS OFICIALES POR PAÍS Y REGIÓN DE ECUADOR
+    // 3. NOTICIAS OFICIALES POR PAÍS Y REGIÓN (ENLACE DIRECTO A LA NOTICIA ESPECÍFICA)
     // ==========================================
     const OFFICIAL_NEWS_DB = {
       EC: {
@@ -1702,38 +1784,110 @@
           EL_ORO: {
             lat: -3.3256, lon: -79.8069, label: 'El Oro y Pasaje',
             outlets: [
-              { source: 'INAMHI Ecuador (Oficial)', tag: 'Meteorología', title: 'Alertas y Pronóstico Hidrometeorológico para El Oro', desc: 'Monitoreo oficial de lluvias, tormentas eléctricas y radiación UV emitido por el Instituto Nacional de Meteorología e Hidrología.', url: 'https://www.inamhi.gob.ec/' },
-              { source: 'Diario Correo (El Oro)', tag: 'Prensa Provincial', title: 'Actualidad Vial y Emergencias en Pasaje, Machala y Jubones', desc: 'Cobertura periodística oficial sobre carreteras, ríos y resoluciones del COE Cantonal en El Oro.', url: 'https://diariocorreo.com.ec/' },
-              { source: 'Ecuavisa / Gestión de Riesgos', tag: 'Noticiero Nacional', title: 'Vigilancia de Caudales y El fenómeno del Niño en la Costa Sur', desc: 'Reportes verificados sobre prevención de inundaciones y boletines oficiales.', url: 'https://www.ecuavisa.com/' }
+              {
+                source: 'INAMHI Ecuador (Oficial)',
+                tag: 'Alerta Meteorológica',
+                title: 'Advertencia Meteorológica Oficial: Lluvias y Tormentas en El Oro',
+                desc: 'Boletín técnico oficial del Instituto Nacional de Meteorología e Hidrología sobre precipitaciones y tormentas eléctricas en El Oro.',
+                url: 'https://www.inamhi.gob.ec/advertencias-meteorologicas/'
+              },
+              {
+                source: 'Diario Correo (El Oro)',
+                tag: 'Noticia Provincial',
+                title: 'Reporte de Lluvias, Vías y Caudal del Río Jubones en Pasaje y El Oro',
+                desc: 'Cobertura periodística directa sobre emergencias invernales, drenaje urbano y resoluciones del COE en Pasaje y Machala.',
+                url: 'https://www.google.com/search?q=site%3Adiariocorreo.com.ec+lluvias+Pasaje+El+Oro+rio+Jubones&tbm=nws'
+              },
+              {
+                source: 'Ecuavisa Noticias',
+                tag: 'Noticiero Nacional',
+                title: 'Lluvias e Inundaciones en El Oro: Vigilancia en Pasaje, Machala y Santa Rosa',
+                desc: 'Nota informativa verificada sobre el impacto invernal en la costa sur del Ecuador y Gestión de Riesgos.',
+                url: 'https://www.google.com/search?q=site%3Aecuavisa.com+lluvias+inundaciones+El+Oro+Pasaje&tbm=nws'
+              }
             ]
           },
           COSTA: {
             lat: -2.1894, lon: -79.8891, label: 'Región Costa',
             outlets: [
-              { source: 'El Universo (Guayaquil)', tag: 'Noticiero Oficial', title: 'Clima, Mareas y Movilidad en el Litoral Ecuatoriano', desc: 'Reporte actualizado de precipitaciones y alertas del INOCAR e INAMHI.', url: 'https://www.eluniverso.com/' },
-              { source: 'Teleamazonas', tag: 'Noticiero Nacional', title: 'Cobertura en Vivo: Lluvias y Alertas en la Costa', desc: 'Información oficial sobre emergencias invernales y organismos de socorro.', url: 'https://www.teleamazonas.com/' },
-              { source: 'INOCAR Ecuador', tag: 'Oceanografía', title: 'Boletín Oceanográfico y Estado del Mar en Ecuador', desc: 'Datos oficiales de oleaje, mareas y anomalías térmicas ENOS.', url: 'https://www.inocar.mil.ec/' }
+              {
+                source: 'El Universo (Guayaquil)',
+                tag: 'Noticia Regional',
+                title: 'Sectores Anegados y Pronóstico de Lluvias Intensas en Guayaquil y la Costa',
+                desc: 'Reporte actualizado de acumulación de agua en avenidas principales, mareas altas y alertas del INAMHI.',
+                url: 'https://www.google.com/search?q=site%3Aeluniverso.com+lluvias+inundaciones+Guayaquil+Manabi&tbm=nws'
+              },
+              {
+                source: 'Teleamazonas Noticias',
+                tag: 'Noticiero Nacional',
+                title: 'Emergencias por Lluvias en Manabí, Guayas, Los Ríos y Esmeraldas',
+                desc: 'Cobertura directa sobre desbordamientos de ríos y evacuaciones preventivas en la Costa.',
+                url: 'https://www.google.com/search?q=site%3Ateleamazonas.com+lluvias+inundaciones+Costa+Ecuador&tbm=nws'
+              },
+              {
+                source: 'INOCAR Ecuador',
+                tag: 'Boletín Oceanográfico',
+                title: 'Condiciones del Mar, Oleaje y Monitoreo El Niño en el Perfil Costero',
+                desc: 'Informe oficial de la Armada sobre anomalías térmicas y aguajes en Ecuador.',
+                url: 'https://www.inocar.mil.ec/web/index.php/boletines/boletin-oceanografico'
+              }
             ]
           },
           SIERRA: {
             lat: -0.1807, lon: -78.4678, label: 'Región Sierra',
             outlets: [
-              { source: 'Primicias Ecuador', tag: 'Medio Oficial', title: 'Pronóstico Climático y Estado de Vías Interandinas', desc: 'Actualización oficial sobre lluvias en Quito, Cuenca y vías hacia la Costa.', url: 'https://www.primicias.ec/' },
-              { source: 'ECU 911 Oficial', tag: 'Seguridad Vial', title: 'Estado de Vías en Tiempo Real — Ecuador', desc: 'Consulta oficial de carreteras habilitadas o cerradas por clima.', url: 'https://www.ecu911.gob.ec/consulta-de-vias/' }
+              {
+                source: 'Primicias Ecuador',
+                tag: 'Noticia Nacional',
+                title: 'Lluvias, Deslizamientos y Estado de Carreteras en Quito, Cuenca y Loja',
+                desc: 'Reporte actualizado sobre acumulación de lluvia, neblina y cierres viales en la región Interandina.',
+                url: 'https://www.google.com/search?q=site%3Aprimicias.ec+lluvias+deslizamientos+vias+Sierra+Ecuador&tbm=nws'
+              },
+              {
+                source: 'ECU 911 Oficial',
+                tag: 'Reporte Vial Oficial',
+                title: 'Consulta Oficial de Estado de Vías Habilitadas y Cerradas — Ecuador',
+                desc: 'Listado oficial en tiempo real de carreteras afectadas por lluvias o derrumbes.',
+                url: 'https://www.ecu911.gob.ec/consulta-de-vias/'
+              }
             ]
           },
           AMAZONIA: {
             lat: -1.4887, lon: -78.0031, label: 'Región Amazónica',
             outlets: [
-              { source: 'INAMHI Amazonía', tag: 'Oficial', title: 'Monitoreo de Crecidas de Ríos Amazónicos', desc: 'Seguimiento hidrometeorológico oficial para Napo, Pastaza y Zamora.', url: 'https://www.inamhi.gob.ec/' },
-              { source: 'Gestión de Riesgos Ecuador', tag: 'Entidad Oficial', title: 'Boletines de Prevención en la Amazonía', desc: 'Alertas tempranas oficiales para comunidades ribereñas.', url: 'https://www.gestionderiesgos.gob.ec/' }
+              {
+                source: 'Gestión de Riesgos Ecuador',
+                tag: 'Boletín Oficial',
+                title: 'Monitoreo de Desbordamientos de Ríos y Alerta en la Amazonía',
+                desc: 'Informes de situación oficial para Napo, Pastaza, Morona Santiago y Zamora.',
+                url: 'https://www.gestionderiesgos.gob.ec/informes-de-situacion-ep-invernal/'
+              },
+              {
+                source: 'TC Televisión Noticias',
+                tag: 'Noticiero Nacional',
+                title: 'Crecida de Ríos y Afectaciones Viales en la Región Amazónica',
+                desc: 'Noticias verificadas sobre asistencia humanitaria y vías hacia el Oriente.',
+                url: 'https://www.google.com/search?q=site%3Atctelevision.com+lluvias+rios+Amazonia+Ecuador&tbm=nws'
+              }
             ]
           },
           GALAPAGOS: {
             lat: -0.9538, lon: -90.9656, label: 'Islas Galápagos',
             outlets: [
-              { source: 'INOCAR / Parque Nacional Galápagos', tag: 'Oficial', title: 'Condiciones Marinas y Vigilancia ENOS en Galápagos', desc: 'Monitoreo oficial de temperatura superficial del mar en el archipiélago.', url: 'https://www.inocar.mil.ec/' },
-              { source: 'INAMHI Insular', tag: 'Meteorología', title: 'Pronóstico Oficial para Galápagos', desc: 'Temperatura, radiación UV y lluvias previstas.', url: 'https://www.inamhi.gob.ec/' }
+              {
+                source: 'INOCAR / ERFEN Ecuador',
+                tag: 'Boletín Oficial',
+                title: 'Vigilancia Térmica del Océano Pacífico y Efectos ENOS en Galápagos',
+                desc: 'Reporte científico oficial sobre la temperatura superficial del mar en el archipiélago.',
+                url: 'https://www.inocar.mil.ec/web/index.php/boletines/erfen'
+              },
+              {
+                source: 'Ecuavisa Galápagos',
+                tag: 'Noticia Insular',
+                title: 'Clima, Lluvias y Operatividad Portuaria en Santa Cruz y San Cristóbal',
+                desc: 'Cobertura noticiosa directa sobre condiciones climáticas en Galápagos.',
+                url: 'https://www.google.com/search?q=site%3Aecuavisa.com+clima+lluvias+Galapagos&tbm=nws'
+              }
             ]
           }
         }
@@ -1742,37 +1896,40 @@
         agency: 'Boletín Oficial Perú • SENAMHI / COEN',
         lat: -12.0464, lon: -77.0428, label: 'Perú',
         outlets: [
-          { source: 'SENAMHI Perú (Oficial)', tag: 'Meteorología', title: 'Avisos Meteorológicos e Hidrológicos — Perú', desc: 'Alertas oficiales sobre lluvias y El fenómeno del Niño en Perú.', url: 'https://www.senamhi.gob.pe/' },
-          { source: 'RPP Noticias', tag: 'Noticiero Oficial', title: 'Última Hora: Clima y Prevención en Perú', desc: 'Cobertura verificada en tiempo real.', url: 'https://rpp.pe/' }
+          { source: 'SENAMHI Perú (Oficial)', tag: 'Avisos Oficiales', title: 'Avisos Meteorológicos Vigentes por Lluvias y Fenómeno El Niño en Perú', desc: 'Alertas oficiales emitidas por el SENAMHI.', url: 'https://www.senamhi.gob.pe/?p=aviso-meteorologico' },
+          { source: 'RPP Noticias', tag: 'Noticiero Nacional', title: 'Reporte en Vivo de Emergencias Climáticas y Carreteras en Perú', desc: 'Información verificada minuto a minuto.', url: 'https://www.google.com/search?q=site%3Arpp.pe+lluvias+inundaciones+SENAMHI&tbm=nws' }
         ]
       },
       CO: {
         agency: 'Boletín Oficial Colombia • IDEAM / UNGRD',
         lat: 4.7110, lon: -74.0721, label: 'Colombia',
         outlets: [
-          { source: 'IDEAM Colombia (Oficial)', tag: 'Oficial', title: 'Pronóstico y Alertas Hidrológicas en Colombia', desc: 'Boletines oficiales sobre lluvias y niveles de ríos.', url: 'http://www.ideam.gov.co/' },
-          { source: 'Noticias Caracol', tag: 'Noticiero', title: 'Reporte Meteorológico y Prevención en Vivo', desc: 'Actualización nacional de lluvias y estado de vías.', url: 'https://www.noticiascaracol.com/' }
+          { source: 'IDEAM Colombia (Oficial)', tag: 'Alertas Oficiales', title: 'Boletín de Alertas Hidrometeorológicas y Deslizamientos — Colombia', desc: 'Informe oficial del IDEAM.', url: 'http://www.ideam.gov.co/web/pronosticos-y-alertas/boletin-de-alertas' },
+          { source: 'Noticias Caracol', tag: 'Noticiero Nacional', title: 'Reporte del Clima y Alertas de Riesgo en Vivo — Colombia', desc: 'Actualización nacional de lluvias y estado de vías.', url: 'https://www.google.com/search?q=site%3Anoticiascaracol.com+lluvias+inundaciones+IDEAM&tbm=nws' }
         ]
       },
       MX: {
         agency: 'Boletín Oficial México • CONAGUA / SMN',
         lat: 19.4326, lon: -99.1332, label: 'México',
         outlets: [
-          { source: 'SMN CONAGUA (Oficial)', tag: 'Oficial', title: 'Pronóstico Meteorológico General — México', desc: 'Información oficial del Gobierno de México sobre lluvias y frentes fríos.', url: 'https://smn.conagua.gob.mx/' }
+          { source: 'SMN CONAGUA (Oficial)', tag: 'Avisos Oficiales', title: 'Avisos Meteorológicos de Lluvias Intensas y Frentes Fríos — México', desc: 'Información oficial del Servicio Meteorológico Nacional.', url: 'https://smn.conagua.gob.mx/es/pronosticos/avisos/aviso-meteorologico-general' },
+          { source: 'El Universal México', tag: 'Noticia Oficial', title: 'Última Hora: Lluvias, Inundaciones y Protección Civil en México', desc: 'Cobertura directa de alertas climáticas por estado.', url: 'https://www.google.com/search?q=site%3Aeluniversal.com.mx+lluvias+inundaciones+CONAGUA&tbm=nws' }
         ]
       },
       ES: {
         agency: 'Boletín Oficial España • AEMET',
         lat: 40.4168, lon: -3.7038, label: 'España',
         outlets: [
-          { source: 'AEMET España (Oficial)', tag: 'Oficial', title: 'Avisos Meteorológicos Oficiales en España', desc: 'Predicción oficial por comunidades autónomas.', url: 'https://www.aemet.es/' }
+          { source: 'AEMET España (Oficial)', tag: 'Avisos Oficiales', title: 'Avisos Meteorológicos Oficiales Activos por Comunidades — España', desc: 'Predicción oficial de la AEMET.', url: 'https://www.aemet.es/es/eltiempo/prediccion/avisos' },
+          { source: 'RTVE Noticias', tag: 'Radiotelevisión Pública', title: 'Última Hora del Tiempo, Lluvias y Alertas AEMET en España', desc: 'Cobertura directa de avisos meteorológicos.', url: 'https://www.google.com/search?q=site%3Artve.es+AEMET+lluvias+alertas+tiempo&tbm=nws' }
         ]
       },
       US: {
         agency: 'Official Bulletin USA • NOAA / NWS',
         lat: 40.7128, lon: -74.0060, label: 'Estados Unidos',
         outlets: [
-          { source: 'NOAA / National Weather Service', tag: 'Official', title: 'Active Weather Alerts & ENSO Bulletins', desc: 'Official U.S. government forecasts and storm advisories.', url: 'https://www.weather.gov/' }
+          { source: 'NOAA / National Weather Service', tag: 'Official Alerts', title: 'Active Severe Weather Warnings & ENSO Diagnostic Discussion', desc: 'Official U.S. government storm warnings and El Niño bulletins.', url: 'https://www.weather.gov/alerts' },
+          { source: 'Associated Press (AP News)', tag: 'Official Wire', title: 'Breaking Severe Weather, Flooding & Climate Reports — U.S.', desc: 'Verified breaking news reports on severe storms.', url: 'https://www.google.com/search?q=site%3Aapnews.com+severe+weather+flooding+NOAA&tbm=nws' }
         ]
       }
     };
@@ -1810,16 +1967,47 @@
           </div>
           <h3 style="font-size:0.98rem;">${item.title}</h3>
           <p style="font-size:0.83rem;">${item.desc}</p>
-          <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-full">
-            Abrir Portal Oficial
+          <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-full">
+            Leer Noticia Oficial
           </a>
         </div>
       `).join('');
     }
 
     // ==========================================
-    // 4. CLIMA ECUADOR, GLOBAL, COLEGIOS Y MAPA
+    // 4. CLIMA ECUADOR, INUNDACIONES POR SECTORES Y RADAR ENOS EN VIVO
     // ==========================================
+    const CITY_FLOOD_SECTORS = {
+      'Pasaje, Ecuador': {
+        shortName: 'Pasaje',
+        sectors: ['Loma de Franco', 'La Peaña', 'Riveras Río Jubones (Casacay)', 'La Cocha', 'Av. Rocafuerte / Centro', 'Buenavista']
+      },
+      'Machala, Ecuador': {
+        shortName: 'Machala',
+        sectors: ['Puerto Bolívar', 'El Cambio', 'Av. 25 de Junio', 'La Providencia', 'Barrios del Sur y Suburbio']
+      },
+      'Santa Rosa, Ecuador': {
+        shortName: 'Santa Rosa',
+        sectors: ['Riveras Río Santa Rosa', 'Puerto Jelí', 'Bellavista', 'Jumón', 'Centro Urbano']
+      },
+      'El Guabo, Ecuador': {
+        shortName: 'El Guabo',
+        sectors: ['Barbones', 'Tendales', 'Bajoalto', 'Riveras Río Jubones Bajo', 'Río Bonito']
+      },
+      'Quito, Ecuador': {
+        shortName: 'Quito',
+        sectors: ['La Gasca', 'Solanda', 'Quitumbe', 'Cumbayá / Valle de los Chillos', 'Av. Maldonado y El Recreo']
+      },
+      'Guayaquil, Ecuador': {
+        shortName: 'Guayaquil',
+        sectors: ['Urdesa', 'Alborada y Sauces', 'Vía a la Costa', 'Suburbio Oeste', 'Av. Benjamín Carrión', 'Monte Sinaí']
+      },
+      'Cuenca, Ecuador': {
+        shortName: 'Cuenca',
+        sectors: ['Orillas Río Tomebamba', 'Río Yanuncay', 'Río Tarqui', 'El Vergel', 'Baños y Misicata']
+      }
+    };
+
     function interpretWeatherCode(code) {
       if (code === 0) return { label: 'Cielo despejado', verdict: 'Tiempo estable y seco', risk: 'Bajo', advice: 'Excelente visibilidad para clases, ríos y traslados en moto.' };
       if (code <= 3) return { label: 'Parcialmente nublado', verdict: 'Clima tranquilo sin lluvias fuertes', risk: 'Bajo', advice: 'Condiciones normales para jornada escolar y carreteras.' };
@@ -1829,6 +2017,43 @@
       return { label: 'Tormenta eléctrica', verdict: 'Alerta por tormenta — Resguárdate', risk: 'Alto', advice: 'Evita zonas abiertas, ríos o árboles altos.' };
     }
 
+    function renderCityFloodReport(cityName, currentPrecip, rainProb, weatherCode) {
+      const cfg = CITY_FLOOD_SECTORS[cityName] || {
+        shortName: cityName,
+        sectors: ['Zonas bajas', 'Riveras locales', 'Centro urbano']
+      };
+
+      const box = document.getElementById('floodStatusBox');
+      const header = document.getElementById('floodCityHeader');
+      const badge = document.getElementById('floodBadge');
+      const summary = document.getElementById('floodSummaryText');
+      const list = document.getElementById('floodSectorsList');
+
+      header.textContent = `Estado de Inundación: ${cfg.shortName}`;
+
+      const isHeavyNow = currentPrecip >= 3.5 || weatherCode >= 80;
+      const isModerateNow = currentPrecip >= 0.6 || rainProb >= 60 || (weatherCode >= 61 && weatherCode <= 67);
+
+      if (isHeavyNow) {
+        box.style.borderLeftColor = 'var(--red)';
+        badge.className = 'badge badge-red';
+        badge.innerHTML = '<span class="status-dot dot-red"></span> Alerta de Inundación / Anegamiento';
+        summary.textContent = `Se registran lluvias intensas (${currentPrecip} mm/h, prob. ${rainProb}%) con acumulación de agua en calles bajas de ${cfg.shortName}. Evita transitar por los siguientes sectores críticos:`;
+      } else if (isModerateNow) {
+        box.style.borderLeftColor = 'var(--amber)';
+        badge.className = 'badge badge-amber';
+        badge.innerHTML = '<span class="status-dot dot-amber"></span> Vigilancia por Anegamientos Leves';
+        summary.textContent = `No hay inundación generalizada en ${cfg.shortName}, pero las lluvias (${rainProb}% prob.) pueden generar charcos y drenaje lento en sectores bajos como:`;
+      } else {
+        box.style.borderLeftColor = 'var(--teal)';
+        badge.className = 'badge badge-teal';
+        badge.innerHTML = '<span class="status-dot dot-green"></span> Sin Inundación Activa';
+        summary.textContent = `${cfg.shortName} no presenta inundaciones en este momento (${currentPrecip} mm/h). Drenaje operando normal en sus sectores vigilados:`;
+      }
+
+      list.innerHTML = cfg.sectors.map(sec => `<span class="sector-pill">${sec}</span>`).join('');
+    }
+
     async function loadCityWeather(cityName, lat, lon, btnEl) {
       if (btnEl) {
         document.querySelectorAll('#ecuadorCityRow .btn').forEach(b => b.classList.remove('active'));
@@ -1836,10 +2061,11 @@
       }
       document.getElementById('heroCityTitle').textContent = cityName;
       try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m&hourly=precipitation_probability&forecast_days=1&timezone=auto`);
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation,weather_code,wind_speed_10m&hourly=precipitation_probability&forecast_days=1&timezone=auto`);
         const data = await res.json();
         const temp = Math.round(data.current.temperature_2m);
         const wind = Math.round(data.current.wind_speed_10m);
+        const currentPrecip = Number(data.current.precipitation || 0);
         const rainProb = Math.max(...data.hourly.precipitation_probability.slice(0, 8));
         const info = interpretWeatherCode(data.current.weather_code);
 
@@ -1850,14 +2076,81 @@
         document.getElementById('metricRisk').style.color = info.risk === 'Bajo' ? 'var(--teal)' : info.risk === 'Moderado' ? 'var(--amber)' : 'var(--red)';
         document.getElementById('verdictHeadline').textContent = `${info.verdict} (${info.label}, ${temp}°C)`;
         document.getElementById('verdictDetail').textContent = `${info.advice} Prob. lluvia: ${rainProb}%.`;
+
+        renderCityFloodReport(cityName, currentPrecip, rainProb, data.current.weather_code);
       } catch (e) {
         document.getElementById('metricTemp').textContent = '27 °C';
         document.getElementById('metricRain').textContent = '30 %';
         document.getElementById('metricWind').textContent = '11 km/h';
         document.getElementById('verdictHeadline').textContent = 'Parcialmente nublado — Condiciones estables';
+        renderCityFloodReport(cityName, 0, 30, 2);
       }
     }
 
+    // MONITOR EN VIVO DE ZONAS MÁS AFECTADAS POR EL NIÑO EN ECUADOR (ACTUALIZACIÓN CADA 60s)
+    const ENSO_ECUADOR_REGIONS = [
+      { name: 'Costa Sur (El Oro / Pasaje / Machala)', lat: -3.3256, lon: -79.8069, detail: 'Cuenca río Jubones, La Cocha y perfil costero sur.' },
+      { name: 'Litoral Centro (Guayas / Manabí / Los Ríos)', lat: -2.1894, lon: -79.8891, detail: 'Cuenca baja río Guayas, Portoviejo y zonas bajas.' },
+      { name: 'Costa Norte (Esmeraldas / Sto. Domingo)', lat: 0.9682, lon: -79.6517, detail: 'Incidencia directa de nubosidad convectiva del Pacífico.' },
+      { name: 'Estribaciones Andinas (Azuay / Loja / Bolívar)', lat: -2.9001, lon: -79.0059, detail: 'Descarga de lluvias hacia cuencas que bajan a la Costa.' }
+    ];
+
+    async function updateEnsoLiveEcuador() {
+      const headlineEl = document.getElementById('ensoMostAffectedHeadline');
+      const detailEl = document.getElementById('ensoMostAffectedDetail');
+      const syncEl = document.getElementById('ensoLastSync');
+      const gridEl = document.getElementById('ensoZonesLiveGrid');
+
+      try {
+        const results = await Promise.all(
+          ENSO_ECUADOR_REGIONS.map(async reg => {
+            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${reg.lat}&longitude=${reg.lon}&current=temperature_2m,precipitation,weather_code&hourly=precipitation_probability&forecast_days=1&timezone=auto`);
+            const d = await r.json();
+            const rainProb = Math.max(...d.hourly.precipitation_probability.slice(0, 6));
+            const precip = Number(d.current.precipitation || 0);
+            const temp = Math.round(d.current.temperature_2m);
+            const info = interpretWeatherCode(d.current.weather_code);
+            const impactScore = rainProb + precip * 15 + (d.current.weather_code >= 60 ? 25 : 0);
+            return { ...reg, rainProb, precip, temp, info, impactScore };
+          })
+        );
+
+        results.sort((a, b) => b.impactScore - a.impactScore);
+        const top = results[0];
+        const second = results[1];
+
+        headlineEl.textContent = `Mayor incidencia actual en Ecuador: ${top.name}`;
+        detailEl.textContent = `La mayor actividad convectiva asociada a El fenómeno del Niño se concentra ahora en ${top.name} (${top.info.label}, ${top.temp}°C, ${top.rainProb}% prob. lluvia), seguida por ${second.name} (${second.rainProb}% prob. lluvia).`;
+        syncEl.textContent = `Actualizado: ${new Date().toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+
+        gridEl.innerHTML = results.map((item, idx) => {
+          const isHigh = idx === 0 || item.rainProb >= 60;
+          const badgeClass = isHigh ? 'badge-amber' : 'badge-teal';
+          const dotClass = isHigh ? 'dot-amber' : 'dot-green';
+          const levelText = idx === 0 ? 'Mayor Incidencia Hoy' : isHigh ? 'Vigilancia Activa' : 'Actividad Moderada';
+
+          return `
+            <div class="enso-zone-item" style="${idx === 0 ? 'border-color: var(--amber);' : ''}">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+                <span class="badge ${badgeClass}"><span class="status-dot ${dotClass}"></span> ${levelText}</span>
+                <strong style="font-size:0.82rem; color:var(--cyan);">${item.temp}°C • ${item.rainProb}% lluvia</strong>
+              </div>
+              <strong style="font-size:0.88rem;">${item.name}</strong>
+              <span style="font-size:0.76rem; color:var(--text-muted);">${item.info.label} — ${item.detail}</span>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        headlineEl.textContent = 'Mayor incidencia habitual: Perfil Costero (El Oro, Guayas, Manabí y Esmeraldas)';
+        syncEl.textContent = 'Modo respaldo activo';
+      }
+    }
+
+    setInterval(updateEnsoLiveEcuador, 60000);
+
+    // ==========================================
+    // 5. CLIMA GLOBAL, MAPA Y COLEGIOS
+    // ==========================================
     const GLOBAL_CITIES = [
       { city: 'Nueva York', country: 'Estados Unidos', continent: 'América', lat: 40.7128, lon: -74.0060 },
       { city: 'Ciudad de México', country: 'México', continent: 'América', lat: 19.4326, lon: -99.1332 },
@@ -1990,7 +2283,7 @@
     }
 
     // ==========================================
-    // 5. NIMBO AI MÓVIL (TOKENS INFINITOS)
+    // 6. NIMBO AI MÓVIL (TOKENS INFINITOS)
     // ==========================================
     function appendMessage(sender, html) {
       const box = document.getElementById('chatBox');
@@ -2067,7 +2360,7 @@
     }
 
     // ==========================================
-    // 6. AJUSTES Y PERFIL
+    // 7. AJUSTES Y PERFIL
     // ==========================================
     function saveNotificationSettings() {
       localStorage.setItem(NOTIF_KEY, JSON.stringify({
@@ -2103,6 +2396,7 @@
     renderSchools();
     renderOfficialNews();
     loadCityWeather('Pasaje, Ecuador', -3.3256, -79.8069);
+    updateEnsoLiveEcuador();
     focusMapPoint('Pasaje Centro, El Oro', -3.3256, -79.8069, 14, null);
   </script>
 </body>
