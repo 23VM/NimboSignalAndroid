@@ -773,6 +773,37 @@
       letter-spacing: 0.06em;
     }
   </style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style id="ns-css">
+@property --bg-primary{syntax:'<color>';inherits:true;initial-value:#06101c}
+@property --bg-secondary{syntax:'<color>';inherits:true;initial-value:#0c2236}
+@property --accent-primary{syntax:'<color>';inherits:true;initial-value:#22d3ee}
+@property --accent-glow{syntax:'<color>';inherits:true;initial-value:rgba(34,211,238,.35)}
+@property --glass-border{syntax:'<color>';inherits:true;initial-value:rgba(34,211,238,.28)}
+:root{--bg-primary:#06101c;--bg-secondary:#0c2236;--accent-primary:#22d3ee;--accent-glow:rgba(34,211,238,.35);--glass-border:rgba(34,211,238,.28);transition:--bg-primary 1.6s cubic-bezier(.4,0,.2,1),--bg-secondary 1.6s cubic-bezier(.4,0,.2,1),--accent-primary 1.6s cubic-bezier(.4,0,.2,1),--accent-glow 1.6s cubic-bezier(.4,0,.2,1),--glass-border 1.6s cubic-bezier(.4,0,.2,1)}
+[data-theme=dark] body::before,:root:not([data-theme=light]) body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(900px 520px at 88% -8%,var(--accent-glow),transparent 62%),radial-gradient(700px 480px at -10% 105%,var(--accent-glow),transparent 66%),linear-gradient(160deg,var(--bg-primary),var(--bg-secondary))}
+.ns-card{background:rgba(255,255,255,.045);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--glass-border);border-radius:16px;padding:1rem;box-shadow:0 8px 30px rgba(0,0,0,.22);transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s}
+.ns-card:hover{transform:translateY(-3px);border-color:var(--accent-primary);box-shadow:0 12px 34px var(--accent-glow)}
+.ns-card h3,.ns-card h4{margin:.35rem 0 .2rem;letter-spacing:.01em}.ns-card p{margin:.3rem 0;font-size:.85rem;line-height:1.5}.ns-card small{opacity:.7}
+.ns-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.9rem;margin:.8rem 0}
+.ns-row{display:flex;gap:.45rem;flex-wrap:wrap;margin:.6rem 0;align-items:center}
+.ns-chip{padding:.4rem .85rem;border-radius:999px;border:1px solid var(--glass-border);background:rgba(255,255,255,.04);color:inherit;cursor:pointer;font:inherit;font-size:.8rem;transition:all .3s cubic-bezier(.2,.8,.2,1)}
+.ns-chip:hover{border-color:var(--accent-primary);transform:translateY(-1px)}.ns-chip.on{background:var(--accent-primary);color:#04121c;border-color:transparent;font-weight:700}
+.ns-b{display:inline-block;padding:.16rem .55rem;border-radius:999px;font-size:.72rem;font-weight:700;margin-right:.25rem}
+.b0{background:rgba(239,68,68,.2);color:#f87171}.b1{background:rgba(245,158,11,.2);color:#d97706}.b2{background:rgba(16,185,129,.2);color:#059669}
+.ns-in{width:100%;padding:.62rem .8rem;border-radius:12px;border:1px solid var(--glass-border);background:rgba(255,255,255,.05);color:inherit;font:inherit;transition:border-color .3s,box-shadow .3s}
+.ns-in:focus{outline:0;border-color:var(--accent-primary);box-shadow:0 0 0 3px var(--accent-glow)}.ns-in option{color:#0f172a}
+.ns-live{border-left:3px solid var(--accent-primary);padding:.55rem .8rem;border-radius:10px;background:rgba(255,255,255,.04);font-size:.82rem;margin:.6rem 0}
+.ns-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(3,7,15,.78);padding:1rem;backdrop-filter:blur(6px)}.ns-modal.on{display:flex}
+.ns-box{max-width:560px;width:100%;max-height:88vh;overflow:auto;background:var(--bg-secondary)!important}
+.ns-apk{display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem;padding:.85rem 1.1rem;border-radius:16px;border:1px solid var(--accent-primary);background:linear-gradient(100deg,var(--accent-glow),transparent)}
+.ns-apk a{padding:.55rem 1.1rem;border-radius:999px;background:var(--accent-primary);color:#04121c;font-weight:800;text-decoration:none}
+#nsMap{height:470px;border-radius:14px;margin-top:.6rem;z-index:1}.ns-pin{width:18px;height:18px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.5)}
+.leaflet-popup-content-wrapper{color:#0f172a;border-radius:14px}.leaflet-popup-content p{margin:.3rem 0;font-size:.8rem}.leaflet-popup-content h4{margin:.3rem 0 0}
+.ns-m .ns-grid{grid-template-columns:1fr}.ns-m .ns-chip{padding:.6rem 1rem;font-size:.86rem}.ns-m #nsMap{height:62vh}
+@media(max-width:700px){.ns-grid{grid-template-columns:1fr}#nsMap{height:60vh}}
+</style>
 </head>
 <body>
 
@@ -939,6 +970,7 @@
 
   <!-- CONTENEDOR PRINCIPAL MÓVIL -->
   <main class="container">
+
 
     <!-- 1. VEREDICTO ECUADOR -->
     <section id="sec-veredicto" class="view-section active">
@@ -1567,7 +1599,45 @@
       </div>
     </section>
 
-  </main>
+  
+<section id="sec-calles" class="view-section">
+<div class="section-head"><div><h2>Calles Inundadas, Vías y Estado Escolar (Pasaje y Machala)</h2><p>Estado estimado de vías y colegios según la lluvia en vivo y la vulnerabilidad histórica de cada punto. Rutas alternas referenciales.</p></div></div>
+<div class="ns-live nsLive"></div>
+<div class="ns-card"><h3>Buscador de Calles Inundadas y Estado de Vías</h3>
+<div class="ns-row"><input class="ns-in" id="nsVq" style="flex:1;min-width:200px" placeholder="Buscar calle, avenida o vía (Rocafuerte, 25 de Junio, Pajonal…)" oninput="NS.all()"><select class="ns-in" id="nsSim" style="max-width:240px" onchange="NS.sm(this.value)"><option value="">Escenario: condición actual en vivo</option><option value="0">Escenario: sin lluvia</option><option value="1">Escenario: lluvia moderada</option><option value="2">Escenario: lluvia intensa (El Niño)</option></select></div>
+<div class="ns-row" id="nsVf"></div></div>
+<div class="ns-grid" id="nsVias"></div>
+<div class="ns-card"><h3>Reportes ciudadanos de inundación</h3><p>Inicia sesión y reporta el estado real de una calle; los últimos reportes se muestran a todos.</p>
+<div class="ns-row"><select class="ns-in" id="nsRc" style="flex:1;min-width:180px"></select><select class="ns-in" id="nsRe" style="max-width:190px"><option value="inundada">Inundada / Cerrada</option><option value="precaucion">Precaución / Agua acumulada</option><option value="transitable">Transitable</option></select></div>
+<div class="ns-row"><input class="ns-in" id="nsRt" maxlength="280" style="flex:1;min-width:200px" placeholder="Detalle breve (máx. 280 caracteres)"><button class="ns-chip on" onclick="NS.sendRep()">Enviar reporte</button></div><p id="nsRm"></p><div id="nsReps"></div></div>
+<h3 style="margin:1.2rem 0 .3rem">Directorio y Estado de Colegios</h3>
+<div class="ns-row"><input class="ns-in" id="nsCq" style="flex:1;min-width:200px" placeholder="Buscar colegio…" oninput="NS.all()"></div><div class="ns-row" id="nsCf"></div><div class="ns-grid" id="nsCole"></div>
+</section>
+<section id="sec-turismo" class="view-section">
+<div class="section-head"><div><h2>Turismo, Ríos y Gastronomía de Ecuador</h2><p>Veredicto de ingreso y equipo recomendado, calculados con la lluvia en vivo de la ciudad seleccionada. Ubicaciones aproximadas.</p></div></div>
+<div class="ns-live nsLive"></div><div class="ns-row" id="nsTf"></div><div class="ns-grid" id="nsTur"></div>
+</section>
+<section id="sec-impacto" class="view-section">
+<div class="section-head"><div><h2>Impacto Detallado del Fenómeno El Niño (Ciudad por Ciudad y Global)</h2><p>Estado NOAA CPC (12 nov 2026): Aviso de El Niño; fuerte a muy fuerte probable hasta ene–mar 2027. Los impactos son probables, no garantizados.</p></div></div>
+<div class="ns-row" id="nsCity"></div><div id="nsCityBox"></div>
+<h3 style="margin:1.2rem 0 .3rem">Panorama Global (NOAA / OMM)</h3><div class="ns-row" id="nsGt"></div><div id="nsGb"></div>
+</section>
+<section id="sec-noticias-reg" class="view-section">
+<div class="section-head"><div><h2>Noticias Verificadas por Región</h2><p>Se filtran según la ciudad o región seleccionada. Para los comunicados oficiales en vivo, use la sección Noticias Oficiales.</p></div></div>
+<div class="ns-row" id="nsNf"></div><div class="ns-grid" id="nsNews"></div>
+</section>
+<div class="ns-modal" id="nsArt"><div class="ns-card ns-box"><div id="nsArtB"></div><div class="ns-row"><button class="ns-chip" onclick="showSection('sec-noticias');NS.cl('nsArt')">Ver noticias oficiales</button><button class="ns-chip on" onclick="NS.cl('nsArt')">Cerrar</button></div></div></div>
+<div class="ns-modal" id="nsAcc"><div class="ns-card ns-box">
+<div class="ns-row" style="justify-content:space-between"><h3>Cuenta y Estado del Plan</h3><button class="ns-chip" onclick="NS.cl('nsAcc')">Cerrar</button></div>
+<p id="nsAccSt"></p>
+<div id="nsLog"><input class="ns-in" id="nsEm" type="email" autocomplete="email" placeholder="Correo electrónico"><input class="ns-in" id="nsPw" type="password" autocomplete="current-password" placeholder="Contraseña (mínimo 6 caracteres)" style="margin-top:.5rem">
+<div class="ns-row"><button class="ns-chip on" onclick="NS.sign(0)">Ingresar</button><button class="ns-chip" onclick="NS.sign(1)">Crear cuenta</button><button class="ns-chip" onclick="NS.sign(2)">Continuar con Google</button></div></div>
+<button class="ns-chip" id="nsOut" style="display:none" onclick="NSF.out()">Cerrar sesión</button>
+<hr style="opacity:.2;margin:.8rem 0"><button class="ns-chip on" id="nsTr" onclick="NS.trial()">Activar 1 mes gratis</button>
+<p style="font-size:.8rem;margin-top:.6rem">Premium: <b>$1,99 USD</b> por 30 días (tarjeta o PayPal).</p><div id="nsPP"></div>
+<p style="margin-top:.8rem">¿Tienes un código promocional o de acceso?</p><div class="ns-row"><input class="ns-in" id="nsCode" style="flex:1" placeholder="Código" autocomplete="off"><button class="ns-chip on" onclick="NS.redeem(document.getElementById('nsCode').value,'nsAccMsg')">Canjear</button></div><p id="nsAccMsg" style="font-size:.82rem"></p>
+</div></div>
+</main>
 
   <footer>
     <strong>EvMJ23</strong>
@@ -1668,7 +1738,7 @@
     const MOBILE_TOKENS_KEY = 'nimbosignal_mobile_tokens_v2';
     const ACCOUNT_KEY = 'nimbosignal_mobile_acc_v1';
     const NOTIF_KEY = 'nimbosignal_mobile_notif_v1';
-    const MASTER_CODE = 'JAIRO-MASTER-23';
+    const MASTER_CODE = null; // El código maestro ahora se valida únicamente por hash SHA-256 (ver módulo NimboSignal).
     const DAILY_FREE_TOKENS = 5;
     const SUB_DAYS = 30;
 
@@ -2499,5 +2569,148 @@
     updateEnsoLiveEcuador();
     focusMapPoint('Pasaje Centro, El Oro', -3.3256, -79.8069, 14, null);
   </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=BAA8f-rawuNKZPcCwif89FcehBkazx873A6D-jJ2s7wY3C98T80vGe6_Z9B5nZU8HCqbm6i6pB8eYcy&currency=USD&enable-funding=card"></script>
+<script>
+(()=>{
+const $=s=>document.querySelector(s),MOVIL=true,MH='765e32fcc196294831e8ee08e4732d444895505394aed4e556662037ae71587a',PK='nimbosignal_prem_v2',DAY=864e5;
+const rows=s=>s.trim().split('\n').map(l=>l.split('|'));
+const CIT=[['Pasaje',-3.3256,-79.8069],['Machala',-3.2581,-79.9554],['Guayaquil',-2.1894,-79.8891],['Quito',-0.1807,-78.4678],['Cuenca',-2.9001,-79.0059],['Esmeraldas',0.9592,-79.654],['Manta',-0.9677,-80.7089],['Loja',-3.9931,-79.2042]];
+const VIA=rows(`Av. Rocafuerte (Centro)|Pasaje|-3.3270|-79.8062|2|Calle Ochoa León o Av. Quito
+Av. Quito|Pasaje|-3.3245|-79.8085|3|Av. Rocafuerte
+Calle Ochoa León|Pasaje|-3.3262|-79.8048|3|Av. Quito
+Vía Pasaje–Machala|Pasaje|-3.3010|-79.8780|2|Reduzca la velocidad y confirme cierres con ECU 911 antes de viajar
+Sector El Puente|Pasaje|-3.3285|-79.8105|1|Av. Quito por el centro
+Loma de Franco|Pasaje|-3.3352|-79.7995|1|Ingreso por Av. Rocafuerte
+Av. 25 de Junio|Machala|-3.2605|-79.9585|2|Vías principales del centro, más elevadas
+Sector Canal El Macho|Machala|-3.2545|-79.9510|1|Evite el canal; use vías principales del centro
+Barrio 10 de Agosto|Machala|-3.2645|-79.9565|1|Vías principales del centro
+Mercado Mayorista|Machala|-3.2690|-79.9505|2|Acceso por vías principales; evite calles laterales bajas
+Vía Pajonal|Machala|-3.2860|-79.9310|2|Reduzca la velocidad; consulte el estado vial antes de salir
+Puerto Bolívar (malecón)|Machala|-3.2660|-79.9655|2|Consulte la tabla de mareas del INOCAR; evite la pleamar`);
+const COL=rows(`Unidad Educativa Carmen Mora de Encalada|Pasaje|-3.3262|-79.8040|2|Av. Rocafuerte
+Colegio Dr. José Ochoa León|Pasaje|-3.3200|-79.8060|3|Zona norte de Pasaje
+Unidad Educativa Manuel González|Pasaje|-3.3290|-79.8075|2|Zona urbana de Pasaje
+Unidad Educativa María Andrea|Pasaje|-3.3300|-79.8020|2|Zona urbana de Pasaje
+Unidad Educativa Aurelio Prieto Muelas|Pasaje|-3.3352|-79.7995|1|Loma de Franco
+Unidad Educativa Casacay|Pasaje|-3.3135|-79.7410|1|Parroquia Casacay, ribera del Jubones
+Unidad Educativa Particular Juan Pablo II|Pasaje|-3.3235|-79.8090|3|Zona urbana de Pasaje
+Colegio Kléber Franco Cruz|Machala|-3.2650|-79.9560|2|Centro de Machala
+Unidad Educativa Nueve de Octubre|Machala|-3.2590|-79.9600|2|Centro de Machala`);
+const RIO=rows(`Río Jubones (Casacay)|Pasaje, El Oro|-3.3189|-79.7365|0|Caudal variable; crece rápido cuando llueve en la cordillera.
+Balneario Dos Bocas|Pasaje, El Oro|-3.3470|-79.7560|0|Confluencia de dos cauces de poca profundidad.
+Balneario La Cocha|Pasaje, El Oro|-3.3415|-79.7820|0|Balneario familiar de ribera.
+Casacay|Pasaje, El Oro|-3.3135|-79.7410|0|Balnearios y comida típica junto al río Jubones.
+Buenavista|Pasaje, El Oro|-3.3550|-79.7690|0|Ribera del río Pasaje, zona de esparcimiento.
+Río Pastaza (Baños)|Tungurahua|-1.3980|-78.4200|1|Cauce fuerte y frío; no apto para nadar.
+Río Napo (Tena)|Napo|-0.9938|-77.8129|1|Gran caudal amazónico; actividades solo con guías.
+Río Esmeraldas|Esmeraldas|0.9650|-79.6500|1|Gran caudal con influencia de marea; riesgo en crecidas.
+Río Guayas|Guayas|-2.2000|-79.8800|2|Estuario con mareas fuertes; no apto para bañarse.`);
+const PLY=rows(`Jambelí|Isla Jambelí, El Oro|-3.2606|-80.0116|1|Oleaje moderado; viaje solo en lancha autorizada y con chaleco.
+Bajo Alto|El Guabo, El Oro|-3.2915|-79.8920|1|Aguas de estuario con corrientes; nade cerca de la orilla.
+Salinas|Santa Elena|-2.2167|-80.9500|0|Bahía generalmente tranquila; atienda las banderas de playa.
+Montañita|Santa Elena|-1.8281|-80.7522|1|Oleaje fuerte y resacas frecuentes (zona de surf).
+Puerto López|Manabí|-1.5567|-80.8081|0|Bahía de oleaje moderado y aguas abrigadas.
+Atacames|Esmeraldas|0.8692|-79.8417|1|Oleaje y resaca variables; nade entre banderas.`);
+const RST=rows(`Marisquerías del malecón de Puerto Bolívar|Machala, El Oro|-3.2667|-79.9667|Cangrejo, ceviche de concha y camarón|Prefiera locales techados y revise la marea.
+Mercado Central de Pasaje (comedores)|Pasaje, El Oro|-3.3262|-79.8058|Caldo de bolas de verde, seco de gallina y jugos|Opción cubierta ideal para días de lluvia.
+Restaurantes campestres de Casacay|Pasaje, El Oro|-3.3140|-79.7425|Pescado frito, tilapia y platos criollos|Confirme el acceso vial y evite la ribera si llovió río arriba.
+Zona de cevicherías de Urdesa|Guayaquil, Guayas|-2.1710|-79.9090|Encebollado, ceviche y cangrejo criollo|Reserve en horas pico; las zonas bajas pueden anegarse.
+Mercado 10 de Agosto|Cuenca, Azuay|-2.8985|-79.0070|Mote pillo, hornado y fritada|Bajo techo; lleve abrigo, Cuenca es fresca y lluviosa.
+Mercado Central de Quito|Quito, Pichincha|-0.2185|-78.5125|Locro de papa, hornado y fritada|Lleve paraguas y evite quebradas con lluvia fuerte.
+Malecón de Salinas|Salinas, Santa Elena|-2.2135|-80.9540|Ceviche, corvina frita y encocados|Sombrero y protector FPS 50+ en días soleados.
+Mercado de Tarqui|Manta, Manabí|-0.9490|-80.7260|Ceviche de pescado y viche|Vaya temprano: llega pescado fresco por la mañana.`);
+const ELN=rows(`Pasaje|Con un Niño fuerte, la temporada lluviosa (dic–may) suele traer lluvias muy superiores al promedio en el sur de la costa.|Ríos Jubones y Pasaje: crecidas rápidas desde la cordillera; riesgo de desborde en Casacay, La Cocha y Buenavista.|Loma de Franco, La Peaña, El Puente, Av. Rocafuerte y riberas.|Banano y cacao: anegamiento, enfermedades fúngicas y cierre de vías de saca.|Alcantarillado pluvial y canales saturados en zonas bajas; limpie sumideros.
+Machala|Lluvias sobre lo normal en la costa de El Oro; la pleamar agrava el anegamiento.|Canal El Macho y esteros de Puerto Bolívar: riesgo de rebose si coinciden lluvia y marea alta.|Canal El Macho, 10 de Agosto, Mercado Mayorista, Vía Pajonal y Puerto Bolívar.|Banano (rubro de exportación) y camaroneras: anegamiento, pérdida de accesos y cambios de salinidad.|Drenaje urbano limitado en zonas bajas; revise compuertas y canales.
+Guayaquil|Costa central con lluvias sobre lo normal en eventos fuertes; la marea alta del estuario dificulta el drenaje.|Cuenca del Guayas (Daule, Babahoyo, Samborondón) y esteros urbanos.|Sectores bajos del sur y noroeste junto a esteros.|Arroz y banano en la cuenca baja: inundación de parcelas y retraso de siembra y cosecha.|Sistema pluvial sobrepasado en aguaceros fuertes; mantenga limpias las rejillas.
+Quito|En la Sierra el efecto es menos uniforme: más bien lluvias intensas puntuales que una anomalía generalizada.|Quebradas urbanas y ríos Machángara y San Pedro.|Laderas, quebradas rellenadas y calles de fuerte pendiente.|Hortalizas, flores y lácteos: afectaciones por lluvias localizadas y cierres viales.|Colectores y sumideros saturados; riesgo de aluviones y deslaves.
+Cuenca|Lluvias variables en la Sierra sur; las vías hacia la Costa son las más sensibles.|Ríos Tomebamba, Yanuncay, Tarqui y Machángara.|Riberas, taludes y vías Cuenca–Molleturo–Naranjal.|Horticultura y ganadería andina; transporte de productos hacia la Costa.|Quebradas y colectores; vigile taludes y deslizamientos.
+Esmeraldas|Costa norte: respuesta más variable, con riesgo de lluvias intensas puntuales.|Ríos Esmeraldas y Teaone.|Barrios ribereños y zonas bajas de la ciudad.|Cacao, palma, plátano y pesca artesanal: accesos cortados.|Drenaje urbano limitado en zonas bajas.
+Manta|Manabí es históricamente sensible a El Niño: lluvias muy superiores a lo normal en eventos fuertes.|Ríos Portoviejo y Chone, vados y quebradas.|Zonas bajas de Portoviejo y Chone y barrios de Manta junto a esteros.|Maíz, cacao, plátano y pesca: pérdida de cosechas y de accesos.|Sistemas pluviales insuficientes; limpie sumideros y retire obstáculos.
+Loja|Sur andino: son posibles lluvias intensas; el riesgo principal son los movimientos en masa.|Ríos Malacatos, Zamora y Catamayo.|Taludes, quebradas y vías de montaña.|Café, maíz y ganadería: pérdida de accesos.|Cunetas y alcantarillas obstruidas; vigile taludes.`);
+const ACC=['Mochila de emergencia lista (agua, linterna, documentos, medicinas)','Conozca su ruta de evacuación y punto de encuentro','No cruce agua en movimiento ni vías anegadas','Siga los boletines de INAMHI, SNGR y ECU 911 (llame al 911)'];
+const GL=rows(`Sudamérica|Anomalías cálidas en el Pacífico ecuatorial oriental. Un índice de Niño 3.4 sobre +0,5 °C indica El Niño; NOAA usa hoy el índice relativo RONI.|Más lluvia en la costa de Ecuador y el norte de Perú, sur de Brasil, Uruguay y noreste de Argentina; tendencia a sequía en el norte de la Amazonía, Colombia y Venezuela.|Reforzar drenajes, vigilar ríos de la costa del Pacífico, proteger cultivos y reservar agua donde haya riesgo de sequía.
+Norteamérica|Calentamiento del Pacífico tropical que modifica la corriente en chorro sobre el Pacífico norte.|Invierno más húmedo en el sur de EE. UU. y norte de México; más cálido en el norte de EE. UU. y Canadá; mayor probabilidad de lluvias en California.|Revisar alertas del Servicio Meteorológico Nacional y vigilar deslaves en zonas quemadas.
+Asia-Pacífico|El calentamiento del Pacífico oriental desplaza la convección lejos del Pacífico occidental.|Tendencia a sequía en Indonesia, Filipinas y el norte y este de Australia; monzón de la India con tendencia a ser más débil; lluvias sobre lo normal en el Pacífico central.|Gestión del agua, riesgo de incendios forestales y seguridad alimentaria (arroz y trigo).
+África y Océanos/Atmósfera Global|El Niño fuerte suele elevar la temperatura media global y favorece el blanqueamiento de corales.|África austral con tendencia a sequía en el verano austral; África oriental con lluvias sobre lo normal entre octubre y diciembre.|Planes de agua y alimentos en África austral; alertas de inundación en el Cuerno de África; monitoreo de arrecifes.`);
+const NEW=rows(`Ecuador|2|NOAA CPC (discusión del 12 nov 2026)|12 nov 2026|NOAA mantiene el Aviso de El Niño: fuerte a muy fuerte probable hasta ene–mar 2027|El Centro de Predicción Climática de NOAA indica que El Niño continúa fortaleciéndose y que un evento fuerte a muy fuerte es probable hasta enero–marzo de 2027. Para la costa de Ecuador, estos eventos elevan la probabilidad de lluvias sobre lo normal, aunque no la garantizan. Consulte los pronósticos estacionales del INAMHI.
+Pasaje|2|Referencia: INAMHI / SNGR|22 nov 2026|Pasaje: prepare su hogar ante posibles crecidas del Jubones y La Cocha|En temporada de El Niño las crecidas pueden ser rápidas en balnearios y riberas. Evite acampar o bañarse cerca del río tras lluvias en la parte alta, aleje enseres de zonas bajas y tenga lista una mochila de emergencia. Sectores de atención: Loma de Franco, La Peaña, La Cocha y Casacay.
+Pasaje|1|Referencia: GAD Municipal de Pasaje|21 nov 2026|Vías urbanas de Pasaje: puntos que se anegan primero con la lluvia|El Puente y Loma de Franco suelen acumular agua antes que el resto. Planifique recorridos por Av. Quito u Ochoa León y evite cruzar calles con agua en movimiento: unos 30 cm pueden hacer flotar muchos vehículos.
+Machala|2|Referencia: INOCAR / GAD Machala|22 nov 2026|Machala: lluvia y marea alta pueden combinarse en Puerto Bolívar y el Canal El Macho|Cuando coinciden pleamar y lluvia intensa, el agua tarda más en drenar en las zonas bajas. Consulte la tabla de mareas del INOCAR, evite el Canal El Macho y el barrio 10 de Agosto en lluvia fuerte y no estacione en calles bajas.
+Guayaquil|1|Referencia: INAMHI|20 nov 2026|Guayaquil y la cuenca del Guayas: vigilancia de ríos y esteros|Los ríos de la cuenca del Guayas responden a las lluvias de la cuenca alta con retraso de días. Siga los boletines hidrológicos, evite zonas de esteros en lluvia y revise el drenaje frente a su vivienda.
+Quito|1|Referencia: Secretaría de Gestión de Riesgos|19 nov 2026|Quito: quebradas y drenajes, claves para prevenir aluviones|Las lluvias intensas saturan quebradas y alcantarillado. Evite estacionar en cauces y bajo laderas, no arroje residuos a las quebradas y atienda las alertas municipales.
+Cuenca|1|Referencia: ETAPA EP / GAD Cuenca|20 nov 2026|Cuenca: ríos Tomebamba, Yanuncay, Tarqui y Machángara en observación|Con lluvias sostenidas los cuatro ríos pueden crecer; evite caminar por sus riberas. En las vías hacia la Costa pueden ocurrir deslizamientos: viaje de día y consulte el estado vial antes de salir.
+Esmeraldas|1|Referencia: INAMHI|19 nov 2026|Esmeraldas: atención a los ríos Esmeraldas y Teaone|Las crecidas pueden afectar barrios ribereños. Guarde documentos en bolsas herméticas y conozca su ruta de evacuación.
+Manta|1|Referencia: GAD Manta / SNGR|18 nov 2026|Manabí: Portoviejo, Chone y Manta ante lluvias sobre lo normal|Manabí es históricamente sensible a El Niño. Revise cauces cercanos (ríos Portoviejo y Chone), evite cruzar vados con agua y proteja cultivos y bodegas.
+Loja|1|Referencia: GAD Loja|18 nov 2026|Loja: deslizamientos y crecidas en los ríos Malacatos y Zamora|Las lluvias intensas en zonas de pendiente favorecen los deslizamientos. Evite taludes inestables, reporte grietas y conduzca con precaución en vías de montaña.
+Ecuador|0|ECU 911|17 nov 2026|Qué hacer antes, durante y después de una inundación|Antes: mochila de emergencia, rutas de evacuación y documentos protegidos. Durante: suba a zonas altas, no cruce agua en movimiento y, si puede hacerlo sin riesgo, desconecte la electricidad. Después: no beba agua sin hervir ni consuma alimentos mojados. Emergencias: 911.
+Global|1|OMM / NOAA|15 nov 2026|El Niño fuerte: sequías en el sudeste asiático y Australia, lluvias en el Pacífico oriental|Los eventos fuertes de El Niño suelen asociarse a sequía en Indonesia y el norte de Australia, un monzón indio más débil y lluvias sobre lo normal en la costa del Pacífico de Sudamérica. Los impactos varían de un evento a otro.`);
+const ES=['Inundada / Cerrada','Precaución / Agua acumulada','Transitable'],DEP=['Más de 30 cm de agua','Entre 5 y 15 cm de agua','Sin acumulación de agua'],PAS=['Vehículos y peatones: no transitable','Vehículos lentos; peatones con cuidado','Vehículos y peatones: transitable'],ALR=['Alerta de inundación','Alerta preventiva El Niño','Sin alerta'],MOD=['Virtual','Alerta Preventiva','Presencial'],SEV=['Informativa','Precaución','Alerta'];
+const CAU=['Normal','Crecida Moderada','Alerta de Desbordamiento'],VER=['Sí, apto para ingresar','Precaución — Solo orilla','No ingresar — Corriente peligrosa'],GEA=['Ropa ligera de secado rápido, calzado acuático antideslizante para piedras, protector solar FPS 50+ y gorra.','Calzado acuático cerrado y chaleco salvavidas; no pase de la rodilla. Lleve poncho impermeable y muda seca.','No ingrese. Calzado cerrado, poncho impermeable y muda seca; observe solo desde zonas altas.'],VEB=['Apta para nadar','Precaución — nade cerca de la orilla y con salvavidas','No ingresar — oleaje y resaca peligrosos'],GEB=['Traje de baño, camiseta con filtro UV, sandalias, protector FPS 50+, gafas y gorra.','Camiseta UV y calzado de agua; evite zonas con resaca y lleve poncho ligero.','Ropa seca y poncho impermeable; permanezca en arena firme, lejos del oleaje.'];
+const NS=window.NS={city:CIT[0],rain:0,sim:null,tag:'',vf:'all',tf:'all',cf:'all',nm:'mine',gt:0,user:null,mf:{R:1,T:1,C:1,V:1},prem:{trialUsed:false,trialStartDate:0,premiumUntil:0,lifetime:false,updatedAt:0}};
+try{Object.assign(NS.prem,JSON.parse(localStorage.getItem(PK)))}catch(e){}
+const R=()=>NS.sim!==null?NS.sim:NS.rain,eff=v=>2-Math.max(0,R()-(+v-1)),bc=s=>'b'+(2-s);
+const chips=(id,o,cb,init)=>{const h=$(id);h.innerHTML=o.map((x,i)=>`<button class="ns-chip${x[1]===init?' on':''}" data-v="${i}">${x[0]}</button>`).join('');h.onclick=e=>{const b=e.target.closest('button');if(!b)return;h.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');cb(o[b.dataset.v][1])}};
+const riv=r=>{const s=Math.min(2,+r[4]+R());return `<span class="ns-b ${bc(s)}">${CAU[s]}</span><h4>${r[0]}</h4><small>${r[1]}</small><p>${r[5]}</p><p><b>¿Se puede meter?</b> <span class="ns-b ${bc(s)}">${VER[s]}</span></p><p><b>Qué ropa y equipo llevar:</b> ${GEA[s]}</p>`};
+const bch=r=>{const s=Math.min(2,+r[4]+(R()==2?1:0));return `<span class="ns-b ${bc(s)}">Playa</span><h4>${r[0]}</h4><small>${r[1]}</small><p><b>Oleaje:</b> ${r[5]}</p><p><b>Marea:</b> según la tabla del INOCAR; las mareas son mayores en luna nueva y llena.</p><p><b>Clima:</b> ${NS.tag||'consultando…'}</p><p><b>¿Se puede meter?</b> <span class="ns-b ${bc(s)}">${VEB[s]}</span></p><p><b>Qué ropa y equipo llevar:</b> ${GEB[s]}</p>`};
+const rst=r=>`<span class="ns-b b1">Gastronomía</span><h4>${r[0]}</h4><small>${r[1]}</small><p><b>Especialidad:</b> ${r[4]}</p><p><b>Consejo según el clima:</b> ${r[5]}</p>`;
+const via=r=>{const e=eff(r[4]);return `<span class="ns-b b${e}">${ES[e]}</span><small>${r[1]}</small><h4>${r[0]}</h4><p>${DEP[e]}. ${PAS[e]}.</p><p><b>Ruta alterna:</b> ${r[5]}</p>`};
+const col=r=>{const e=eff(r[4]);return `<span class="ns-b b${e}">${ALR[e]}</span><span class="ns-b b${e}">${MOD[e]}</span><h4>${r[0]}</h4><small>${r[1]}</small><p><b>Acceso:</b> ${r[5]}. ${['Calles de acceso inundadas; evite el traslado.','Calles de acceso con agua acumulada; precaución.','Calles de acceso transitables.'][e]}</p>`};
+const live=()=>{const t=['sin lluvia','lluvia moderada','lluvia intensa'][R()];document.querySelectorAll('.nsLive').forEach(x=>x.innerHTML=`<b>${NS.city[0]}</b> · ${NS.tag||'consultando clima…'} · Condición aplicada: <b>${t}</b>${NS.sim!==null?' (escenario)':' (en vivo)'}`)};
+const vias=()=>{const q=($('#nsVq').value||'').toLowerCase();chips('#nsVf',[['Todas','all'],['Inundada / Cerrada',0],['Precaución / Agua acumulada',1],['Transitable',2]],v=>{NS.vf=v;vias()},NS.vf);$('#nsVias').innerHTML=VIA.filter(r=>(NS.vf==='all'||eff(r[4])===NS.vf)&&(r[0]+r[1]).toLowerCase().includes(q)).map(r=>`<div class="ns-card">${via(r)}</div>`).join('')||'<p>Sin resultados para ese filtro.</p>'};
+const cole=()=>{const q=($('#nsCq').value||'').toLowerCase(),f=NS.cf;chips('#nsCf',[['Todos','all'],['Pasaje','Pasaje'],['Machala','Machala'],['Presencial',2],['Virtual',0],['Alerta Preventiva',1]],v=>{NS.cf=v;cole()},f);$('#nsCole').innerHTML=COL.filter(r=>(f==='all'||r[1]===f||eff(r[4])===f)&&(r[0]+r[1]+r[5]).toLowerCase().includes(q)).map(r=>`<div class="ns-card">${col(r)}</div>`).join('')||'<p>Sin resultados.</p>'};
+const tur=()=>{chips('#nsTf',[['Todos','all'],['Ríos y Balnearios','r'],['Playas','p'],['Restaurantes','g']],v=>{NS.tf=v;tur()},NS.tf);const f=NS.tf,a=[];if(f=='all'||f=='r')RIO.forEach(r=>a.push(riv(r)));if(f=='all'||f=='p')PLY.forEach(r=>a.push(bch(r)));if(f=='all'||f=='g')RST.forEach(r=>a.push(rst(r)));$('#nsTur').innerHTML=a.map(h=>`<div class="ns-card">${h}</div>`).join('')};
+const imp=()=>{chips('#nsCity',CIT.map(c=>[c[0],c[0]]),NS.pick,NS.city[0]);const d=ELN.find(r=>r[0]===NS.city[0]);$('#nsCityBox').innerHTML=d?`<div class="ns-card"><h3>${d[0]}: qué está ocurriendo</h3><p><small>${NS.tag||''}</small></p><p><b>Anomalías de lluvia:</b> ${d[1]}</p><p><b>Ríos y canales:</b> ${d[2]}</p><p><b>Sectores urbanos en riesgo:</b> ${d[3]}</p><p><b>Impacto agrícola:</b> ${d[4]}</p><p><b>Drenaje e infraestructura:</b> ${d[5]}</p><p><b>Acciones ciudadanas:</b></p><ul style="margin:.2rem 0 0 1.1rem;font-size:.85rem">${ACC.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:'<div class="ns-card"><p>Ciudad global seleccionada: consulte el panorama global o elija una ciudad de Ecuador.</p></div>';chips('#nsGt',GL.map((g,i)=>[g[0],i]),i=>{NS.gt=i;imp()},NS.gt);const g=GL[NS.gt];$('#nsGb').innerHTML=`<div class="ns-card"><h3>${g[0]}</h3><p><b>Temperatura del mar / índice:</b> ${g[1]}</p><p><b>Lluvias y sequías:</b> ${g[2]}</p><p><b>Indicadores de preparación:</b> ${g[3]}</p><p><small>Fuentes: NOAA CPC, OMM. Los impactos son probabilidades, no certezas.</small></p></div>`};
+const news=()=>{chips('#nsNf',[['Mi región','mine'],['Todas (nacional y global)','all']],v=>{NS.nm=v;news()},NS.nm);const ec=CIT.some(c=>c[0]===NS.city[0]),k=ec?NS.city[0]:'Global';$('#nsNews').innerHTML=NEW.map((n,i)=>[n,i]).filter(([n])=>NS.nm==='all'||n[0]===k||(ec&&n[0]==='Ecuador')).map(([n,i])=>`<div class="ns-card"><span class="ns-b b${2-n[1]}">${SEV[n[1]]}</span><span class="ns-b b1">${n[0]}</span><h4>${n[4]}</h4><small>${n[2]} · ${n[3]}</small><p><button class="ns-chip" onclick="NS.art(${i})">Leer artículo completo</button></p></div>`).join('')||'<p>No hay noticias para esta región; use “Todas”.</p>'};
+NS.art=i=>{const n=NEW[i];$('#nsArtB').innerHTML=`<span class="ns-b b${2-n[1]}">${SEV[n[1]]}</span><span class="ns-b b1">${n[0]}</span><h3>${n[4]}</h3><small>${n[2]} · ${n[3]}</small><p style="font-size:.92rem">${n[5]}</p><p style="font-size:.75rem;opacity:.7">Resumen informativo elaborado por NimboSignal con base en guías y boletines públicos. La fuente indicada es una referencia para verificar; no es un comunicado oficial. Confirme siempre en los canales oficiales.</p>`;NS.op('nsArt')};
+NS.op=id=>$('#'+id).classList.add('on');NS.cl=id=>$('#'+id).classList.remove('on');
+NS.pick=n=>{NS.city=CIT.find(c=>c[0]===n);NS.wx();NS.all()};
+NS.sm=v=>{NS.sim=v===''?null:+v;NS.all()};
+NS.setCity=(name,la,lo)=>{const c=CIT.find(x=>name.startsWith(x[0]));NS.city=c||[name.split(',')[0],+la,+lo];NS.wx();NS.all()};
+const P={sol:['#0b2447','#19376d','#f5b942','rgba(245,185,66,.38)','rgba(245,185,66,.3)'],rain:['#06101c','#0c2236','#22d3ee','rgba(34,211,238,.35)','rgba(34,211,238,.28)'],cloud:['#131b25','#26313e','#b8c4d2','rgba(184,196,210,.3)','rgba(184,196,210,.25)'],night:['#04050d','#12123a','#818cf8','rgba(129,140,248,.35)','rgba(129,140,248,.28)']};
+const pal=k=>{const r=document.documentElement,s=r.style,v=P[k];['--bg-primary','--bg-secondary','--accent-primary','--accent-glow','--glass-border'].forEach((n,i)=>s.setProperty(n,v[i]));if(r.getAttribute('data-theme')!=='light')s.setProperty('--cyan',v[2]);r.dataset.wx=k};
+NS.wx=async()=>{try{const c=NS.city,j=await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c[1]}&longitude=${c[2]}&current=temperature_2m,weather_code,precipitation,is_day&daily=precipitation_sum&forecast_days=1&timezone=auto`)).json(),k=j.current,w=k.weather_code,s=j.daily.precipitation_sum[0]||0;NS.rain=k.precipitation>=2.5||s>=30?2:k.precipitation>=.3||s>=8?1:0;NS.tag=`${window.interpretWeatherCode?interpretWeatherCode(w).label:'Clima'} · ${Math.round(k.temperature_2m)}°C`;pal(!k.is_day?'night':(w>=51&&!(w>=71&&w<=77))?'rain':w>=2?'cloud':'sol');NS.all()}catch(e){pal('rain')}};
+NS.all=()=>{live();vias();cole();tur();imp();news();NS.mk();NS.renderAcc()};
+NS.rc=()=>{$('#nsRc').innerHTML=VIA.map(r=>`<option>${r[0]} (${r[1]})</option>`).join('')};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+NS.rep=async()=>{if(!window.NSF)return;try{const l=await NSF.reps();$('#nsReps').innerHTML=l.length?l.map(r=>`<p>• <b>${esc(r.calle)}</b> — ${esc(r.estado)}: ${esc(r.texto)}</p>`).join(''):'<p>Aún no hay reportes.</p>'}catch(e){$('#nsReps').innerHTML='<p>No se pudieron cargar los reportes.</p>'}};
+NS.sendRep=async()=>{const m=$('#nsRm');if(!NS.user){m.textContent='Inicia sesión para enviar un reporte.';return NS.op('nsAcc')}const t=$('#nsRt').value.trim();if(!t){m.textContent='Escribe un detalle breve.';return}try{await NSF.rep({uid:NS.user.uid,calle:$('#nsRc').value,estado:$('#nsRe').value,texto:t});$('#nsRt').value='';m.textContent='Reporte enviado. ¡Gracias por ayudar!';NS.rep()}catch(e){m.textContent='No se pudo enviar el reporte.'}};
+const MC={R:'Ríos y Balnearios',T:'Turismo y Gastronomía',C:'Colegios',V:'Calles inundadas'},SC=['#22c55e','#f59e0b','#ef4444'],EC=['#ef4444','#f59e0b','#22c55e'];
+const pois=()=>{const a=[],p=(c,r,h,col,i=2)=>a.push({c,n:r[0],la:+r[i],lo:+r[i+1],h,col});RIO.forEach(r=>p('R',r,riv(r),SC[Math.min(2,+r[4]+R())]));PLY.forEach(r=>p('T',r,bch(r),SC[Math.min(2,+r[4]+(R()==2?1:0))]));RST.forEach(r=>p('T',r,rst(r),'#38bdf8'));COL.forEach(r=>p('C',r,col(r),EC[eff(r[4])]));VIA.forEach(r=>p('V',r,via(r),EC[eff(r[4])]));return a};
+NS.map=()=>{if(!window.L||!$('#nsMap'))return;if(!NS.m){NS.m=L.map('nsMap').setView([-3.3256,-79.8069],12);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(NS.m);NS.lg=L.layerGroup().addTo(NS.m);$('#nsMc').innerHTML=Object.keys(MC).map(k=>`<button class="ns-chip on" data-k="${k}">${MC[k]}</button>`).join('');$('#nsMc').onclick=e=>{const b=e.target.closest('button');if(!b)return;NS.mf[b.dataset.k]^=1;b.classList.toggle('on');NS.mk()};$('#mapSearchInput').addEventListener('input',NS.mk)}NS.mk();[100,400,900].forEach(t=>setTimeout(()=>NS.m.invalidateSize(),t))};
+NS.mk=()=>{if(!NS.m)return;NS.lg.clearLayers();const q=($('#mapSearchInput').value||'').toLowerCase();pois().filter(p=>NS.mf[p.c]&&p.n.toLowerCase().includes(q)).forEach(p=>L.marker([p.la,p.lo],{icon:L.divIcon({className:'',html:`<div class="ns-pin" style="background:${p.col}"></div>`,iconSize:[18,18]})}).bindPopup(`<div style="min-width:210px;max-width:270px">${p.h}</div>`).addTo(NS.lg))};
+window.focusMapPoint=async(label,la,lo,z,btn)=>{if(btn){document.querySelectorAll('#mapPointsRow .btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}NS.map();NS.m&&NS.m.setView([la,lo],z);const l=$('#mapLocationLabel');if(l)l.textContent=label;try{const j=await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=temperature_2m,weather_code&forecast_days=1&timezone=auto`)).json();$('#mapWeatherTag').textContent=`${interpretWeatherCode(j.current.weather_code).label} • ${Math.round(j.current.temperature_2m)}°C`}catch(e){}};
+window.searchOnMap=async e=>{e.preventDefault();NS.map();const q=$('#mapSearchInput').value.trim().toLowerCase(),h=pois().find(p=>p.n.toLowerCase().includes(q));if(h)return NS.m.setView([h.la,h.lo],15);try{const j=await(await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q))).json();if(j[0]){NS.m.setView([+j[0].lat,+j[0].lon],13);$('#mapLocationLabel').textContent=j[0].display_name.split(',')[0]}}catch(x){}};
+const sha=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,'0')).join('');
+NS.msg=t=>{const m=$('#nsAccMsg');if(m)m.textContent=t};
+NS.save=async p=>{const n={...NS.prem,...p,updatedAt:Date.now()};NS.prem=n;localStorage.setItem(PK,JSON.stringify(n));NS.sync();NS.renderAcc();if(NS.user&&window.NSF){try{await NSF.set(NS.user.uid,n)}catch(e){NS.msg('Plan activado en este dispositivo, pero no se pudo guardar en la nube.')}}};
+NS.sync=()=>{const p=NS.prem,n=Date.now();if(MOVIL){let v=null;if(p.lifetime)v={tier:'MASTER',isMaster:true,startedAt:new Date().toISOString(),expiresAt:'2099-12-31T23:59:59.000Z'};else if(p.premiumUntil>n)v={tier:'PRO',isMaster:false,startedAt:new Date(p.trialStartDate||n).toISOString(),expiresAt:new Date(p.premiumUntil).toISOString()};if(v)localStorage.setItem('nimbosignal_mobile_sub_v2',JSON.stringify(v));window.renderMobileSubscriptionUI&&renderMobileSubscriptionUI()}else window.updatePlanUI&&updatePlanUI()};
+NS.extend=()=>NS.save({premiumUntil:Math.max(Date.now(),NS.prem.premiumUntil)+30*DAY});
+NS.trial=async()=>{if(!NS.user)return NS.msg('Inicia sesión para activar tu mes gratis.');if(NS.prem.trialUsed)return NS.msg('Ya usaste tu mes gratis.');const n=Date.now();await NS.save({trialUsed:true,trialStartDate:n,premiumUntil:Math.max(n,NS.prem.premiumUntil)+30*DAY});NS.msg('¡Listo! Tienes 30 días de Premium completo.')};
+NS.redeem=async(raw,fid)=>{const c=String(raw).trim().toUpperCase(),f=$('#'+fid),o=(t,ok)=>{if(f){f.style.color=ok?'var(--teal)':'var(--red)';f.textContent=t}};if(!c)return o('Ingresa un código.',0);try{if(await sha(c)===MH){await NS.save({lifetime:true});return o('Código aceptado: Premium vitalicio activado.',1)}}catch(e){return o('Tu navegador no permite verificar códigos en este contexto (se requiere HTTPS).',0)}if(window.validateCode&&validateCode(c)==='PRO'){if(MOVIL)await NS.extend();else{localStorage.setItem('nimbosignal_web_plan_v1','PRO');NS.sync()}return o('Plan Pro Premium activado correctamente.',1)}o('Código inválido. Verifica el código e inténtalo de nuevo.',0)};
+window.redeemWebLicense=()=>{const i=$('#webLicenseInput');NS.redeem(i.value,'webLicenseFeedback').then(()=>i.value='')};
+window.applyMobileLicenseCode=()=>{const i=$('#mobileCodeInput');NS.redeem(i.value,'mobileCodeFeedback').then(()=>i.value='')};
+if(!MOVIL)window.getWebPlan=()=>{const s=localStorage.getItem('nimbosignal_web_plan_v1')||'FREE';return s!=='FREE'?s:NS.prem.lifetime?'MASTER':NS.prem.premiumUntil>Date.now()?'PRO':'FREE'};
+const ERR={'auth/invalid-credential':'Correo o contraseña incorrectos.','auth/invalid-email':'El correo no es válido.','auth/email-already-in-use':'Ese correo ya está registrado.','auth/weak-password':'La contraseña debe tener al menos 6 caracteres.','auth/too-many-requests':'Demasiados intentos. Intenta más tarde.','auth/network-request-failed':'Sin conexión a internet.'};
+NS.sign=async m=>{if(!window.NSF)return NS.msg('Servicio de cuentas no disponible.');try{if(m==2)await NSF.google();else if(m)await NSF.reg($('#nsEm').value.trim(),$('#nsPw').value);else await NSF.login($('#nsEm').value.trim(),$('#nsPw').value);NS.msg('Sesión iniciada.')}catch(x){NS.msg(ERR[x.code]||(m==2?'No se pudo iniciar con Google (dentro de la app usa correo y contraseña).':'No se pudo iniciar sesión.'))}};
+NS.auth=async u=>{NS.user=u;if(u&&window.NSF){try{const r=await NSF.get(u.uid);if(r){NS.prem={...NS.prem,...r};localStorage.setItem(PK,JSON.stringify(NS.prem))}else if(NS.prem.lifetime||NS.prem.premiumUntil>Date.now())await NSF.set(u.uid,{...NS.prem,updatedAt:Date.now()})}catch(e){}}NS.sync();NS.renderAcc()};
+NS.renderAcc=()=>{const p=NS.prem,n=Date.now(),d=Math.ceil((p.premiumUntil-n)/DAY),s=$('#nsAccSt');if(!s)return;s.innerHTML=(NS.user?`Cuenta: <b>${esc(NS.user.email||'Google')}</b><br>`:'Sin sesión iniciada.<br>')+(p.lifetime?'Plan: <b>Premium vitalicio</b>':p.premiumUntil>n?`Plan: <b>Premium activo</b> · ${d} día${d==1?'':'s'} restante${d==1?'':'s'} (hasta ${new Date(p.premiumUntil).toLocaleDateString('es-EC')})`:'Plan: <b>Gratuito</b>')+`<br>Mes gratis: ${p.trialUsed?'ya utilizado':'disponible'}`;$('#nsLog').style.display=NS.user?'none':'block';$('#nsOut').style.display=NS.user?'inline-block':'none';$('#nsTr').disabled=!!p.trialUsed;if(NS.user)NS.rep()};
+NS.acc=()=>{window.closeMobileDrawer&&closeMobileDrawer();const sb=$('#webSidebar');sb&&sb.classList.remove('open');NS.op('nsAcc');NS.renderAcc();if(window.paypal&&!NS.pp){NS.pp=1;paypal.Buttons({style:{layout:'vertical',shape:'pill'},onClick:(d,a)=>NS.user?a.resolve():(NS.msg('Inicia sesión para pagar y guardar tu suscripción.'),a.reject()),createOrder:(d,a)=>a.order.create({purchase_units:[{description:'NimboSignal Premium 30 días',amount:{currency_code:'USD',value:'1.99'}}]}),onApprove:(d,a)=>a.order.capture().then(()=>{NS.extend();NS.msg('Pago aprobado. Premium extendido 30 días.')}),onError:()=>NS.msg('No se pudo completar el pago.')}).render('#nsPP')}else if(!window.paypal)$('#nsPP').textContent='PayPal no está disponible en este momento.'};
+const init=()=>{if(MOVIL)document.body.classList.add('ns-m');const go=document.createElement('div'),T=MOVIL?'drawer-group-title':'nav-group-title',I='<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>',B=(t,l,a)=>`<button class="nav-btn" ${t?`data-target="${t}"`:''} onclick="${a}"><span class="nav-label">${I}${l}</span></button>`;go.innerHTML=`<div class="${T}">Inteligencia NimboSignal</div>`+[['sec-calles','Calles y Colegios'],['sec-turismo','Turismo y Gastronomía'],['sec-impacto','Impacto El Niño'],['sec-noticias-reg','Noticias por Región']].map(x=>B(x[0],x[1],`showSection('${x[0]}')`)).join('')+B('','Mi Cuenta y Plan','NS.acc()');const h=$('#webSidebar')||$('#mobileDrawer'),f=h&&h.querySelector('.nav-btn');if(f)f.parentElement.before(go);const m=$('.map-frame-box');if(m)m.innerHTML='<div class="ns-row" id="nsMc"></div><div id="nsMap"></div>';const b=$('#headerPlanBadge')||$('#headerSubBadge');if(b){b.style.cursor='pointer';b.onclick=NS.acc}const _s=window.showSection;window.showSection=id=>{_s(id);if(id==='sec-mapa')NS.map();document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.target===id))};['loadCityWeather','fetchGlobalByCoords'].forEach(k=>{const o=window[k];if(o)window[k]=function(n,a,b,c){try{NS.setCity(n,a,b)}catch(e){}return o.apply(this,arguments)}});NS.rc();NS.all();NS.wx();NS.sync();setInterval(NS.wx,6e5)};
+document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
+})();
+</script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,GoogleAuthProvider,signInWithPopup,signOut} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,collection,addDoc,query,orderBy,limit,getDocs,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyDCI162U9FAL56qaI1uIAC0t-EZ25wcPwa",authDomain:"nimbosignal.firebaseapp.com",projectId:"nimbosignal",storageBucket:"nimbosignal.firebasestorage.app",messagingSenderId:"800812890854",appId:"1:800812890854:web:2ddec3c1f43b3dc9e71327",measurementId:"G-7K2H7DDPE8"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+window.NSF={auth,login:(e,p)=>signInWithEmailAndPassword(auth,e,p),reg:(e,p)=>createUserWithEmailAndPassword(auth,e,p),google:()=>signInWithPopup(auth,new GoogleAuthProvider()),out:()=>signOut(auth),
+get:async u=>{const s=await getDoc(doc(db,'usuarios',u));return s.exists()?s.data():null},set:(u,d)=>setDoc(doc(db,'usuarios',u),d,{merge:true}),
+rep:d=>addDoc(collection(db,'reportes'),{...d,createdAt:serverTimestamp()}),reps:async()=>(await getDocs(query(collection(db,'reportes'),orderBy('createdAt','desc'),limit(6)))).docs.map(x=>x.data())};
+onAuthStateChanged(auth,u=>window.NS&&NS.auth(u));
+</script>
 </body>
 </html>
