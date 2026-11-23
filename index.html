@@ -2683,18 +2683,106 @@ NS.mk=()=>{if(!NS.m)return;NS.lg.clearLayers();const q=($('#mapSearchInput').val
 window.focusMapPoint=async(label,la,lo,z,btn)=>{if(btn){document.querySelectorAll('#mapPointsRow .btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}NS.map();NS.m&&NS.m.setView([la,lo],z);const l=$('#mapLocationLabel');if(l)l.textContent=label;try{const j=await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=temperature_2m,weather_code&forecast_days=1&timezone=auto`)).json();$('#mapWeatherTag').textContent=`${interpretWeatherCode(j.current.weather_code).label} • ${Math.round(j.current.temperature_2m)}°C`}catch(e){}};
 window.searchOnMap=async e=>{e.preventDefault();NS.map();const q=$('#mapSearchInput').value.trim().toLowerCase(),h=pois().find(p=>p.n.toLowerCase().includes(q));if(h)return NS.m.setView([h.la,h.lo],15);try{const j=await(await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q))).json();if(j[0]){NS.m.setView([+j[0].lat,+j[0].lon],13);$('#mapLocationLabel').textContent=j[0].display_name.split(',')[0]}}catch(x){}};
 const sha=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,'0')).join('');
-NS.msg=t=>{const m=$('#nsAccMsg');if(m)m.textContent=t};
-NS.save=async p=>{const n={...NS.prem,...p,updatedAt:Date.now()};NS.prem=n;localStorage.setItem(PK,JSON.stringify(n));NS.sync();NS.renderAcc();if(NS.user&&window.NSF){try{await NSF.set(NS.user.uid,n)}catch(e){NS.msg('Plan activado en este dispositivo, pero no se pudo guardar en la nube.')}}};
+NS.msg=(t,ok)=>{const m=$('#nsAccMsg');if(m){m.style.color=ok===undefined?'':ok?'var(--teal)':'var(--red)';m.textContent=t}};
+// ---- Perfil de suscripción: SOLO los 5 campos que permite firestore.rules, con sus tipos exactos ----
+const num=v=>{v=Number(v);return Number.isFinite(v)&&v>0?Math.floor(v):0};
+NS.clean=(p,t)=>{p=p||{};const n=Date.now();return{
+ trialUsed:p.trialUsed===true||p.trialUsed==='true',            // boolean
+ trialStartDate:Math.min(num(p.trialStartDate),n),              // number (la regla exige <= ahora + 1 día)
+ premiumUntil:num(p.premiumUntil),                              // number >= 0
+ lifetime:p.lifetime===true||p.lifetime==='true',               // boolean
+ updatedAt:t||n}};                                              // number (la regla exige ±1 día del reloj del servidor)
+NS.cloudErr=(e,pre)=>{const c=(e&&e.code)||'desconocido';console.error('[NimboSignal] Firestore:',e);return pre+' (código: '+c+').'+(c==='permission-denied'?' Verifica que la fecha y hora de tu dispositivo sean correctas y que las reglas de Firestore estén publicadas.':'')};
+// Guarda SIEMPRE en localStorage; luego intenta la nube. Devuelve '' si todo salió bien o el texto del aviso si falló la nube.
+NS.save=async p=>{
+ const n=NS.clean({...NS.prem,...p});
+ NS.prem=n;
+ try{localStorage.setItem(PK,JSON.stringify(n))}catch(e){}
+ NS.sync();NS.renderAcc();
+ if(NS.user&&window.NSF){
+  try{await NSF.set(NS.user.uid,n)}
+  catch(e){const w=NS.cloudErr(e,'Plan activado en este dispositivo, pero no se pudo guardar en la nube');NS.msg(w,0);return w}
+ }
+ return '';
+};
 NS.sync=()=>{const p=NS.prem,n=Date.now();if(MOVIL){let v=null;if(p.lifetime)v={tier:'MASTER',isMaster:true,startedAt:new Date().toISOString(),expiresAt:'2099-12-31T23:59:59.000Z'};else if(p.premiumUntil>n)v={tier:'PRO',isMaster:false,startedAt:new Date(p.trialStartDate||n).toISOString(),expiresAt:new Date(p.premiumUntil).toISOString()};if(v)localStorage.setItem('nimbosignal_mobile_sub_v2',JSON.stringify(v));window.renderMobileSubscriptionUI&&renderMobileSubscriptionUI()}else window.updatePlanUI&&updatePlanUI()};
 NS.extend=()=>NS.save({premiumUntil:Math.max(Date.now(),NS.prem.premiumUntil)+30*DAY});
-NS.trial=async()=>{if(!NS.user)return NS.msg('Inicia sesión para activar tu mes gratis.');if(NS.prem.trialUsed)return NS.msg('Ya usaste tu mes gratis.');const n=Date.now();await NS.save({trialUsed:true,trialStartDate:n,premiumUntil:Math.max(n,NS.prem.premiumUntil)+30*DAY});NS.msg('¡Listo! Tienes 30 días de Premium completo.')};
-NS.redeem=async(raw,fid)=>{const c=String(raw).trim().toUpperCase(),f=$('#'+fid),o=(t,ok)=>{if(f){f.style.color=ok?'var(--teal)':'var(--red)';f.textContent=t}};if(!c)return o('Ingresa un código.',0);try{if(await sha(c)===MH){await NS.save({lifetime:true});return o('Código aceptado: Premium vitalicio activado.',1)}}catch(e){return o('Tu navegador no permite verificar códigos en este contexto (se requiere HTTPS).',0)}if(window.validateCode&&validateCode(c)==='PRO'){if(MOVIL)await NS.extend();else{localStorage.setItem('nimbosignal_web_plan_v1','PRO');NS.sync()}return o('Plan Pro Premium activado correctamente.',1)}o('Código inválido. Verifica el código e inténtalo de nuevo.',0)};
+NS.trial=async()=>{if(!NS.user)return NS.msg('Inicia sesión para activar tu mes gratis.');if(NS.prem.trialUsed)return NS.msg('Ya usaste tu mes gratis.');const n=Date.now();const w=await NS.save({trialUsed:true,trialStartDate:n,premiumUntil:Math.max(n,NS.prem.premiumUntil)+30*DAY});w?NS.msg(w,0):NS.msg('¡Listo! Tienes 30 días de Premium completo.',1)};
+NS.redeem=async(raw,fid)=>{const c=String(raw).trim().toUpperCase(),f=$('#'+fid),o=(t,ok)=>{if(f){f.style.color=ok?'var(--teal)':'var(--red)';f.textContent=t}};if(!c)return o('Ingresa un código.',0);try{if(await sha(c)===MH){const w=await NS.save({lifetime:true});return o(w||'Código aceptado: Premium vitalicio activado.',w?0:1)}}catch(e){return o('Tu navegador no permite verificar códigos en este contexto (se requiere HTTPS).',0)}if(window.validateCode&&validateCode(c)==='PRO'){let w='';if(MOVIL)w=await NS.extend();else{localStorage.setItem('nimbosignal_web_plan_v1','PRO');NS.sync()}return o(w||'Plan Pro Premium activado correctamente.',w?0:1)}o('Código inválido. Verifica el código e inténtalo de nuevo.',0)};
 window.redeemWebLicense=()=>{const i=$('#webLicenseInput');NS.redeem(i.value,'webLicenseFeedback').then(()=>i.value='')};
 window.applyMobileLicenseCode=()=>{const i=$('#mobileCodeInput');NS.redeem(i.value,'mobileCodeFeedback').then(()=>i.value='')};
 if(!MOVIL)window.getWebPlan=()=>{const s=localStorage.getItem('nimbosignal_web_plan_v1')||'FREE';return s!=='FREE'?s:NS.prem.lifetime?'MASTER':NS.prem.premiumUntil>Date.now()?'PRO':'FREE'};
-const ERR={'auth/invalid-credential':'Correo o contraseña incorrectos.','auth/invalid-email':'El correo no es válido.','auth/email-already-in-use':'Ese correo ya está registrado.','auth/weak-password':'La contraseña debe tener al menos 6 caracteres.','auth/too-many-requests':'Demasiados intentos. Intenta más tarde.','auth/network-request-failed':'Sin conexión a internet.'};
-NS.sign=async m=>{if(!window.NSF)return NS.msg('Servicio de cuentas no disponible.');try{if(m==2)await NSF.google();else if(m)await NSF.reg($('#nsEm').value.trim(),$('#nsPw').value);else await NSF.login($('#nsEm').value.trim(),$('#nsPw').value);NS.msg('Sesión iniciada.')}catch(x){NS.msg(ERR[x.code]||(m==2?'No se pudo iniciar con Google (dentro de la app usa correo y contraseña).':'No se pudo iniciar sesión.'))}};
-NS.auth=async u=>{NS.user=u;if(u&&window.NSF){try{const r=await NSF.get(u.uid);if(r){NS.prem={...NS.prem,...r};localStorage.setItem(PK,JSON.stringify(NS.prem))}else if(NS.prem.lifetime||NS.prem.premiumUntil>Date.now())await NSF.set(u.uid,{...NS.prem,updatedAt:Date.now()})}catch(e){}}NS.sync();NS.renderAcc()};
+// ---- Errores de Firebase Auth traducidos ----
+const ERR={
+ 'auth/invalid-credential':'Correo o contraseña incorrectos.',
+ 'auth/invalid-login-credentials':'Correo o contraseña incorrectos.',
+ 'auth/user-not-found':'No existe una cuenta con ese correo. Usa «Crear cuenta».',
+ 'auth/wrong-password':'Contraseña incorrecta.',
+ 'auth/invalid-email':'El correo no es válido.',
+ 'auth/email-already-in-use':'Ese correo ya está registrado. Usa «Ingresar».',
+ 'auth/weak-password':'La contraseña es muy débil: usa al menos 6 caracteres.',
+ 'auth/operation-not-allowed':'Este método de acceso no está activado. Actívalo en Firebase Console → Authentication → Sign-in method (Correo electrónico/contraseña o Google).',
+ 'auth/unauthorized-domain':'El dominio «'+(location.hostname||'actual')+'» no está autorizado en Firebase. Agrégalo en Firebase Console → Authentication → Settings → Dominios autorizados.',
+ 'auth/popup-blocked':'El navegador bloqueó la ventana emergente de Google. Permite las ventanas emergentes de este sitio e inténtalo de nuevo.',
+ 'auth/popup-closed-by-user':'Cerraste la ventana de Google antes de terminar el inicio de sesión.',
+ 'auth/cancelled-popup-request':'Se canceló la ventana de inicio de sesión. Inténtalo de nuevo.',
+ 'auth/too-many-requests':'Demasiados intentos fallidos. Espera unos minutos e inténtalo de nuevo.',
+ 'auth/network-request-failed':'Sin conexión a internet (o la red bloqueó la solicitud). Revisa tu conexión.',
+ 'auth/user-disabled':'Esta cuenta ha sido deshabilitada.',
+ 'auth/operation-not-supported-in-this-environment':'Este entorno no admite el inicio de sesión de Firebase. Abre NimboSignal desde un servidor HTTPS (no desde file://).'
+};
+// Google bloquea OAuth dentro de Android WebView (error 403 disallowed_useragent)
+const WV=MOVIL||/;\s*wv\)/i.test(navigator.userAgent||'');
+const GWV='Google bloquea las ventanas emergentes de inicio de sesión dentro de la app móvil (error «disallowed_useragent»). Inicia sesión con tu Correo y Contraseña (usa «Crear cuenta» si aún no tienes una).';
+const MAIL=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+let busy=false;
+NS.sign=async m=>{
+ if(busy)return;
+ // 1) Google no funciona dentro del WebView/APK: avisar sin llamar a Firebase
+ if(m==2&&WV)return NS.msg(GWV,0);
+ // 2) Firebase debe estar cargado
+ if(!window.NSF)return NS.msg(location.protocol==='file:'
+  ?'Estás abriendo NimboSignal como archivo local (file://). El inicio de sesión requiere un servidor HTTPS (por ejemplo GitHub Pages, Firebase Hosting o Netlify).'
+  :'El servicio de cuentas (Firebase) no se pudo cargar. Revisa tu conexión a internet y recarga la página.'+(window.NSF_ERROR?' Detalle: '+(NSF_ERROR.code||NSF_ERROR.message):''),0);
+ // 3) Validación local de correo y contraseña
+ let em='',pw='';
+ if(m!=2){
+  em=$('#nsEm').value.trim();pw=$('#nsPw').value;
+  if(!MAIL.test(em))return NS.msg('Escribe un correo electrónico válido (ej. nombre@correo.com).',0);
+  if(pw.length<6)return NS.msg('La contraseña debe tener mínimo 6 caracteres.',0);
+ }
+ busy=true;NS.msg('Conectando…');
+ try{
+  if(m==2)await NSF.google();else if(m)await NSF.reg(em,pw);else await NSF.login(em,pw);
+  NS.msg(m==1?'Cuenta creada. Sesión iniciada.':'Sesión iniciada.',1);
+ }catch(x){
+  console.error('[NimboSignal] Auth:',x);
+  NS.msg(ERR[x&&x.code]||'No se pudo '+(m==2?'iniciar sesión con Google':m?'crear la cuenta':'iniciar sesión')+'. Código de error: '+((x&&(x.code||x.message))||'desconocido'),0);
+ }finally{busy=false}
+};
+// ---- Sesión: lectura/creación del perfil en Firestore ----
+NS.auth=async u=>{
+ NS.user=u;
+ if(u&&window.NSF){
+  try{
+   const r=await NSF.get(u.uid);                       // null si !snap.exists()
+   if(NS.user!==u)return;                              // cambió la sesión mientras se leía
+   if(r){
+    // Ya existe: la nube manda (sanitizada)
+    NS.prem=NS.clean({...NS.prem,...r},num(r.updatedAt));
+    try{localStorage.setItem(PK,JSON.stringify(NS.prem))}catch(e){}
+   }else{
+    // Primer ingreso: crea el documento inicial con los 5 campos exactos que exige la regla "create"
+    const n=NS.clean(NS.prem);
+    n.premiumUntil=Math.min(n.premiumUntil,Date.now()+31*DAY);   // la regla limita premiumUntil a ~32 días al crear
+    await NSF.set(u.uid,n);
+   }
+  }catch(e){
+   NS.msg(NS.cloudErr(e,'Sesión iniciada, pero no se pudo sincronizar con la nube. Se usa el estado guardado en este dispositivo'),0);
+  }
+ }
+ NS.sync();NS.renderAcc();
+};
 NS.renderAcc=()=>{const p=NS.prem,n=Date.now(),d=Math.ceil((p.premiumUntil-n)/DAY),s=$('#nsAccSt');if(!s)return;s.innerHTML=(NS.user?`Cuenta: <b>${esc(NS.user.email||'Google')}</b><br>`:'Sin sesión iniciada.<br>')+(p.lifetime?'Plan: <b>Premium vitalicio</b>':p.premiumUntil>n?`Plan: <b>Premium activo</b> · ${d} día${d==1?'':'s'} restante${d==1?'':'s'} (hasta ${new Date(p.premiumUntil).toLocaleDateString('es-EC')})`:'Plan: <b>Gratuito</b>')+`<br>Mes gratis: ${p.trialUsed?'ya utilizado':'disponible'}`;$('#nsLog').style.display=NS.user?'none':'block';$('#nsOut').style.display=NS.user?'inline-block':'none';$('#nsTr').disabled=!!p.trialUsed;if(NS.user)NS.rep()};
 NS.acc=()=>{window.closeMobileDrawer&&closeMobileDrawer();const sb=$('#webSidebar');sb&&sb.classList.remove('open');NS.op('nsAcc');NS.renderAcc();if(window.paypal&&!NS.pp){NS.pp=1;paypal.Buttons({style:{layout:'vertical',shape:'pill'},onClick:(d,a)=>NS.user?a.resolve():(NS.msg('Inicia sesión para pagar y guardar tu suscripción.'),a.reject()),createOrder:(d,a)=>a.order.create({purchase_units:[{description:'NimboSignal Premium 30 días',amount:{currency_code:'USD',value:'1.99'}}]}),onApprove:(d,a)=>a.order.capture().then(()=>{NS.extend();NS.msg('Pago aprobado. Premium extendido 30 días.')}),onError:()=>NS.msg('No se pudo completar el pago.')}).render('#nsPP')}else if(!window.paypal)$('#nsPP').textContent='PayPal no está disponible en este momento.'};
 const init=()=>{if(MOVIL)document.body.classList.add('ns-m');const go=document.createElement('div'),T=MOVIL?'drawer-group-title':'nav-group-title',I='<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>',B=(t,l,a)=>`<button class="nav-btn" ${t?`data-target="${t}"`:''} onclick="${a}"><span class="nav-label">${I}${l}</span></button>`;go.innerHTML=`<div class="${T}">Inteligencia NimboSignal</div>`+[['sec-calles','Calles y Colegios'],['sec-turismo','Turismo y Gastronomía'],['sec-impacto','Impacto El Niño'],['sec-noticias-reg','Noticias por Región']].map(x=>B(x[0],x[1],`showSection('${x[0]}')`)).join('')+B('','Mi Cuenta y Plan','NS.acc()');const h=$('#webSidebar')||$('#mobileDrawer'),f=h&&h.querySelector('.nav-btn');if(f)f.parentElement.before(go);const m=$('.map-frame-box');if(m)m.innerHTML='<div class="ns-row" id="nsMc"></div><div id="nsMap"></div>';const b=$('#headerPlanBadge')||$('#headerSubBadge');if(b){b.style.cursor='pointer';b.onclick=NS.acc}const _s=window.showSection;window.showSection=id=>{_s(id);if(id==='sec-mapa')NS.map();document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.target===id))};['loadCityWeather','fetchGlobalByCoords'].forEach(k=>{const o=window[k];if(o)window[k]=function(n,a,b,c){try{NS.setCity(n,a,b)}catch(e){}return o.apply(this,arguments)}});NS.rc();NS.all();NS.wx();NS.sync();setInterval(NS.wx,6e5)};
@@ -2706,11 +2794,13 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,GoogleAuthProvider,signInWithPopup,signOut} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import {getFirestore,doc,getDoc,setDoc,collection,addDoc,query,orderBy,limit,getDocs,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyDCI162U9FAL56qaI1uIAC0t-EZ25wcPwa",authDomain:"nimbosignal.firebaseapp.com",projectId:"nimbosignal",storageBucket:"nimbosignal.firebasestorage.app",messagingSenderId:"800812890854",appId:"1:800812890854:web:2ddec3c1f43b3dc9e71327",measurementId:"G-7K2H7DDPE8"};
+try{
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 window.NSF={auth,login:(e,p)=>signInWithEmailAndPassword(auth,e,p),reg:(e,p)=>createUserWithEmailAndPassword(auth,e,p),google:()=>signInWithPopup(auth,new GoogleAuthProvider()),out:()=>signOut(auth),
-get:async u=>{const s=await getDoc(doc(db,'usuarios',u));return s.exists()?s.data():null},set:(u,d)=>setDoc(doc(db,'usuarios',u),d,{merge:true}),
+get:async u=>{const s=await getDoc(doc(db,'usuarios',u));return s.exists()?s.data():null},set:(u,d)=>setDoc(doc(db,'usuarios',u),{trialUsed:d.trialUsed===true,trialStartDate:Number(d.trialStartDate)||0,premiumUntil:Number(d.premiumUntil)||0,lifetime:d.lifetime===true,updatedAt:Number(d.updatedAt)||Date.now()}),
 rep:d=>addDoc(collection(db,'reportes'),{...d,createdAt:serverTimestamp()}),reps:async()=>(await getDocs(query(collection(db,'reportes'),orderBy('createdAt','desc'),limit(6)))).docs.map(x=>x.data())};
 onAuthStateChanged(auth,u=>window.NS&&NS.auth(u));
+}catch(e){window.NSF_ERROR=e;console.error('[NimboSignal] Firebase no se pudo iniciar:',e)}
 </script>
 </body>
 </html>
