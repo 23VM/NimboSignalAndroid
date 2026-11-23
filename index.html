@@ -2729,8 +2729,11 @@ const ERR={
  'auth/too-many-requests':'Demasiados intentos fallidos. Espera unos minutos e inténtalo de nuevo.',
  'auth/network-request-failed':'Sin conexión a internet (o la red bloqueó la solicitud). Revisa tu conexión.',
  'auth/user-disabled':'Esta cuenta ha sido deshabilitada.',
+ 'auth/api-key-not-valid':'La API key de Firebase no es válida. Copia de nuevo el firebaseConfig desde Firebase Console → Configuración del proyecto → Tus apps (sin espacios ni caracteres cambiados) y verifica que la clave no esté restringida a otros dominios o APIs.',
+ 'auth/invalid-api-key':'La API key de Firebase no es válida. Revisa el campo apiKey de firebaseConfig en Firebase Console → Configuración del proyecto → Tus apps.',
  'auth/operation-not-supported-in-this-environment':'Este entorno no admite el inicio de sesión de Firebase. Abre NimboSignal desde un servidor HTTPS (no desde file://).'
 };
+const errMsg=c=>ERR[c]||ERR[String(c||'').split('.')[0]];
 // Google bloquea OAuth dentro de Android WebView (error 403 disallowed_useragent)
 const WV=MOVIL||/;\s*wv\)/i.test(navigator.userAgent||'');
 const GWV='Google bloquea las ventanas emergentes de inicio de sesión dentro de la app móvil (error «disallowed_useragent»). Inicia sesión con tu Correo y Contraseña (usa «Crear cuenta» si aún no tienes una).';
@@ -2743,7 +2746,7 @@ NS.sign=async m=>{
  // 2) Firebase debe estar cargado
  if(!window.NSF)return NS.msg(location.protocol==='file:'
   ?'Estás abriendo NimboSignal como archivo local (file://). El inicio de sesión requiere un servidor HTTPS (por ejemplo GitHub Pages, Firebase Hosting o Netlify).'
-  :'El servicio de cuentas (Firebase) no se pudo cargar. Revisa tu conexión a internet y recarga la página.'+(window.NSF_ERROR?' Detalle: '+(NSF_ERROR.code||NSF_ERROR.message):''),0);
+  :'El servicio de cuentas (Firebase) no se pudo cargar. Revisa tu conexión a internet y recarga la página.'+(window.NSF_ERROR?' Detalle: '+(errMsg(NSF_ERROR.code)||NSF_ERROR.code||NSF_ERROR.message):''),0);
  // 3) Validación local de correo y contraseña
  let em='',pw='';
  if(m!=2){
@@ -2757,7 +2760,7 @@ NS.sign=async m=>{
   NS.msg(m==1?'Cuenta creada. Sesión iniciada.':'Sesión iniciada.',1);
  }catch(x){
   console.error('[NimboSignal] Auth:',x);
-  NS.msg(ERR[x&&x.code]||'No se pudo '+(m==2?'iniciar sesión con Google':m?'crear la cuenta':'iniciar sesión')+'. Código de error: '+((x&&(x.code||x.message))||'desconocido'),0);
+  NS.msg(errMsg(x&&x.code)||'No se pudo '+(m==2?'iniciar sesión con Google':m?'crear la cuenta':'iniciar sesión')+'. Código de error: '+((x&&(x.code||x.message))||'desconocido'),0);
  }finally{busy=false}
 };
 // ---- Sesión: lectura/creación del perfil en Firestore ----
@@ -2793,7 +2796,15 @@ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',ini
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,GoogleAuthProvider,signInWithPopup,signOut} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import {getFirestore,doc,getDoc,setDoc,collection,addDoc,query,orderBy,limit,getDocs,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-const firebaseConfig={apiKey:"AIzaSyDCI162U9FAL56qaI1uIAC0t-EZ25wcPwa",authDomain:"nimbosignal.firebaseapp.com",projectId:"nimbosignal",storageBucket:"nimbosignal.firebasestorage.app",messagingSenderId:"800812890854",appId:"1:800812890854:web:2ddec3c1f43b3dc9e71327",measurementId:"G-7K2H7DDPE8"};
+const firebaseConfig={
+  apiKey:"AIzaSyDCF1XZU9aLF6SaiQTu1ACrN-EZZ5wzPxA",
+  authDomain:"nimbosignal.firebaseapp.com",
+  projectId:"nimbosignal",
+  storageBucket:"nimbosignal.firebasestorage.app",
+  messagingSenderId:"808012890854",
+  appId:"1:808012890854:web:2ddec3c31f43b3dc9c7127",
+  measurementId:"G-7K2H70DPE8"
+};
 try{
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 window.NSF={auth,login:(e,p)=>signInWithEmailAndPassword(auth,e,p),reg:(e,p)=>createUserWithEmailAndPassword(auth,e,p),google:()=>signInWithPopup(auth,new GoogleAuthProvider()),out:()=>signOut(auth),
