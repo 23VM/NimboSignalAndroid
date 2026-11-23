@@ -803,6 +803,29 @@
 .leaflet-popup-content-wrapper{color:#0f172a;border-radius:14px}.leaflet-popup-content p{margin:.3rem 0;font-size:.8rem}.leaflet-popup-content h4{margin:.3rem 0 0}
 .ns-m .ns-grid{grid-template-columns:1fr}.ns-m .ns-chip{padding:.6rem 1rem;font-size:.86rem}.ns-m #nsMap{height:62vh}
 @media(max-width:700px){.ns-grid{grid-template-columns:1fr}#nsMap{height:60vh}}
+
+/* ===== NimboSignal: perfil en header + pago directo en Plan Pro Premium ===== */
+.ns-prof{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;height:36px;min-width:36px;padding:0;border-radius:999px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-main);cursor:pointer;font:inherit;font-size:.78rem;font-weight:700;flex-shrink:0;max-width:210px;overflow:hidden;transition:border-color .25s,transform .25s}
+.ns-prof:hover{border-color:var(--cyan);transform:translateY(-1px)}
+.ns-prof-on{padding:2px}
+.ns-prof-on.has-mail{padding:2px .75rem 2px 2px}
+.ns-prof-in{padding:0 .85rem;background:linear-gradient(135deg,#06b6d4,#10b981);color:#06131f;border-color:transparent;font-size:.78rem}
+.ns-av{width:30px;height:30px;border-radius:50%;object-fit:cover;display:grid;place-items:center;flex-shrink:0;background:linear-gradient(135deg,#06b6d4,#10b981);color:#06131f;font-weight:800;font-size:.9rem;line-height:1}
+.ns-prof-mail{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-main)}
+.ns-pay{display:flex;flex-direction:column;gap:.55rem;padding:.85rem;border:1px solid var(--border);border-radius:14px;background:var(--bg-sub)}
+.ns-pay-acc{display:flex;flex-direction:column;gap:.4rem;font-size:.82rem}
+.ns-pay-lbl{color:var(--text-muted);font-size:.78rem}
+.ns-pay-mail{word-break:break-all;color:var(--teal)}
+.ns-pay-price{font-size:.82rem;font-weight:700}
+.ns-pay .btn:disabled{opacity:.55;cursor:not-allowed}
+.ns-pay-note{font-size:.76rem;color:var(--text-muted)}
+#nsPPCard{min-height:4px;position:relative;z-index:1}
+#nsPayMsg{font-size:.8rem;margin:0}
+.ns-code-box{border-top:1px dashed var(--border);padding-top:.85rem;margin-top:.35rem}
+.ns-code-box .ns-code-q{font-size:.86rem;font-weight:700;color:var(--text-main)}
+.ns-code-box .ns-code-sub{font-size:.74rem;color:var(--text-muted)}
+@media(max-width:520px){.ns-prof-mail{display:none}.ns-prof-on.has-mail{padding:2px}}
+
 </style>
 </head>
 <body>
@@ -863,6 +886,7 @@
       <button class="icon-square-btn" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Cambiar tema">
         <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       </button>
+      <button type="button" class="ns-prof ns-prof-in" id="nsProf" onclick="NS.acc()" aria-label="Iniciar sesión o crear cuenta" title="Iniciar sesión o crear cuenta">Entrar</button>
     </div>
   </header>
 
@@ -1529,13 +1553,22 @@
             <div><strong>• Todo lo del Plan Gratuito:</strong> Sin restricciones ni pausas.</div>
           </div>
 
-          <div style="border-top:1px solid var(--border); padding-top:0.75rem; display:flex; flex-direction:column; gap:0.5rem;">
-            <strong style="font-size:0.86rem;">Activar Plan Pro Premium con Código</strong>
+<!-- NS: pago directo + mes gratis (Plan Pro Premium) -->
+          <div class="ns-pay" id="nsPay">
+            <div class="ns-pay-acc" id="nsPayAcc"></div>
+            <button type="button" class="btn btn-primary btn-full" id="nsPayTr" onclick="NS.trial()">Activar 1 mes gratis</button>
+            <span class="ns-pay-note" id="nsPayTrNote"></span>
+            <div class="ns-pay-price">Premium: <b>$1,99 USD</b> / 30 días (PayPal o tarjeta)</div>
+            <div id="nsPPCard"></div>
+            <p id="nsPayMsg"></p>
+          </div>
+          <div class="ns-code-box" style="border-top:1px dashed var(--border); padding-top:0.85rem; display:flex; flex-direction:column; gap:0.5rem;">
+            <strong class="ns-code-q" style="font-size:0.86rem;">¿Tienes un código promocional o maestro?</strong>
             <span style="font-size:0.76rem; color:var(--text-muted);">
-              Ingresa tu código de suscripción (<code>NS-PRO-XXXX-YY</code>) o tu Código Maestro:
+              Opción secundaria, no es un pago. Ingresa tu código de suscripción (<code>NS-PRO-XXXX-YY</code>) o tu Código Maestro:
             </span>
             <input type="text" id="mobileCodeInput" class="mobile-input" placeholder="Ej. NS-PRO-XXXX-YY" style="text-transform:uppercase;" />
-            <button class="btn btn-primary btn-full" onclick="applyMobileLicenseCode()">Activar Plan Pro Premium</button>
+            <button class="btn btn-outline btn-full" onclick="applyMobileLicenseCode()">Canjear código</button>
             <span id="mobileCodeFeedback" style="font-size:0.8rem;"></span>
           </div>
         </div>
@@ -2571,7 +2604,7 @@
   </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://www.paypal.com/sdk/js?client-id=BAA8f-rawuNKZPcCwif89FcehBkazx873A6D-jJ2s7wY3C98T80vGe6_Z9B5nZU8HCqbm6i6pB8eYcy&currency=USD&enable-funding=card"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=BAAkf-ruwwXN2pCcmFuL0MFzeEhbaGxz87ok6D-dfXHOXrzWwns56SGeT_7Mh5VRMZdhtsqAEa1K3OKvlo&currency=USD&enable-funding=card"></script>
 <script>
 (()=>{
 const $=s=>document.querySelector(s),MOVIL=true,MH='765e32fcc196294831e8ee08e4732d444895505394aed4e556662037ae71587a',PK='nimbosignal_prem_v2',DAY=864e5;
@@ -2683,7 +2716,7 @@ NS.mk=()=>{if(!NS.m)return;NS.lg.clearLayers();const q=($('#mapSearchInput').val
 window.focusMapPoint=async(label,la,lo,z,btn)=>{if(btn){document.querySelectorAll('#mapPointsRow .btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}NS.map();NS.m&&NS.m.setView([la,lo],z);const l=$('#mapLocationLabel');if(l)l.textContent=label;try{const j=await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=temperature_2m,weather_code&forecast_days=1&timezone=auto`)).json();$('#mapWeatherTag').textContent=`${interpretWeatherCode(j.current.weather_code).label} • ${Math.round(j.current.temperature_2m)}°C`}catch(e){}};
 window.searchOnMap=async e=>{e.preventDefault();NS.map();const q=$('#mapSearchInput').value.trim().toLowerCase(),h=pois().find(p=>p.n.toLowerCase().includes(q));if(h)return NS.m.setView([h.la,h.lo],15);try{const j=await(await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q))).json();if(j[0]){NS.m.setView([+j[0].lat,+j[0].lon],13);$('#mapLocationLabel').textContent=j[0].display_name.split(',')[0]}}catch(x){}};
 const sha=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,'0')).join('');
-NS.msg=(t,ok)=>{const m=$('#nsAccMsg');if(m){m.style.color=ok===undefined?'':ok?'var(--teal)':'var(--red)';m.textContent=t}};
+NS.msg=(t,ok)=>{['#nsAccMsg','#nsPayMsg'].forEach(q=>{const m=$(q);if(m){m.style.color=ok===undefined?'':ok?'var(--teal)':'var(--red)';m.textContent=t}})};
 // ---- Perfil de suscripción: SOLO los 5 campos que permite firestore.rules, con sus tipos exactos ----
 const num=v=>{v=Number(v);return Number.isFinite(v)&&v>0?Math.floor(v):0};
 NS.clean=(p,t)=>{p=p||{};const n=Date.now();return{
@@ -2765,7 +2798,7 @@ NS.sign=async m=>{
 };
 // ---- Sesión: lectura/creación del perfil en Firestore ----
 NS.auth=async u=>{
- NS.user=u;
+ NS.user=u;NS.renderUser();
  if(u&&window.NSF){
   try{
    const r=await NSF.get(u.uid);                       // null si !snap.exists()
@@ -2786,9 +2819,53 @@ NS.auth=async u=>{
  }
  NS.sync();NS.renderAcc();
 };
-NS.renderAcc=()=>{const p=NS.prem,n=Date.now(),d=Math.ceil((p.premiumUntil-n)/DAY),s=$('#nsAccSt');if(!s)return;s.innerHTML=(NS.user?`Cuenta: <b>${esc(NS.user.email||'Google')}</b><br>`:'Sin sesión iniciada.<br>')+(p.lifetime?'Plan: <b>Premium vitalicio</b>':p.premiumUntil>n?`Plan: <b>Premium activo</b> · ${d} día${d==1?'':'s'} restante${d==1?'':'s'} (hasta ${new Date(p.premiumUntil).toLocaleDateString('es-EC')})`:'Plan: <b>Gratuito</b>')+`<br>Mes gratis: ${p.trialUsed?'ya utilizado':'disponible'}`;$('#nsLog').style.display=NS.user?'none':'block';$('#nsOut').style.display=NS.user?'inline-block':'none';$('#nsTr').disabled=!!p.trialUsed;if(NS.user)NS.rep()};
-NS.acc=()=>{window.closeMobileDrawer&&closeMobileDrawer();const sb=$('#webSidebar');sb&&sb.classList.remove('open');NS.op('nsAcc');NS.renderAcc();if(window.paypal&&!NS.pp){NS.pp=1;paypal.Buttons({style:{layout:'vertical',shape:'pill'},onClick:(d,a)=>NS.user?a.resolve():(NS.msg('Inicia sesión para pagar y guardar tu suscripción.'),a.reject()),createOrder:(d,a)=>a.order.create({purchase_units:[{description:'NimboSignal Premium 30 días',amount:{currency_code:'USD',value:'1.99'}}]}),onApprove:(d,a)=>a.order.capture().then(()=>{NS.extend();NS.msg('Pago aprobado. Premium extendido 30 días.')}),onError:()=>NS.msg('No se pudo completar el pago.')}).render('#nsPP')}else if(!window.paypal)$('#nsPP').textContent='PayPal no está disponible en este momento.'};
-const init=()=>{if(MOVIL)document.body.classList.add('ns-m');const go=document.createElement('div'),T=MOVIL?'drawer-group-title':'nav-group-title',I='<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>',B=(t,l,a)=>`<button class="nav-btn" ${t?`data-target="${t}"`:''} onclick="${a}"><span class="nav-label">${I}${l}</span></button>`;go.innerHTML=`<div class="${T}">Inteligencia NimboSignal</div>`+[['sec-calles','Calles y Colegios'],['sec-turismo','Turismo y Gastronomía'],['sec-impacto','Impacto El Niño'],['sec-noticias-reg','Noticias por Región']].map(x=>B(x[0],x[1],`showSection('${x[0]}')`)).join('')+B('','Mi Cuenta y Plan','NS.acc()');const h=$('#webSidebar')||$('#mobileDrawer'),f=h&&h.querySelector('.nav-btn');if(f)f.parentElement.before(go);const m=$('.map-frame-box');if(m)m.innerHTML='<div class="ns-row" id="nsMc"></div><div id="nsMap"></div>';const b=$('#headerPlanBadge')||$('#headerSubBadge');if(b){b.style.cursor='pointer';b.onclick=NS.acc}const _s=window.showSection;window.showSection=id=>{_s(id);if(id==='sec-mapa')NS.map();document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.target===id))};['loadCityWeather','fetchGlobalByCoords'].forEach(k=>{const o=window[k];if(o)window[k]=function(n,a,b,c){try{NS.setCity(n,a,b)}catch(e){}return o.apply(this,arguments)}});NS.rc();NS.all();NS.wx();NS.sync();setInterval(NS.wx,6e5)};
+NS.renderAcc=()=>{const p=NS.prem,n=Date.now(),d=Math.ceil((p.premiumUntil-n)/DAY),s=$('#nsAccSt');if(!s)return;s.innerHTML=(NS.user?`Cuenta: <b>${esc(NS.user.email||'Google')}</b><br>`:'Sin sesión iniciada.<br>')+(p.lifetime?'Plan: <b>Premium vitalicio</b>':p.premiumUntil>n?`Plan: <b>Premium activo</b> · ${d} día${d==1?'':'s'} restante${d==1?'':'s'} (hasta ${new Date(p.premiumUntil).toLocaleDateString('es-EC')})`:'Plan: <b>Gratuito</b>')+`<br>Mes gratis: ${p.trialUsed?'ya utilizado':'disponible'}`;$('#nsLog').style.display=NS.user?'none':'block';$('#nsOut').style.display=NS.user?'inline-block':'none';$('#nsTr').disabled=!!p.trialUsed;NS.renderUser();if(NS.user)NS.rep()};
+// ---- NimboSignal: perfil del header + pago directo en la tarjeta Plan Pro Premium ----
+NS.ppOpts=()=>({style:{layout:'vertical',shape:'pill'},
+ onClick:(d,a)=>NS.user?a.resolve():(NS.msg('Inicia sesión para pagar y guardar tu suscripción.'),NS.openLogin(),a.reject()),
+ createOrder:(d,a)=>a.order.create({purchase_units:[{description:'NimboSignal Premium 30 días',amount:{currency_code:'USD',value:'1.99'}}]}),
+ onApprove:(d,a)=>a.order.capture().then(async()=>{const w=await NS.extend();if(!w)NS.msg('Pago aprobado. Premium extendido 30 días.',1)}),
+ onError:()=>NS.msg('No se pudo completar el pago.',0)});
+NS.openLogin=()=>{window.closeMobileDrawer&&closeMobileDrawer();NS.op('nsAcc');NS.renderAcc()};
+// Renderiza PayPal/Tarjeta dentro de la tarjeta Pro al cargar. Si la sección #sec-planes aún está oculta
+// (ancho 0), se vuelve a renderizar en cuanto se muestra, para que los botones tengan su tamaño correcto.
+NS.mountPay=()=>{
+ const c=$('#nsPPCard');if(!c)return;
+ if(!window.paypal){c.textContent='PayPal no está disponible en este momento.';return}
+ const vis=c.offsetWidth>0;
+ if(NS.ppc&&(NS.ppc.vis||!vis))return;
+ if(NS.ppc&&NS.ppc.b){try{NS.ppc.b.close()}catch(e){}}
+ c.innerHTML='';
+ try{
+  const b=paypal.Buttons(NS.ppOpts()),st={b,vis};NS.ppc=st;
+  b.render('#nsPPCard').catch(()=>{if(NS.ppc===st)NS.ppc=null});
+ }catch(e){NS.ppc=null}
+};
+NS.renderPay=()=>{
+ const a=$('#nsPayAcc'),t=$('#nsPayTr'),n=$('#nsPayTrNote');if(!a)return;
+ const u=NS.user,used=!!NS.prem.trialUsed;
+ a.innerHTML=u
+  ?`<span class="ns-pay-lbl">Sesión iniciada con</span><b class="ns-pay-mail">${esc(u.email||'Google')}</b>`
+  :`<span class="ns-pay-lbl">Necesitas una cuenta para pagar o activar tu mes gratis.</span><button type="button" class="btn btn-primary${MOVIL?' btn-full':''}" onclick="NS.openLogin()">Iniciar sesión para pagar</button>`;
+ if(t){t.disabled=used;t.textContent=used?'Mes gratis ya utilizado':'Activar 1 mes gratis'}
+ if(n)n.textContent=used?'Ya usaste tu mes gratis. Puedes seguir sumando 30 días con el pago.':'Mes gratis: disponible (una vez por cuenta).';
+};
+NS.renderProf=bad=>{
+ const b=$('#nsProf');if(!b)return;
+ const u=NS.user;
+ if(bad)NS.badPh=u&&u.photoURL;
+ if(!u){b.className='ns-prof ns-prof-in';b.innerHTML='Entrar';b.title='Iniciar sesión o crear cuenta';b.setAttribute('aria-label','Iniciar sesión o crear cuenta');return}
+ const em=u.email||'',ph=u.photoURL&&u.photoURL!==NS.badPh?u.photoURL:'',
+  ini=(em||u.displayName||'?').trim().charAt(0).toUpperCase(),
+  sh=em.length>16?em.slice(0,14)+'…':em;
+ b.className='ns-prof ns-prof-on'+(!ph&&sh?' has-mail':'');
+ b.title=em||u.displayName||'Mi cuenta';b.setAttribute('aria-label','Mi cuenta y plan');
+ b.innerHTML=(ph?`<img class="ns-av" src="${esc(ph)}" alt="" referrerpolicy="no-referrer">`:`<span class="ns-av">${esc(ini)}</span>`)+(!ph&&sh?`<span class="ns-prof-mail">${esc(sh)}</span>`:'');
+ const im=b.querySelector('img');if(im)im.onerror=()=>NS.renderProf(true);
+};
+NS.renderUser=()=>{NS.renderProf();NS.renderPay()};
+NS.acc=()=>{window.closeMobileDrawer&&closeMobileDrawer();const sb=$('#webSidebar');sb&&sb.classList.remove('open');NS.op('nsAcc');NS.renderAcc();if(window.paypal&&!NS.pp){NS.pp=1;paypal.Buttons(NS.ppOpts()).render('#nsPP')}else if(!window.paypal)$('#nsPP').textContent='PayPal no está disponible en este momento.'};
+const init=()=>{if(MOVIL)document.body.classList.add('ns-m');const go=document.createElement('div'),T=MOVIL?'drawer-group-title':'nav-group-title',I='<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>',B=(t,l,a)=>`<button class="nav-btn" ${t?`data-target="${t}"`:''} onclick="${a}"><span class="nav-label">${I}${l}</span></button>`;go.innerHTML=`<div class="${T}">Inteligencia NimboSignal</div>`+[['sec-calles','Calles y Colegios'],['sec-turismo','Turismo y Gastronomía'],['sec-impacto','Impacto El Niño'],['sec-noticias-reg','Noticias por Región']].map(x=>B(x[0],x[1],`showSection('${x[0]}')`)).join('')+B('','Mi Cuenta y Plan','NS.acc()');const h=$('#webSidebar')||$('#mobileDrawer'),f=h&&h.querySelector('.nav-btn');if(f)f.parentElement.before(go);const m=$('.map-frame-box');if(m)m.innerHTML='<div class="ns-row" id="nsMc"></div><div id="nsMap"></div>';const b=$('#headerPlanBadge')||$('#headerSubBadge');if(b){b.style.cursor='pointer';b.onclick=NS.acc}const _s=window.showSection;window.showSection=id=>{_s(id);if(id==='sec-mapa')NS.map();if(id==='sec-planes')setTimeout(NS.mountPay,80);document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.target===id))};['loadCityWeather','fetchGlobalByCoords'].forEach(k=>{const o=window[k];if(o)window[k]=function(n,a,b,c){try{NS.setCity(n,a,b)}catch(e){}return o.apply(this,arguments)}});NS.rc();NS.all();NS.wx();NS.sync();NS.renderUser();NS.mountPay();setInterval(NS.wx,6e5)};
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 })();
 </script>
