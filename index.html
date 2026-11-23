@@ -2,21 +2,21 @@
 <html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#0b1120" />
   <title>NimboSignal — App Móvil</title>
   <style>
     :root,
     [data-theme="dark"] {
-      --bg-main: #0b1120;
-      --bg-gradient: radial-gradient(circle at top right, #0f2942 0%, #0b1120 60%);
-      --bg-header: rgba(11, 17, 32, 0.97);
-      --bg-drawer: #0f172a;
-      --bg-surface: #111827;
-      --bg-card: #1e293b;
-      --bg-sub: rgba(11, 17, 32, 0.86);
-      --bg-chat: rgba(9, 14, 26, 0.85);
-      --border: rgba(148, 163, 184, 0.22);
+      --bg-main: #070d19;
+      --bg-gradient: radial-gradient(circle at top right, #0f2942 0%, #070d19 62%);
+      --bg-header: rgba(9, 15, 28, 0.94);
+      --bg-drawer: #0c1426;
+      --bg-surface: #10192d;
+      --bg-card: #152036;
+      --bg-sub: rgba(9, 15, 28, 0.78);
+      --bg-chat: rgba(7, 12, 24, 0.88);
+      --border: rgba(148, 163, 184, 0.18);
       --cyan: #06b6d4;
       --cyan-soft: rgba(6, 182, 212, 0.16);
       --teal: #10b981;
@@ -28,18 +28,19 @@
       --text-main: #f8fafc;
       --text-body: #e2e8f0;
       --text-muted: #94a3b8;
+      --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
     }
 
     [data-theme="light"] {
-      --bg-main: #f1f5f9;
-      --bg-gradient: radial-gradient(circle at top right, #e0f2fe 0%, #f1f5f9 65%);
-      --bg-header: rgba(255, 255, 255, 0.98);
+      --bg-main: #eef3f9;
+      --bg-gradient: radial-gradient(circle at top right, #dff0fe 0%, #eef3f9 65%);
+      --bg-header: rgba(255, 255, 255, 0.95);
       --bg-drawer: #ffffff;
       --bg-surface: #ffffff;
       --bg-card: #ffffff;
-      --bg-sub: #f8fafc;
+      --bg-sub: #f4f7fb;
       --bg-chat: #f1f5f9;
-      --border: rgba(15, 23, 42, 0.14);
+      --border: rgba(15, 23, 42, 0.11);
       --cyan: #0284c7;
       --cyan-soft: rgba(2, 132, 199, 0.12);
       --teal: #059669;
@@ -51,6 +52,7 @@
       --text-main: #0f172a;
       --text-body: #1e293b;
       --text-muted: #475569;
+      --card-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
     }
 
     * {
@@ -58,7 +60,7 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
-      font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
     }
 
     html, body {
@@ -67,23 +69,24 @@
       background: var(--bg-gradient);
       background-color: var(--bg-main);
       color: var(--text-main);
-      line-height: 1.5;
+      line-height: 1.55;
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
     body {
       display: flex;
       flex-direction: column;
-      padding-bottom: 68px;
+      padding-bottom: calc(84px + env(safe-area-inset-bottom));
     }
 
     /* ICONOS SVG Y PUNTOS DE ESTADO */
     .ico {
-      width: 17px;
-      height: 17px;
+      width: 18px;
+      height: 18px;
       stroke: currentColor;
       fill: none;
-      stroke-width: 2;
+      stroke-width: 2.1;
       stroke-linecap: round;
       stroke-linejoin: round;
       flex-shrink: 0;
@@ -92,8 +95,8 @@
     }
 
     .ico-lg {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
     }
 
     .status-dot {
@@ -110,17 +113,18 @@
     .dot-red { background: #ef4444; box-shadow: 0 0 8px rgba(239, 68, 68, 0.65); }
     .dot-cyan { background: #06b6d4; box-shadow: 0 0 8px rgba(6, 182, 212, 0.65); }
 
-    /* MODAL BIENVENIDA COMPACTO PARA TELÉFONO */
+    /* MODAL BIENVENIDA ESTILO APK */
     .welcome-overlay {
       position: fixed;
       inset: 0;
       z-index: 4000;
-      background: rgba(6, 10, 20, 0.9);
-      backdrop-filter: blur(10px);
+      background: rgba(4, 8, 18, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
+      padding: 1.25rem;
     }
 
     .welcome-overlay.hidden {
@@ -129,43 +133,46 @@
 
     .welcome-box {
       background: var(--bg-surface);
-      border: 1px solid rgba(6, 182, 212, 0.45);
-      border-radius: 20px;
-      padding: 1.35rem 1.1rem;
+      border: 1px solid rgba(6, 182, 212, 0.38);
+      border-radius: 26px;
+      padding: 1.65rem 1.3rem;
       width: 100%;
-      max-width: 420px;
+      max-width: 410px;
       text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
     }
 
     .mode-stack {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      margin-top: 1rem;
+      gap: 0.9rem;
+      margin-top: 1.25rem;
     }
 
     .mode-choice {
       background: var(--bg-card);
       border: 1.5px solid var(--border);
-      border-radius: 15px;
-      padding: 0.95rem;
+      border-radius: 18px;
+      padding: 1.05rem;
       cursor: pointer;
       color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 0.95rem;
       text-align: left;
+      transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
     }
 
     .mode-choice:active {
+      transform: scale(0.985);
       border-color: var(--cyan);
       background: var(--cyan-soft);
     }
 
     .mode-icon-wrap {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
       background: var(--cyan-soft);
       color: var(--cyan);
       display: grid;
@@ -173,32 +180,35 @@
       flex-shrink: 0;
     }
 
-    /* BARRA SUPERIOR MÓVIL */
+    /* BARRA SUPERIOR NATIVA MÓVIL */
     header {
       position: sticky;
       top: 0;
       z-index: 1200;
       background: var(--bg-header);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      padding: 0.55rem 0.85rem;
+      padding: calc(0.6rem + env(safe-area-inset-top)) 0.85rem 0.6rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.45rem;
+      gap: 0.4rem;
+      min-height: 60px;
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.55rem;
       min-width: 0;
+      flex: 1;
     }
 
     .icon-square-btn {
       width: 38px;
       height: 38px;
-      border-radius: 10px;
+      border-radius: 12px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       color: var(--text-main);
@@ -206,47 +216,62 @@
       place-items: center;
       cursor: pointer;
       flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+
+    .icon-square-btn:active {
+      transform: scale(0.94);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 0.45rem;
+      gap: 0.5rem;
       min-width: 0;
       cursor: pointer;
     }
 
     .brand-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 9px;
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
       background: linear-gradient(135deg, #06b6d4, #10b981);
       display: grid;
       place-items: center;
       font-weight: 800;
-      font-size: 0.9rem;
-      color: #06131f;
+      font-size: 0.88rem;
+      color: #04131f;
       flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(6, 182, 212, 0.3);
+    }
+
+    .brand-info {
+      min-width: 0;
     }
 
     .brand-info strong {
-      font-size: 0.95rem;
+      font-size: 0.96rem;
+      font-weight: 800;
       display: block;
-      line-height: 1.1;
+      line-height: 1.15;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .brand-info span {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       color: var(--cyan);
       font-weight: 700;
       display: block;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
     }
 
     .header-right {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.38rem;
       flex-shrink: 0;
     }
 
@@ -255,31 +280,33 @@
       background: var(--bg-sub);
       border: 1px solid var(--border);
       border-radius: 999px;
-      padding: 0.15rem;
+      padding: 0.18rem;
     }
 
     .region-pill button {
       border: none;
       background: transparent;
       color: var(--text-muted);
-      padding: 0.28rem 0.55rem;
+      padding: 0.3rem 0.56rem;
       border-radius: 999px;
       font-size: 0.72rem;
       font-weight: 700;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
 
     .region-pill button.active {
       background: linear-gradient(135deg, #06b6d4, #10b981);
-      color: #06131f;
+      color: #04131f;
     }
 
-    /* MENÚ LATERAL DESLIZABLE MÓVIL */
+    /* MENÚ LATERAL DESLIZABLE MÓVIL (MATERIAL DRAWER) */
     .drawer-backdrop {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(4, 8, 18, 0.72);
+      background: rgba(4, 8, 18, 0.74);
+      backdrop-filter: blur(4px);
       z-index: 1900;
     }
 
@@ -292,18 +319,20 @@
       top: 0;
       bottom: 0;
       left: 0;
-      width: 82%;
-      max-width: 300px;
+      width: 84%;
+      max-width: 315px;
       background: var(--bg-drawer);
       border-right: 1px solid var(--border);
+      border-radius: 0 24px 24px 0;
       z-index: 2000;
       transform: translateX(-100%);
-      transition: transform 0.24s ease;
+      transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
       display: flex;
       flex-direction: column;
-      padding: 0.9rem 0.75rem 1.5rem;
+      padding: calc(1rem + env(safe-area-inset-top)) 0.9rem 2rem;
       overflow-y: auto;
-      gap: 0.85rem;
+      gap: 1.15rem;
+      box-shadow: 12px 0 40px rgba(0, 0, 0, 0.45);
     }
 
     aside.mobile-drawer.open {
@@ -314,18 +343,18 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 0.65rem;
+      padding-bottom: 0.8rem;
       border-bottom: 1px solid var(--border);
     }
 
     .drawer-group-title {
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-muted);
-      font-weight: 700;
-      padding: 0 0.5rem;
-      margin-bottom: 0.25rem;
+      font-weight: 800;
+      padding: 0 0.6rem;
+      margin-bottom: 0.4rem;
     }
 
     .nav-btn {
@@ -334,36 +363,38 @@
       background: transparent;
       border: 1px solid transparent;
       color: var(--text-body);
-      font-size: 0.86rem;
+      font-size: 0.9rem;
       font-weight: 600;
-      padding: 0.6rem 0.7rem;
-      border-radius: 10px;
+      padding: 0.74rem 0.85rem;
+      margin-bottom: 0.22rem;
+      border-radius: 14px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.45rem;
+      gap: 0.55rem;
+      transition: background 0.2s ease, color 0.2s ease;
     }
 
     .nav-label {
       display: inline-flex;
       align-items: center;
-      gap: 0.55rem;
+      gap: 0.68rem;
     }
 
     .nav-btn.active {
       background: var(--cyan-soft);
-      border-color: rgba(6, 182, 212, 0.45);
+      border-color: rgba(6, 182, 212, 0.35);
       color: var(--cyan);
       font-weight: 700;
     }
 
-    /* CONTENEDOR PRINCIPAL AJUSTADO A TELÉFONO */
+    /* CONTENEDOR PRINCIPAL ESTILO APP MÓVIL */
     main.container {
       width: 100%;
-      max-width: 640px;
+      max-width: 520px;
       margin: 0 auto;
-      padding: 0.9rem 0.85rem 1.2rem;
+      padding: 1.1rem 1rem 1.8rem;
     }
 
     .view-section {
@@ -372,74 +403,85 @@
 
     .view-section.active {
       display: block;
-      animation: fadeUp 0.2s ease;
+      animation: fadeUp 0.22s ease;
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(5px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     .section-head {
-      margin-bottom: 0.9rem;
-      padding-bottom: 0.6rem;
+      margin-bottom: 1.15rem;
+      padding-bottom: 0.8rem;
       border-bottom: 1px solid var(--border);
     }
 
     .section-head h2 {
-      font-size: 1.15rem;
+      font-size: 1.22rem;
+      font-weight: 800;
       display: flex;
       align-items: center;
-      gap: 0.45rem;
-      line-height: 1.25;
+      gap: 0.55rem;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
     }
 
     .section-head p {
       color: var(--text-muted);
-      font-size: 0.82rem;
-      margin-top: 0.25rem;
+      font-size: 0.84rem;
+      margin-top: 0.35rem;
+      line-height: 1.45;
     }
 
-    /* TARJETAS Y COMPONENTES MÓVILES */
+    /* TARJETAS Y COMPONENTES MÓVILES CON BUENA SEPARACIÓN */
     .stack-list {
       display: flex;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 1.15rem;
     }
 
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1rem;
+      border-radius: 20px;
+      padding: 1.2rem 1.15rem;
       display: flex;
       flex-direction: column;
-      gap: 0.7rem;
+      gap: 0.9rem;
       width: 100%;
+      box-shadow: var(--card-shadow);
+    }
+
+    .card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.35;
     }
 
     .card-top {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      gap: 0.5rem;
+      align-items: center;
+      gap: 0.6rem;
       flex-wrap: wrap;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      padding: 0.22rem 0.62rem;
+      gap: 0.38rem;
+      padding: 0.28rem 0.72rem;
       border-radius: 999px;
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       font-weight: 700;
+      letter-spacing: 0.01em;
     }
 
-    .badge-cyan { background: var(--cyan-soft); color: var(--cyan); border: 1px solid rgba(6, 182, 212, 0.35); }
-    .badge-teal { background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(16, 185, 129, 0.35); }
-    .badge-amber { background: var(--amber-soft); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.35); }
-    .badge-red { background: var(--red-soft); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.35); }
+    .badge-cyan { background: var(--cyan-soft); color: var(--cyan); border: 1px solid rgba(6, 182, 212, 0.32); }
+    .badge-teal { background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(16, 185, 129, 0.32); }
+    .badge-amber { background: var(--amber-soft); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.32); }
+    .badge-red { background: var(--red-soft); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.32); }
 
     .verdict-box {
       background: var(--bg-sub);
@@ -447,15 +489,16 @@
       border-top: 1px solid var(--border);
       border-right: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      padding: 0.85rem;
-      border-radius: 12px;
+      padding: 1rem 1.05rem;
+      border-radius: 15px;
+      line-height: 1.5;
     }
 
     .verdict-box strong {
       color: var(--amber);
       display: block;
-      font-size: 0.96rem;
-      margin-bottom: 0.2rem;
+      font-size: 0.98rem;
+      margin-bottom: 0.3rem;
     }
 
     /* RECUADRO MÓVIL DE ESTADO DE INUNDACIÓN POR CIUDAD Y SECTORES */
@@ -463,11 +506,11 @@
       background: var(--bg-sub);
       border: 1px solid var(--border);
       border-left: 4px solid var(--teal);
-      border-radius: 12px;
-      padding: 0.85rem;
+      border-radius: 15px;
+      padding: 1rem 1.05rem;
       display: flex;
       flex-direction: column;
-      gap: 0.45rem;
+      gap: 0.65rem;
     }
 
     .flood-status-header {
@@ -475,20 +518,20 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 0.4rem;
+      gap: 0.45rem;
     }
 
     .sector-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.38rem;
-      margin-top: 0.35rem;
+      gap: 0.48rem;
+      margin-top: 0.5rem;
     }
 
     .sector-pill {
-      font-size: 0.74rem;
-      padding: 0.22rem 0.56rem;
-      border-radius: 8px;
+      font-size: 0.76rem;
+      padding: 0.32rem 0.68rem;
+      border-radius: 10px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       color: var(--text-body);
@@ -496,21 +539,23 @@
     }
 
     .card-meta {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       background: var(--bg-sub);
       color: var(--text-body);
-      padding: 0.7rem 0.8rem;
-      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      border-radius: 14px;
       border: 1px solid var(--border);
+      line-height: 1.55;
     }
 
     /* FILA DESLIZABLE HORIZONTAL DE CIUDADES / FILTROS */
     .h-scroll-row {
       display: flex;
-      gap: 0.45rem;
+      gap: 0.55rem;
       overflow-x: auto;
-      padding-bottom: 0.25rem;
+      padding: 0.15rem 0 0.35rem;
       scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
     }
 
     .h-scroll-row::-webkit-scrollbar {
@@ -520,33 +565,49 @@
     .btn {
       border: none;
       cursor: pointer;
-      font-weight: 600;
-      font-size: 0.82rem;
-      padding: 0.56rem 0.88rem;
-      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.86rem;
+      min-height: 44px;
+      padding: 0.65rem 1rem;
+      border-radius: 13px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.4rem;
+      gap: 0.45rem;
       text-decoration: none;
       white-space: nowrap;
       flex-shrink: 0;
+      transition: transform 0.15s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .h-scroll-row .btn {
+      min-height: 38px;
+      padding: 0.48rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
     }
 
     .btn-full {
       width: 100%;
       white-space: normal;
       text-align: center;
+      min-height: 46px;
     }
 
     .btn-primary {
       background: linear-gradient(135deg, #06b6d4, #10b981);
-      color: #06131f;
+      color: #04131f;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.25);
     }
 
     .btn-danger {
       background: linear-gradient(135deg, #ef4444, #dc2626);
       color: #ffffff;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.28);
     }
 
     .btn-outline {
@@ -564,62 +625,72 @@
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 0.6rem;
+      gap: 0.75rem;
     }
 
     .metric-item {
       background: var(--bg-sub);
-      padding: 0.7rem;
-      border-radius: 12px;
+      padding: 0.85rem 0.95rem;
+      border-radius: 15px;
       border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
     }
 
     .metric-item span {
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       color: var(--text-muted);
+      font-weight: 600;
       display: block;
     }
 
     .metric-item strong {
-      font-size: 1.12rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
     }
 
     /* INPUTS MÓVILES (>= 16px para evitar zoom automático en Android/iOS) */
     .mobile-input, .mobile-select {
       width: 100%;
+      min-height: 48px;
       background: var(--bg-sub);
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       color: var(--text-main);
-      padding: 0.68rem 0.85rem;
-      border-radius: 11px;
+      padding: 0.75rem 0.95rem;
+      border-radius: 14px;
       font-size: 16px;
       outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .mobile-input:focus, .mobile-select:focus {
       border-color: var(--cyan);
+      box-shadow: 0 0 0 3px var(--cyan-soft);
     }
 
     /* RADAR EN VIVO ENOS ECUADOR */
     .enso-live-ecuador {
       background: var(--bg-card);
-      border: 1px solid rgba(245, 158, 11, 0.45);
-      border-radius: 16px;
-      padding: 0.95rem;
-      margin-bottom: 0.85rem;
+      border: 1px solid rgba(245, 158, 11, 0.42);
+      border-radius: 20px;
+      padding: 1.15rem;
+      margin-bottom: 1.15rem;
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 0.85rem;
+      box-shadow: var(--card-shadow);
     }
 
     .enso-zone-item {
       background: var(--bg-sub);
       border: 1px solid var(--border);
-      border-radius: 11px;
-      padding: 0.75rem;
+      border-radius: 15px;
+      padding: 0.9rem 1rem;
       display: flex;
       flex-direction: column;
-      gap: 0.3rem;
+      gap: 0.42rem;
     }
 
     /* CONTEXTO EL FENÓMENO DEL NIÑO */
@@ -627,48 +698,53 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-left: 4px solid var(--cyan);
-      border-radius: 14px;
-      padding: 0.95rem;
+      border-radius: 18px;
+      padding: 1.15rem;
       display: flex;
       flex-direction: column;
-      gap: 0.7rem;
-      margin-bottom: 0.85rem;
+      gap: 0.85rem;
+      margin-bottom: 1.15rem;
+      box-shadow: var(--card-shadow);
     }
 
     /* MAPA EN TELÉFONO */
     .map-frame-box {
       width: 100%;
-      height: 310px;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: var(--bg-sub);
+      min-height: 360px;
+      border-radius: 16px;
+      overflow: visible;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
     }
 
     .map-frame-box iframe {
       width: 100%;
-      height: 100%;
-      border: none;
+      height: 350px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
     }
 
     /* NIMBO AI CHAT MÓVIL */
     .chat-box {
-      height: 300px;
+      height: 340px;
       overflow-y: auto;
-      padding: 0.85rem;
+      padding: 1rem;
       display: flex;
       flex-direction: column;
-      gap: 0.7rem;
+      gap: 0.85rem;
       background: var(--bg-chat);
-      border-radius: 12px;
+      border-radius: 18px;
       border: 1px solid var(--border);
     }
 
     .msg {
-      max-width: 90%;
-      padding: 0.75rem 0.9rem;
-      border-radius: 13px;
-      font-size: 0.86rem;
+      max-width: 88%;
+      padding: 0.85rem 1rem;
+      border-radius: 18px;
+      font-size: 0.88rem;
+      line-height: 1.5;
       word-wrap: break-word;
     }
 
@@ -677,13 +753,15 @@
       background: var(--bg-card);
       color: var(--text-main);
       border: 1px solid var(--border);
+      border-bottom-left-radius: 5px;
     }
 
     .msg-user {
       align-self: flex-end;
       background: linear-gradient(135deg, #06b6d4, #0284c7);
       color: #04121d;
-      font-weight: 600;
+      font-weight: 700;
+      border-bottom-right-radius: 5px;
     }
 
     /* SWITCHES AJUSTES */
@@ -691,18 +769,18 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.68rem 0.8rem;
+      gap: 0.85rem;
+      padding: 0.85rem 0.95rem;
       background: var(--bg-sub);
       border: 1px solid var(--border);
-      border-radius: 11px;
+      border-radius: 14px;
     }
 
     .switch {
       position: relative;
       display: inline-block;
-      width: 44px;
-      height: 24px;
+      width: 48px;
+      height: 26px;
       flex-shrink: 0;
     }
 
@@ -720,8 +798,8 @@
     .slider:before {
       position: absolute;
       content: "";
-      height: 18px;
-      width: 18px;
+      height: 20px;
+      width: 20px;
       left: 3px;
       bottom: 3px;
       background-color: white;
@@ -730,21 +808,24 @@
     }
 
     input:checked + .slider { background-color: #06b6d4; }
-    input:checked + .slider:before { transform: translateX(20px); }
+    input:checked + .slider:before { transform: translateX(22px); }
 
-    /* BARRA INFERIOR FIJA PARA TELÉFONO */
+    /* BARRA INFERIOR FIJA ESTILO ANDROID APK */
     nav.bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 60px;
+      height: calc(66px + env(safe-area-inset-bottom));
+      padding-bottom: env(safe-area-inset-bottom);
       background: var(--bg-header);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-top: 1px solid var(--border);
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       z-index: 1200;
+      box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.22);
     }
 
     .bnav-item {
@@ -755,22 +836,44 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.2rem;
-      font-size: 0.66rem;
+      gap: 0.24rem;
+      font-size: 0.68rem;
       font-weight: 700;
       cursor: pointer;
+      padding: 0.35rem 0.2rem;
+      transition: color 0.2s ease, transform 0.15s ease;
+    }
+
+    .bnav-item:active {
+      transform: scale(0.94);
+    }
+
+    .bnav-item .ico {
+      width: 20px;
+      height: 20px;
+      padding: 2px;
+      border-radius: 10px;
+      transition: background 0.2s ease, transform 0.2s ease;
     }
 
     .bnav-item.active {
       color: var(--cyan);
     }
 
+    .bnav-item.active .ico {
+      background: var(--cyan-soft);
+      width: 34px;
+      height: 24px;
+      padding: 3px 7px;
+      border-radius: 999px;
+    }
+
     footer {
       text-align: center;
       color: var(--text-muted);
       font-size: 0.78rem;
-      padding: 0.75rem;
-      letter-spacing: 0.06em;
+      padding: 1rem 0.75rem 1.25rem;
+      letter-spacing: 0.08em;
     }
   </style>
 
@@ -783,49 +886,55 @@
 @property --glass-border{syntax:'<color>';inherits:true;initial-value:rgba(34,211,238,.28)}
 :root{--bg-primary:#06101c;--bg-secondary:#0c2236;--accent-primary:#22d3ee;--accent-glow:rgba(34,211,238,.35);--glass-border:rgba(34,211,238,.28);transition:--bg-primary 1.6s cubic-bezier(.4,0,.2,1),--bg-secondary 1.6s cubic-bezier(.4,0,.2,1),--accent-primary 1.6s cubic-bezier(.4,0,.2,1),--accent-glow 1.6s cubic-bezier(.4,0,.2,1),--glass-border 1.6s cubic-bezier(.4,0,.2,1)}
 [data-theme=dark] body::before,:root:not([data-theme=light]) body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(900px 520px at 88% -8%,var(--accent-glow),transparent 62%),radial-gradient(700px 480px at -10% 105%,var(--accent-glow),transparent 66%),linear-gradient(160deg,var(--bg-primary),var(--bg-secondary))}
-.ns-card{background:rgba(255,255,255,.045);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--glass-border);border-radius:16px;padding:1rem;box-shadow:0 8px 30px rgba(0,0,0,.22);transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s}
-.ns-card:hover{transform:translateY(-3px);border-color:var(--accent-primary);box-shadow:0 12px 34px var(--accent-glow)}
-.ns-card h3,.ns-card h4{margin:.35rem 0 .2rem;letter-spacing:.01em}.ns-card p{margin:.3rem 0;font-size:.85rem;line-height:1.5}.ns-card small{opacity:.7}
-.ns-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.9rem;margin:.8rem 0}
-.ns-row{display:flex;gap:.45rem;flex-wrap:wrap;margin:.6rem 0;align-items:center}
-.ns-chip{padding:.4rem .85rem;border-radius:999px;border:1px solid var(--glass-border);background:rgba(255,255,255,.04);color:inherit;cursor:pointer;font:inherit;font-size:.8rem;transition:all .3s cubic-bezier(.2,.8,.2,1)}
-.ns-chip:hover{border-color:var(--accent-primary);transform:translateY(-1px)}.ns-chip.on{background:var(--accent-primary);color:#04121c;border-color:transparent;font-weight:700}
-.ns-b{display:inline-block;padding:.16rem .55rem;border-radius:999px;font-size:.72rem;font-weight:700;margin-right:.25rem}
-.b0{background:rgba(239,68,68,.2);color:#f87171}.b1{background:rgba(245,158,11,.2);color:#d97706}.b2{background:rgba(16,185,129,.2);color:#059669}
-.ns-in{width:100%;padding:.62rem .8rem;border-radius:12px;border:1px solid var(--glass-border);background:rgba(255,255,255,.05);color:inherit;font:inherit;transition:border-color .3s,box-shadow .3s}
+.ns-card{background:var(--bg-card);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border:1px solid var(--border);border-radius:20px;padding:1.2rem 1.15rem;margin-bottom:1rem;box-shadow:var(--card-shadow);display:flex;flex-direction:column;gap:.55rem;transition:transform .2s ease,border-color .25s ease}
+.ns-card:active{transform:scale(0.992);border-color:var(--accent-primary)}
+.ns-card h3,.ns-card h4{margin:.15rem 0;font-size:1.02rem;line-height:1.35;letter-spacing:-.01em}
+.ns-card p{margin:.15rem 0;font-size:.86rem;line-height:1.55;color:var(--text-body)}
+.ns-card small{opacity:.75;font-size:.78rem}
+.ns-grid{display:grid;grid-template-columns:1fr;gap:1.1rem;margin:.95rem 0}
+.ns-grid .ns-card{margin-bottom:0}
+.ns-row{display:flex;gap:.55rem;flex-wrap:wrap;margin:.75rem 0;align-items:center}
+.ns-chip{padding:.52rem .92rem;min-height:38px;border-radius:999px;border:1px solid var(--border);background:var(--bg-sub);color:var(--text-main);cursor:pointer;font:inherit;font-size:.82rem;font-weight:600;transition:all .2s ease;display:inline-flex;align-items:center;justify-content:center}
+.ns-chip:active{transform:scale(0.96)}
+.ns-chip.on{background:var(--accent-primary);color:#04121c;border-color:transparent;font-weight:800}
+.ns-b{display:inline-flex;align-items:center;width:fit-content;padding:.24rem .68rem;border-radius:999px;font-size:.73rem;font-weight:800;margin-right:.3rem;margin-bottom:.15rem}
+.b0{background:rgba(239,68,68,.18);color:#f87171;border:1px solid rgba(239,68,68,.3)}
+.b1{background:rgba(245,158,11,.18);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
+.b2{background:rgba(16,185,129,.18);color:#10b981;border:1px solid rgba(16,185,129,.3)}
+.ns-in{width:100%;min-height:48px;padding:.75rem .95rem;border-radius:14px;border:1.5px solid var(--border);background:var(--bg-sub);color:var(--text-main);font:inherit;font-size:16px;transition:border-color .25s,box-shadow .25s}
 .ns-in:focus{outline:0;border-color:var(--accent-primary);box-shadow:0 0 0 3px var(--accent-glow)}.ns-in option{color:#0f172a}
-.ns-live{border-left:3px solid var(--accent-primary);padding:.55rem .8rem;border-radius:10px;background:rgba(255,255,255,.04);font-size:.82rem;margin:.6rem 0}
-.ns-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(3,7,15,.78);padding:1rem;backdrop-filter:blur(6px)}.ns-modal.on{display:flex}
-.ns-box{max-width:560px;width:100%;max-height:88vh;overflow:auto;background:var(--bg-secondary)!important}
-.ns-apk{display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem;padding:.85rem 1.1rem;border-radius:16px;border:1px solid var(--accent-primary);background:linear-gradient(100deg,var(--accent-glow),transparent)}
-.ns-apk a{padding:.55rem 1.1rem;border-radius:999px;background:var(--accent-primary);color:#04121c;font-weight:800;text-decoration:none}
-#nsMap{height:470px;border-radius:14px;margin-top:.6rem;z-index:1}.ns-pin{width:18px;height:18px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.5)}
-.leaflet-popup-content-wrapper{color:#0f172a;border-radius:14px}.leaflet-popup-content p{margin:.3rem 0;font-size:.8rem}.leaflet-popup-content h4{margin:.3rem 0 0}
-.ns-m .ns-grid{grid-template-columns:1fr}.ns-m .ns-chip{padding:.6rem 1rem;font-size:.86rem}.ns-m #nsMap{height:62vh}
-@media(max-width:700px){.ns-grid{grid-template-columns:1fr}#nsMap{height:60vh}}
+.ns-live{border-left:4px solid var(--accent-primary);padding:.85rem 1rem;border-radius:14px;background:var(--bg-card);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:.84rem;line-height:1.5;margin:.85rem 0;box-shadow:var(--card-shadow)}
+.ns-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(3,7,15,.82);padding:1.1rem;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}.ns-modal.on{display:flex}
+.ns-box{max-width:460px;width:100%;max-height:86vh;overflow:auto;background:var(--bg-surface)!important;border-radius:24px!important;padding:1.35rem!important;border:1px solid var(--border)!important;box-shadow:0 24px 60px rgba(0,0,0,.55)!important}
+.ns-apk{display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem;padding:.95rem 1.1rem;border-radius:18px;border:1px solid var(--accent-primary);background:linear-gradient(100deg,var(--accent-glow),transparent)}
+.ns-apk a{padding:.6rem 1.15rem;border-radius:999px;background:var(--accent-primary);color:#04121c;font-weight:800;text-decoration:none}
+#nsMc{margin:0;padding:.2rem 0}
+#nsMap{height:360px;width:100%;border-radius:16px;border:1px solid var(--border);z-index:1;overflow:hidden}
+.ns-pin{width:18px;height:18px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.5)}
+.leaflet-popup-content-wrapper{color:#0f172a;border-radius:16px}.leaflet-popup-content p{margin:.35rem 0;font-size:.82rem}.leaflet-popup-content h4{margin:.3rem 0 0}
+#nsReps p{background:var(--bg-sub);border:1px solid var(--border);border-radius:12px;padding:.65rem .85rem;margin-top:.5rem;font-size:.83rem}
 
 /* ===== NimboSignal: perfil en header + pago directo en Plan Pro Premium ===== */
-.ns-prof{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;height:36px;min-width:36px;padding:0;border-radius:999px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-main);cursor:pointer;font:inherit;font-size:.78rem;font-weight:700;flex-shrink:0;max-width:210px;overflow:hidden;transition:border-color .25s,transform .25s}
-.ns-prof:hover{border-color:var(--cyan);transform:translateY(-1px)}
+.ns-prof{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;height:38px;min-width:38px;padding:0;border-radius:999px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-main);cursor:pointer;font:inherit;font-size:.78rem;font-weight:800;flex-shrink:0;max-width:190px;overflow:hidden;transition:border-color .2s,transform .15s}
+.ns-prof:active{transform:scale(0.95)}
 .ns-prof-on{padding:2px}
 .ns-prof-on.has-mail{padding:2px .75rem 2px 2px}
-.ns-prof-in{padding:0 .85rem;background:linear-gradient(135deg,#06b6d4,#10b981);color:#06131f;border-color:transparent;font-size:.78rem}
-.ns-av{width:30px;height:30px;border-radius:50%;object-fit:cover;display:grid;place-items:center;flex-shrink:0;background:linear-gradient(135deg,#06b6d4,#10b981);color:#06131f;font-weight:800;font-size:.9rem;line-height:1}
+.ns-prof-in{padding:0 .82rem;background:linear-gradient(135deg,#06b6d4,#10b981);color:#04131f;border-color:transparent;font-size:.78rem}
+.ns-av{width:32px;height:32px;border-radius:50%;object-fit:cover;display:grid;place-items:center;flex-shrink:0;background:linear-gradient(135deg,#06b6d4,#10b981);color:#04131f;font-weight:800;font-size:.9rem;line-height:1}
 .ns-prof-mail{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-main)}
-.ns-pay{display:flex;flex-direction:column;gap:.55rem;padding:.85rem;border:1px solid var(--border);border-radius:14px;background:var(--bg-sub)}
-.ns-pay-acc{display:flex;flex-direction:column;gap:.4rem;font-size:.82rem}
+.ns-pay{display:flex;flex-direction:column;gap:.75rem;padding:1.05rem;border:1px solid var(--border);border-radius:16px;background:var(--bg-sub)}
+.ns-pay-acc{display:flex;flex-direction:column;gap:.45rem;font-size:.84rem}
 .ns-pay-lbl{color:var(--text-muted);font-size:.78rem}
-.ns-pay-mail{word-break:break-all;color:var(--teal)}
-.ns-pay-price{font-size:.82rem;font-weight:700}
+.ns-pay-mail{word-break:break-all;color:var(--teal);font-size:.88rem}
+.ns-pay-price{font-size:.86rem;font-weight:700;padding-top:.25rem}
 .ns-pay .btn:disabled{opacity:.55;cursor:not-allowed}
-.ns-pay-note{font-size:.76rem;color:var(--text-muted)}
-#nsPPCard{min-height:4px;position:relative;z-index:1}
-#nsPayMsg{font-size:.8rem;margin:0}
-.ns-code-box{border-top:1px dashed var(--border);padding-top:.85rem;margin-top:.35rem}
-.ns-code-box .ns-code-q{font-size:.86rem;font-weight:700;color:var(--text-main)}
-.ns-code-box .ns-code-sub{font-size:.74rem;color:var(--text-muted)}
+.ns-pay-note{font-size:.77rem;color:var(--text-muted);line-height:1.45}
+#nsPPCard{min-height:4px;position:relative;z-index:1;margin-top:.2rem}
+#nsPayMsg{font-size:.82rem;margin:0;line-height:1.45}
+.ns-code-box{border-top:1px dashed var(--border);padding-top:1rem;margin-top:.4rem}
+.ns-code-box .ns-code-q{font-size:.88rem;font-weight:700;color:var(--text-main)}
+.ns-code-box .ns-code-sub{font-size:.76rem;color:var(--text-muted)}
 @media(max-width:520px){.ns-prof-mail{display:none}.ns-prof-on.has-mail{padding:2px}}
-
 </style>
 </head>
 <body>
@@ -1013,7 +1122,7 @@
             <span class="badge badge-teal"><span class="status-dot dot-green"></span> Certeza 92%</span>
           </div>
 
-          <h1 id="heroCityTitle" style="font-size:1.25rem;">Pasaje, El Oro</h1>
+          <h1 id="heroCityTitle" style="font-size:1.32rem; font-weight:800;">Pasaje, El Oro</h1>
 
           <div class="h-scroll-row" id="ecuadorCityRow">
             <button class="btn btn-outline active" onclick="loadCityWeather('Pasaje, Ecuador', -3.3256, -79.8069, this)">Pasaje</button>
@@ -1064,7 +1173,7 @@
             </div>
           </div>
 
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.55rem;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.65rem;">
             <button class="btn btn-primary btn-full" onclick="showSection('sec-ai')">Nimbo AI</button>
             <button class="btn btn-outline btn-full" onclick="showSection('sec-elnino')">Radar El Niño</button>
           </div>
@@ -1084,7 +1193,7 @@
 
       <div class="stack-list">
         <div class="card">
-          <form style="display:flex; flex-direction:column; gap:0.55rem;" onsubmit="searchGlobalPlace(event)">
+          <form style="display:flex; flex-direction:column; gap:0.65rem;" onsubmit="searchGlobalPlace(event)">
             <input type="text" id="globalSearchInput" class="mobile-input" placeholder="Ej. Japón, Madrid, Nueva York, Bogotá..." required />
             <button type="submit" class="btn btn-primary btn-full">Buscar Clima Mundial</button>
           </form>
@@ -1119,7 +1228,7 @@
 
       <div class="stack-list">
         <div class="card">
-          <form style="display:flex; flex-direction:column; gap:0.5rem;" onsubmit="searchOnMap(event)">
+          <form style="display:flex; flex-direction:column; gap:0.6rem;" onsubmit="searchOnMap(event)">
             <input type="text" id="mapSearchInput" class="mobile-input" placeholder="Buscar lugar en el mapa..." required />
             <button type="submit" class="btn btn-primary btn-full">Ubicar en Mapa</button>
           </form>
@@ -1132,8 +1241,8 @@
             <button class="btn btn-outline" onclick="focusMapPoint('Ecuador Completo', -1.8312, -78.1834, 7, this)">Todo Ecuador</button>
           </div>
 
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
-            <strong id="mapLocationLabel" style="font-size:0.82rem; color:var(--cyan);">Pasaje Centro, El Oro</strong>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.45rem;">
+            <strong id="mapLocationLabel" style="font-size:0.86rem; color:var(--cyan);">Pasaje Centro, El Oro</strong>
             <span class="badge badge-teal" id="mapWeatherTag">Cargando...</span>
           </div>
 
@@ -1165,8 +1274,8 @@
           <span style="font-size:0.74rem; color:var(--text-muted);" id="ensoLastSync">Sincronizando...</span>
         </div>
 
-        <h3 style="font-size:1rem;" id="ensoMostAffectedHeadline">Analizando qué zonas de Ecuador presentan mayor afectación...</h3>
-        <p style="font-size:0.83rem; color:var(--text-body);" id="ensoMostAffectedDetail">
+        <h3 style="font-size:1.02rem;" id="ensoMostAffectedHeadline">Analizando qué zonas de Ecuador presentan mayor afectación...</h3>
+        <p style="font-size:0.84rem; color:var(--text-body);" id="ensoMostAffectedDetail">
           Evaluando lluvias convectivas en Costa Sur (El Oro / Pasaje), Litoral Centro (Guayas / Manabí), Costa Norte (Esmeraldas) y Estribaciones Andinas...
         </p>
 
@@ -1176,11 +1285,11 @@
       </div>
 
       <div class="context-banner">
-        <strong style="color:var(--cyan); font-size:0.95rem;">¿Cómo impacta a Pasaje y El Oro?</strong>
-        <p style="font-size:0.83rem; color:var(--text-body);">
+        <strong style="color:var(--cyan); font-size:0.98rem;">¿Cómo impacta a Pasaje y El Oro?</strong>
+        <p style="font-size:0.84rem; color:var(--text-body);">
           <strong>El fenómeno del Niño</strong> (fase cálida del ciclo ENOS) ocurre por el calentamiento anómalo del océano Pacífico central y oriental. En la costa sur del Ecuador, debilita los vientos alisios, incrementa la evaporación y genera lluvias convectivas intensas en la tarde y noche, elevando el caudal del <strong>río Jubones</strong>, <strong>La Cocha</strong> y zonas bajas como <strong>Loma de Franco</strong> y <strong>La Peaña</strong>.
         </p>
-        <div class="card-meta" style="display:flex; flex-direction:column; gap:0.35rem;">
+        <div class="card-meta" style="display:flex; flex-direction:column; gap:0.45rem;">
           <div><strong>• Región Niño 1+2:</strong> Temperatura superficial del mar frente a Ecuador y norte de Perú.</div>
           <div><strong>• Índice ONI:</strong> Anomalía térmica trimestral (umbral activo desde +0.5 °C).</div>
           <div><strong>• Caudales Andinos:</strong> Lluvias en cuenca alta (Uzhcurrumi / Azuay) que alimentan al río Jubones.</div>
@@ -1194,7 +1303,7 @@
             <span style="font-size:0.74rem; color:var(--text-muted);">Anomalía &lt; +0.5 °C</span>
           </div>
           <h3>Condición Oceanográfica Estable</h3>
-          <p style="font-size:0.83rem;">Temperatura marina dentro de rangos climatológicos habituales frente al litoral ecuatoriano.</p>
+          <p style="font-size:0.84rem;">Temperatura marina dentro de rangos climatológicos habituales frente al litoral ecuatoriano.</p>
           <div class="card-meta"><strong>Acción:</strong> Limpieza preventiva de canaletas, sumideros y techos.</div>
         </div>
 
@@ -1204,7 +1313,7 @@
             <span style="font-size:0.74rem; color:var(--amber); font-weight:700;">+0.5 °C a +0.9 °C</span>
           </div>
           <h3>Monitoreo Costero y Estribaciones Activo</h3>
-          <p style="font-size:0.83rem;">Calentamiento marino ligero a moderado. Lluvias vespertinas aisladas en Pasaje, Machala y cuenca media del río Jubones.</p>
+          <p style="font-size:0.84rem;">Calentamiento marino ligero a moderado. Lluvias vespertinas aisladas en Pasaje, Machala y cuenca media del río Jubones.</p>
           <div class="card-meta"><strong>Acción:</strong> Portar impermeable en moto y verificar estado de ríos antes de acudir a balnearios.</div>
         </div>
 
@@ -1214,7 +1323,7 @@
             <span style="font-size:0.74rem; color:var(--text-muted);">+1.0 °C a +1.4 °C</span>
           </div>
           <h3>Lluvias Recurrentes y Saturación</h3>
-          <p style="font-size:0.83rem;">Evento moderado a fuerte consolidado con anegamientos en calles de drenaje lento y turbidez frecuente en ríos.</p>
+          <p style="font-size:0.84rem;">Evento moderado a fuerte consolidado con anegamientos en calles de drenaje lento y turbidez frecuente en ríos.</p>
           <div class="card-meta"><strong>Acción:</strong> Resguardar mercadería en planta baja y evitar rutas inundables.</div>
         </div>
 
@@ -1224,7 +1333,7 @@
             <span style="font-size:0.74rem; color:var(--red); font-weight:700;">≥ +1.5 °C</span>
           </div>
           <h3>Emergencia Pluvial e Hidrológica</h3>
-          <p style="font-size:0.83rem;">Precipitaciones torrenciales continuas, alto riesgo de desbordamiento de ríos y deslizamientos viales.</p>
+          <p style="font-size:0.84rem;">Precipitaciones torrenciales continuas, alto riesgo de desbordamiento de ríos y deslizamientos viales.</p>
           <div class="card-meta"><strong>Acción:</strong> Evacuar zonas bajas hacia puntos seguros, bajar breakers eléctricos si entra agua y seguir boletines INAMHI / ECU 911.</div>
         </div>
       </div>
@@ -1266,10 +1375,10 @@
       <div class="stack-list">
         <div class="card">
           <div class="card-top">
-            <h3 style="font-size:1rem;">Sectores de Pasaje</h3>
+            <h3 style="font-size:1.02rem;">Sectores de Pasaje</h3>
             <span class="badge badge-teal"><span class="status-dot dot-green"></span> Vigilancia Activa</span>
           </div>
-          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.45rem;">
+          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.55rem;">
             <div><strong>• Centro y Av. Rocafuerte:</strong> Drenaje estable; precaución en horarios escolares.</div>
             <div><strong>• Loma de Franco y La Peaña:</strong> Zonas bajas; evitar calles inundadas en aguaceros fuertes.</div>
             <div><strong>• Buenavista y Cañaquemada:</strong> Humedad matutina y lluvias dispersas vespertinas.</div>
@@ -1279,10 +1388,10 @@
 
         <div class="card">
           <div class="card-top">
-            <h3 style="font-size:1rem;">Rutas Intercantonales</h3>
+            <h3 style="font-size:1.02rem;">Rutas Intercantonales</h3>
             <span class="badge badge-amber"><span class="status-dot dot-amber"></span> Movilidad</span>
           </div>
-          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.45rem;">
+          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.55rem;">
             <div><strong>• Pasaje – Machala:</strong> Operativa 100% (frecuencia cada 5–10 min).</div>
             <div><strong>• Pasaje – Santa Rosa / Huaquillas:</strong> Tránsito fluido.</div>
             <div><strong>• Pasaje – Cuenca:</strong> Habilitada; precaución por neblina entre Uzhcurrumi y Lentag.</div>
@@ -1304,28 +1413,28 @@
       <div class="stack-list">
         <div class="card">
           <div class="card-top">
-            <h3 style="font-size:1rem;">Balneario La Cocha (Pasaje)</h3>
+            <h3 style="font-size:1.02rem;">Balneario La Cocha (Pasaje)</h3>
             <span class="badge badge-teal"><span class="status-dot dot-green"></span> Apto Mañana</span>
           </div>
-          <p style="font-size:0.83rem;">Horario ideal: <strong>08:00 a 13:30</strong>. Retirarse si el agua se enturbia o hay nubes oscuras hacia la montaña.</p>
+          <p style="font-size:0.84rem;">Horario ideal: <strong>08:00 a 13:30</strong>. Retirarse si el agua se enturbia o hay nubes oscuras hacia la montaña.</p>
           <button class="btn btn-outline btn-full" onclick="quickAsk('¿Cómo está el Balneario La Cocha, Pasaje?')">Consultar en Nimbo AI</button>
         </div>
 
         <div class="card">
           <div class="card-top">
-            <h3 style="font-size:1rem;">Río Jubones y Casacay</h3>
+            <h3 style="font-size:1.02rem;">Río Jubones y Casacay</h3>
             <span class="badge badge-amber"><span class="status-dot dot-amber"></span> Vigilancia Tarde</span>
           </div>
-          <p style="font-size:0.83rem;">Caudal estable por la mañana. Vigilar crecidas por lluvias en la cuenca alta (Uzhcurrumi / Azuay).</p>
+          <p style="font-size:0.84rem;">Caudal estable por la mañana. Vigilar crecidas por lluvias en la cuenca alta (Uzhcurrumi / Azuay).</p>
           <button class="btn btn-outline btn-full" onclick="quickAsk('¿Cómo está el Río Jubones y Casacay?')">Consultar en Nimbo AI</button>
         </div>
 
         <div class="card">
           <div class="card-top">
-            <h3 style="font-size:1rem;">Dos Bocas y Río Buenavista</h3>
+            <h3 style="font-size:1.02rem;">Dos Bocas y Río Buenavista</h3>
             <span class="badge badge-teal"><span class="status-dot dot-green"></span> Favorable</span>
           </div>
-          <p style="font-size:0.83rem;">Aguas tranquilas para recreación familiar. Llevar hidratación y protector solar.</p>
+          <p style="font-size:0.84rem;">Aguas tranquilas para recreación familiar. Llevar hidratación y protector solar.</p>
           <button class="btn btn-outline btn-full" onclick="quickAsk('¿Cómo está Dos Bocas y Río Buenavista?')">Consultar en Nimbo AI</button>
         </div>
       </div>
@@ -1343,8 +1452,8 @@
 
       <div class="stack-list">
         <div class="card" style="border-left:4px solid var(--amber);">
-          <h3 style="font-size:1rem;">Tormentas Eléctricas</h3>
-          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.4rem;">
+          <h3 style="font-size:1.02rem;">Tormentas Eléctricas</h3>
+          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.5rem;">
             <div><strong>1. Regla 30-30:</strong> Si entre rayo y trueno pasan menos de 30s, busca refugio cerrado.</div>
             <div><strong>2. Aléjate de árboles y postes:</strong> Nunca te refugies bajo árboles aislados ni rejas metálicas.</div>
             <div><strong>3. Sal del agua:</strong> Abandona ríos o piscinas al primer trueno.</div>
@@ -1352,8 +1461,8 @@
         </div>
 
         <div class="card" style="border-left:4px solid var(--cyan);">
-          <h3 style="font-size:1rem;">Inundaciones Urbanas</h3>
-          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.4rem;">
+          <h3 style="font-size:1.02rem;">Inundaciones Urbanas</h3>
+          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.5rem;">
             <div><strong>1. No cruces corrientes:</strong> 30 cm de agua en movimiento pueden arrastrar una motocicleta.</div>
             <div><strong>2. Baja el breaker:</strong> Corta la energía eléctrica si ingresa agua a la vivienda.</div>
             <div><strong>3. Cuidado con alcantarillas:</strong> Evita calles anegadas donde puede haber tapas abiertas.</div>
@@ -1361,8 +1470,8 @@
         </div>
 
         <div class="card" style="border-left:4px solid var(--red);">
-          <h3 style="font-size:1rem;">Ríos Desbordados</h3>
-          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.4rem;">
+          <h3 style="font-size:1.02rem;">Ríos Desbordados</h3>
+          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.5rem;">
             <div><strong>1. Señal natural:</strong> Si el río cambia a color marrón turbio o arrastra ramas, sube a terreno alto al instante.</div>
             <div><strong>2. Evita puentes bajos:</strong> No cruces puentes sobrepasados por el caudal.</div>
           </div>
@@ -1386,25 +1495,25 @@
             <h3 style="font-size:1.1rem;">ECU 911 — Emergencias</h3>
             <span class="badge badge-red">24/7</span>
           </div>
-          <p style="font-size:0.83rem;">Policía, Bomberos, Ambulancias y Gestión de Riesgos en todo Ecuador.</p>
+          <p style="font-size:0.84rem;">Policía, Bomberos, Ambulancias y Gestión de Riesgos en todo Ecuador.</p>
           <a href="tel:911" class="btn btn-danger btn-full">Llamar al 911</a>
         </div>
 
         <div class="card">
-          <h3 style="font-size:1rem;">Cuerpo de Bomberos (102)</h3>
-          <p style="font-size:0.83rem;">Rescate en inundaciones, crecidas de ríos y árboles caídos.</p>
+          <h3 style="font-size:1.02rem;">Cuerpo de Bomberos (102)</h3>
+          <p style="font-size:0.84rem;">Rescate en inundaciones, crecidas de ríos y árboles caídos.</p>
           <a href="tel:102" class="btn btn-primary btn-full">Llamar al 102</a>
         </div>
 
         <div class="card">
-          <h3 style="font-size:1rem;">Policía Nacional (101)</h3>
-          <p style="font-size:0.83rem;">Auxilio vial y cierres preventivos de carreteras.</p>
+          <h3 style="font-size:1.02rem;">Policía Nacional (101)</h3>
+          <p style="font-size:0.84rem;">Auxilio vial y cierres preventivos de carreteras.</p>
           <a href="tel:101" class="btn btn-outline btn-full">Llamar al 101</a>
         </div>
 
         <div class="card">
-          <h3 style="font-size:1rem;">CNEL EP El Oro (Riesgo Eléctrico)</h3>
-          <p style="font-size:0.83rem;">Reporte de cables caídos o transformadores afectados por tormenta.</p>
+          <h3 style="font-size:1.02rem;">CNEL EP El Oro (Riesgo Eléctrico)</h3>
+          <p style="font-size:0.84rem;">Reporte de cables caídos o transformadores afectados por tormenta.</p>
           <a href="tel:1800263537" class="btn btn-outline btn-full">Llamar 1800-263537</a>
         </div>
       </div>
@@ -1421,9 +1530,9 @@
       </div>
 
       <div class="stack-list">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
           <span class="badge badge-cyan" id="aiTokenBadge">Tokens hoy: 5 / 5</span>
-          <button class="btn btn-outline" style="padding:0.35rem 0.65rem; font-size:0.75rem;" onclick="showSection('sec-planes')">Activar Pro</button>
+          <button class="btn btn-outline" style="min-height:36px; padding:0.4rem 0.85rem; font-size:0.78rem; border-radius:999px;" onclick="showSection('sec-planes')">Activar Pro</button>
         </div>
 
         <div class="chat-box" id="chatBox">
@@ -1440,7 +1549,7 @@
           <button class="btn btn-outline" onclick="quickAsk('¿Qué hacer ante tormentas eléctricas?')">Tormentas</button>
         </div>
 
-        <form style="display:flex; flex-direction:column; gap:0.5rem;" onsubmit="handleChatSubmit(event)">
+        <form style="display:flex; flex-direction:column; gap:0.65rem;" onsubmit="handleChatSubmit(event)">
           <input type="text" id="aiInput" class="mobile-input" placeholder="Escribe tu consulta climática..." autocomplete="off" required />
           <button type="submit" class="btn btn-primary btn-full">Consultar Nimbo AI</button>
         </form>
@@ -1459,9 +1568,9 @@
 
       <div class="stack-list">
         <div class="card">
-          <div style="display:flex; flex-direction:column; gap:0.55rem;">
+          <div style="display:flex; flex-direction:column; gap:0.75rem;">
             <div>
-              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">País</label>
+              <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.3rem;">País</label>
               <select id="newsCountrySelect" class="mobile-select" onchange="onNewsCountryChange()">
                 <option value="EC" selected>Ecuador (Principal)</option>
                 <option value="PE">Perú</option>
@@ -1473,7 +1582,7 @@
             </div>
 
             <div id="ecuadorRegionWrapper">
-              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Región de Ecuador</label>
+              <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.3rem;">Región de Ecuador</label>
               <select id="newsRegionSelect" class="mobile-select" onchange="renderOfficialNews()">
                 <option value="EL_ORO" selected>El Oro y Pasaje (Local)</option>
                 <option value="COSTA">Región Costa (Guayas, Manabí, Esmeraldas)</option>
@@ -1489,8 +1598,8 @@
 
         <div class="card" style="border-left:4px solid var(--cyan);">
           <span class="badge badge-cyan" id="newsOfficialAgencyTag"><span class="status-dot dot-cyan"></span> Boletín Oficial • INAMHI</span>
-          <h3 style="font-size:1rem;" id="liveBreakingHeadline">Monitoreo Regional Activo</h3>
-          <p id="liveBreakingBody" style="font-size:0.83rem; color:var(--text-body);">Cargando reporte...</p>
+          <h3 style="font-size:1.02rem;" id="liveBreakingHeadline">Monitoreo Regional Activo</h3>
+          <p id="liveBreakingBody" style="font-size:0.84rem; color:var(--text-body);">Cargando reporte...</p>
         </div>
 
         <div class="stack-list" id="officialNewsGrid"></div>
@@ -1512,15 +1621,15 @@
         <div class="card" id="mobileFreeCard" style="border: 2px solid var(--cyan);">
           <div class="card-top">
             <span class="badge badge-teal" id="mobileFreeBadge"><span class="status-dot dot-green"></span> Plan Activo</span>
-            <span style="font-size:0.78rem; color:var(--text-muted);">Sin costo</span>
+            <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">Sin costo</span>
           </div>
 
-          <h3 style="font-size:1.15rem;">Plan Gratuito — $0 / siempre</h3>
-          <p style="font-size:0.83rem; color:var(--text-muted);">
+          <h3 style="font-size:1.18rem;">Plan Gratuito — $0 / siempre</h3>
+          <p style="font-size:0.84rem; color:var(--text-muted);">
             Acceso completo al monitoreo climático, alertas de inundación por sectores, Radar El Niño, colegios, ríos y noticias oficiales.
           </p>
 
-          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.4rem;">
+          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.5rem;">
             <div><strong>• Monitoreo Completo:</strong> Ecuador, Clima Global y Mapa Interactivo.</div>
             <div><strong>• Inundaciones y ENOS:</strong> Barrios vulnerables por ciudad y radar nacional cada 60s.</div>
             <div><strong>• Nimbo AI:</strong> 5 consultas diarias incluidas.</div>
@@ -1534,11 +1643,11 @@
         <div class="card" id="mobileProCard">
           <div class="card-top">
             <span class="badge badge-amber" id="mobileProBadge"><span class="status-dot dot-amber"></span> Opcional</span>
-            <span style="font-size:0.78rem; color:var(--text-muted);">$1,99 / mes</span>
+            <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">$1,99 / mes</span>
           </div>
 
-          <h3 style="font-size:1.15rem;">Plan Pro Premium</h3>
-          <p style="font-size:0.83rem; color:var(--text-muted);">
+          <h3 style="font-size:1.18rem;">Plan Pro Premium</h3>
+          <p style="font-size:0.84rem; color:var(--text-muted);">
             Activa este plan cuando desees obtener consultas ilimitadas en Nimbo AI sin límite diario.
           </p>
 
@@ -1548,7 +1657,7 @@
             <span id="expiryDaysLeft" style="font-size:0.76rem; color:var(--text-muted); display:block; margin-top:0.15rem;"></span>
           </div>
 
-          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.4rem;">
+          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.5rem;">
             <div><strong>• Nimbo AI Ilimitado:</strong> Tokens Infinitos habilitados 24/7.</div>
             <div><strong>• Todo lo del Plan Gratuito:</strong> Sin restricciones ni pausas.</div>
           </div>
@@ -1562,9 +1671,9 @@
             <div id="nsPPCard"></div>
             <p id="nsPayMsg"></p>
           </div>
-          <div class="ns-code-box" style="border-top:1px dashed var(--border); padding-top:0.85rem; display:flex; flex-direction:column; gap:0.5rem;">
-            <strong class="ns-code-q" style="font-size:0.86rem;">¿Tienes un código promocional o maestro?</strong>
-            <span style="font-size:0.76rem; color:var(--text-muted);">
+          <div class="ns-code-box" style="border-top:1px dashed var(--border); padding-top:1rem; display:flex; flex-direction:column; gap:0.65rem;">
+            <strong class="ns-code-q" style="font-size:0.88rem;">¿Tienes un código promocional o maestro?</strong>
+            <span style="font-size:0.78rem; color:var(--text-muted);">
               Opción secundaria, no es un pago. Ingresa tu código de suscripción (<code>NS-PRO-XXXX-YY</code>) o tu Código Maestro:
             </span>
             <input type="text" id="mobileCodeInput" class="mobile-input" placeholder="Ej. NS-PRO-XXXX-YY" style="text-transform:uppercase;" />
@@ -1587,11 +1696,11 @@
 
       <div class="stack-list">
         <div class="card">
-          <h3 style="font-size:1rem;">Alertas Climáticas</h3>
+          <h3 style="font-size:1.02rem;">Alertas Climáticas</h3>
           <div class="setting-row">
             <div>
-              <strong style="display:block; font-size:0.86rem;">Tormentas Eléctricas</strong>
-              <span style="font-size:0.75rem; color:var(--text-muted);">Avisos por descargas cercanas.</span>
+              <strong style="display:block; font-size:0.88rem;">Tormentas Eléctricas</strong>
+              <span style="font-size:0.76rem; color:var(--text-muted);">Avisos por descargas cercanas.</span>
             </div>
             <label class="switch">
               <input type="checkbox" id="chkStorms" checked onchange="saveNotificationSettings()" />
@@ -1601,8 +1710,8 @@
 
           <div class="setting-row">
             <div>
-              <strong style="display:block; font-size:0.86rem;">Ríos y Crecidas</strong>
-              <span style="font-size:0.75rem; color:var(--text-muted);">Vigilancia Río Jubones y La Cocha.</span>
+              <strong style="display:block; font-size:0.88rem;">Ríos y Crecidas</strong>
+              <span style="font-size:0.76rem; color:var(--text-muted);">Vigilancia Río Jubones y La Cocha.</span>
             </div>
             <label class="switch">
               <input type="checkbox" id="chkRivers" checked onchange="saveNotificationSettings()" />
@@ -1612,8 +1721,8 @@
 
           <div class="setting-row">
             <div>
-              <strong style="display:block; font-size:0.86rem;">El fenómeno del Niño</strong>
-              <span style="font-size:0.75rem; color:var(--text-muted);">Cambios en el semáforo preventivo.</span>
+              <strong style="display:block; font-size:0.88rem;">El fenómeno del Niño</strong>
+              <span style="font-size:0.76rem; color:var(--text-muted);">Cambios en el semáforo preventivo.</span>
             </div>
             <label class="switch">
               <input type="checkbox" id="chkElNino" checked onchange="saveNotificationSettings()" />
@@ -1623,11 +1732,11 @@
         </div>
 
         <div class="card">
-          <h3 style="font-size:1rem;">Perfil de Usuario</h3>
+          <h3 style="font-size:1.02rem;">Perfil de Usuario</h3>
           <input type="text" id="accNameInput" class="mobile-input" placeholder="Nombre de usuario" />
           <input type="email" id="accEmailInput" class="mobile-input" placeholder="Correo electrónico" />
           <button class="btn btn-primary btn-full" onclick="saveAccountProfile()">Guardar Datos</button>
-          <span id="accSavedMsg" style="font-size:0.78rem; color:var(--teal);"></span>
+          <span id="accSavedMsg" style="font-size:0.8rem; color:var(--teal);"></span>
         </div>
       </div>
     </section>
@@ -1643,7 +1752,7 @@
 <div class="ns-card"><h3>Reportes ciudadanos de inundación</h3><p>Inicia sesión y reporta el estado real de una calle; los últimos reportes se muestran a todos.</p>
 <div class="ns-row"><select class="ns-in" id="nsRc" style="flex:1;min-width:180px"></select><select class="ns-in" id="nsRe" style="max-width:190px"><option value="inundada">Inundada / Cerrada</option><option value="precaucion">Precaución / Agua acumulada</option><option value="transitable">Transitable</option></select></div>
 <div class="ns-row"><input class="ns-in" id="nsRt" maxlength="280" style="flex:1;min-width:200px" placeholder="Detalle breve (máx. 280 caracteres)"><button class="ns-chip on" onclick="NS.sendRep()">Enviar reporte</button></div><p id="nsRm"></p><div id="nsReps"></div></div>
-<h3 style="margin:1.2rem 0 .3rem">Directorio y Estado de Colegios</h3>
+<h3 style="margin:1.35rem 0 .5rem">Directorio y Estado de Colegios</h3>
 <div class="ns-row"><input class="ns-in" id="nsCq" style="flex:1;min-width:200px" placeholder="Buscar colegio…" oninput="NS.all()"></div><div class="ns-row" id="nsCf"></div><div class="ns-grid" id="nsCole"></div>
 </section>
 <section id="sec-turismo" class="view-section">
@@ -1653,7 +1762,7 @@
 <section id="sec-impacto" class="view-section">
 <div class="section-head"><div><h2>Impacto Detallado del Fenómeno El Niño (Ciudad por Ciudad y Global)</h2><p>Estado NOAA CPC (12 nov 2026): Aviso de El Niño; fuerte a muy fuerte probable hasta ene–mar 2027. Los impactos son probables, no garantizados.</p></div></div>
 <div class="ns-row" id="nsCity"></div><div id="nsCityBox"></div>
-<h3 style="margin:1.2rem 0 .3rem">Panorama Global (NOAA / OMM)</h3><div class="ns-row" id="nsGt"></div><div id="nsGb"></div>
+<h3 style="margin:1.35rem 0 .5rem">Panorama Global (NOAA / OMM)</h3><div class="ns-row" id="nsGt"></div><div id="nsGb"></div>
 </section>
 <section id="sec-noticias-reg" class="view-section">
 <div class="section-head"><div><h2>Noticias Verificadas por Región</h2><p>Se filtran según la ciudad o región seleccionada. Para los comunicados oficiales en vivo, use la sección Noticias Oficiales.</p></div></div>
@@ -1663,12 +1772,12 @@
 <div class="ns-modal" id="nsAcc"><div class="ns-card ns-box">
 <div class="ns-row" style="justify-content:space-between"><h3>Cuenta y Estado del Plan</h3><button class="ns-chip" onclick="NS.cl('nsAcc')">Cerrar</button></div>
 <p id="nsAccSt"></p>
-<div id="nsLog"><input class="ns-in" id="nsEm" type="email" autocomplete="email" placeholder="Correo electrónico"><input class="ns-in" id="nsPw" type="password" autocomplete="current-password" placeholder="Contraseña (mínimo 6 caracteres)" style="margin-top:.5rem">
+<div id="nsLog"><input class="ns-in" id="nsEm" type="email" autocomplete="email" placeholder="Correo electrónico"><input class="ns-in" id="nsPw" type="password" autocomplete="current-password" placeholder="Contraseña (mínimo 6 caracteres)" style="margin-top:.6rem">
 <div class="ns-row"><button class="ns-chip on" onclick="NS.sign(0)">Ingresar</button><button class="ns-chip" onclick="NS.sign(1)">Crear cuenta</button><button class="ns-chip" onclick="NS.sign(2)">Continuar con Google</button></div></div>
 <button class="ns-chip" id="nsOut" style="display:none" onclick="NSF.out()">Cerrar sesión</button>
-<hr style="opacity:.2;margin:.8rem 0"><button class="ns-chip on" id="nsTr" onclick="NS.trial()">Activar 1 mes gratis</button>
-<p style="font-size:.8rem;margin-top:.6rem">Premium: <b>$1,99 USD</b> por 30 días (tarjeta o PayPal).</p><div id="nsPP"></div>
-<p style="margin-top:.8rem">¿Tienes un código promocional o de acceso?</p><div class="ns-row"><input class="ns-in" id="nsCode" style="flex:1" placeholder="Código" autocomplete="off"><button class="ns-chip on" onclick="NS.redeem(document.getElementById('nsCode').value,'nsAccMsg')">Canjear</button></div><p id="nsAccMsg" style="font-size:.82rem"></p>
+<hr style="opacity:.2;margin:.9rem 0"><button class="ns-chip on" id="nsTr" onclick="NS.trial()">Activar 1 mes gratis</button>
+<p style="font-size:.82rem;margin-top:.65rem">Premium: <b>$1,99 USD</b> por 30 días (tarjeta o PayPal).</p><div id="nsPP"></div>
+<p style="margin-top:.85rem">¿Tienes un código promocional o de acceso?</p><div class="ns-row"><input class="ns-in" id="nsCode" style="flex:1" placeholder="Código" autocomplete="off"><button class="ns-chip on" onclick="NS.redeem(document.getElementById('nsCode').value,'nsAccMsg')">Canjear</button></div><p id="nsAccMsg" style="font-size:.82rem"></p>
 </div></div>
 </main>
 
