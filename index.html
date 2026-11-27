@@ -1344,6 +1344,120 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
     .dot-cyan { background: #4d96b8 !important; }
   </style>
 
+
+  <style id="ns-pro-extras-css">
+    /* === NIMBOSIGNAL PRO FEATURES (RADAR ANIMADO, VENTANA SECA, CÍRCULO FAMILIAR, WHATSAPP CARD) === */
+    .ns-pro-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.28rem;
+      padding: 0.16rem 0.52rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, #d69848, #b87624);
+      color: #0b1120;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    .ns-pro-box {
+      background: var(--bg-sub);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--amber);
+      border-radius: 15px;
+      padding: 0.95rem 1.05rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      margin: 0.45rem 0;
+    }
+
+    .ns-pro-box.unlocked {
+      border-left-color: var(--teal);
+    }
+
+    .ns-radar-panel {
+      background: var(--bg-sub);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 0.85rem 0.95rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .ns-radar-timeline {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .ns-radar-timeline input[type="range"] {
+      flex: 1;
+      min-width: 140px;
+      accent-color: var(--cyan);
+      cursor: pointer;
+    }
+
+    .ns-radar-legend {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .ns-radar-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .ns-radar-swatch {
+      width: 11px;
+      height: 11px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .ns-fam-code-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      background: var(--bg-card);
+      border: 1.5px dashed var(--cyan);
+      border-radius: 12px;
+      padding: 0.6rem 0.85rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.96rem;
+      font-weight: 800;
+      color: var(--cyan);
+      word-break: break-all;
+    }
+
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #25d366, #128c7e) !important;
+      color: #ffffff !important;
+      border: none !important;
+      box-shadow: 0 4px 14px rgba(18, 140, 126, 0.32) !important;
+    }
+
+    #nsSharePreviewImg {
+      width: 100%;
+      max-height: 56vh;
+      object-fit: contain;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #0f1720;
+    }
+  </style>
+
 </head>
 <body>
 
@@ -1600,6 +1714,29 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
             </div>
           </div>
 
+          
+          <!-- VENTANA SECA INTELIGENTE (EXCLUSIVO PLAN PRO PREMIUM) -->
+          <div class="ns-pro-box" id="nsDryWinBox">
+            <div class="card-top">
+              <strong style="font-size:0.94rem; display:inline-flex; align-items:center; gap:0.45rem;">
+                <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                Ventana Seca Inteligente
+                <span class="ns-pro-pill">PRO</span>
+              </strong>
+              <span class="badge badge-amber" id="nsDryBadge">Plan Pro</span>
+            </div>
+            <div id="nsDryLockedView">
+              <p style="font-size:0.83rem; color:var(--text-body);">
+                Analiza el pronóstico hora por hora para indicarte la mejor franja horaria del día para salir en moto, ir al colegio o hacer diligencias sin mojarse.
+              </p>
+              <button type="button" class="btn btn-outline" style="margin-top:0.45rem;" onclick="showSection('sec-planes')">Desbloquear con Plan Pro</button>
+            </div>
+            <div id="nsDryUnlockedView" style="display:none;">
+              <strong id="nsDryHeadline" style="display:block; font-size:0.92rem; color:var(--teal); margin-bottom:0.25rem;">Analizando franjas horarias secas...</strong>
+              <p id="nsDryDetail" style="font-size:0.83rem; color:var(--text-body);"></p>
+            </div>
+          </div>
+
           <div id="nsWeekPrev" style="display:flex; gap:0.5rem; overflow-x:auto; padding:0.3rem 0;"></div>
           <button class="btn btn-primary btn-full" onclick="nsOpenWeek()">Ver pronóstico completo de 7 días</button>
 
@@ -1607,6 +1744,14 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
             <button class="btn btn-primary btn-full" onclick="showSection('sec-ai')">Nimbo AI</button>
             <button class="btn btn-outline btn-full" onclick="showSection('sec-elnino')">Radar El Niño</button>
           </div>
+
+          <div style="margin-top:0.2rem;">
+            <button type="button" class="btn btn-whatsapp btn-full" id="nsShareCardBtn" onclick="nsOpenWhatsAppShare()">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+              Compartir Alerta WhatsApp (Imagen) <span class="ns-pro-pill" id="nsShareProTag" style="margin-left:0.35rem;">PRO</span>
+            </button>
+          </div>
+
         </div>
       </div>
     </section>
@@ -1698,6 +1843,43 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.45rem;">
             <strong id="mapLocationLabel" style="font-size:0.86rem; color:var(--cyan);">Pasaje Centro, El Oro</strong>
             <span class="badge badge-teal" id="mapWeatherTag">Cargando...</span>
+          </div>
+
+          
+          <!-- RADAR DE LLUVIA ANIMADO EN TIEMPO REAL SOBRE LEAFLET (PLAN PRO PREMIUM) -->
+          <div class="ns-radar-panel" id="nsRadarPanel">
+            <div class="card-top">
+              <strong style="font-size:0.92rem; display:inline-flex; align-items:center; gap:0.45rem;">
+                <svg class="ico" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 12l7-7"/><circle cx="12" cy="12" r="2"/></svg>
+                Radar de Lluvia Animado en Vivo
+                <span class="ns-pro-pill">PRO</span>
+              </strong>
+              <span class="badge badge-cyan" id="nsRadarStatusBadge">Satélite / Doppler</span>
+            </div>
+
+            <div id="nsRadarLockedView">
+              <p style="font-size:0.82rem; color:var(--text-body);">
+                Activa la capa de radar meteorológico animado sobre el mapa para observar en tiempo real hacia dónde avanzan los aguaceros.
+              </p>
+              <button type="button" class="btn btn-outline" style="margin-top:0.45rem;" onclick="showSection('sec-planes')">Activar con Plan Pro</button>
+            </div>
+
+            <div id="nsRadarUnlockedView" style="display:none; flex-direction:column; gap:0.55rem;">
+              <div class="ns-row" style="margin:0;">
+                <button type="button" class="ns-chip on" id="nsRadarToggleBtn" onclick="NS.radar.toggle()">Activar Radar Animado</button>
+                <button type="button" class="ns-chip" id="nsRadarPlayBtn" style="display:none;" onclick="NS.radar.playPause()">⏸ Pausar</button>
+                <span class="badge badge-teal" id="nsRadarFrameBadge" style="display:none;">--:--</span>
+              </div>
+              <div class="ns-radar-timeline" id="nsRadarTimelineRow" style="display:none;">
+                <input type="range" id="nsRadarSlider" min="0" max="0" value="0" oninput="NS.radar.seek(+this.value)" aria-label="Línea de tiempo del radar" />
+              </div>
+              <div class="ns-radar-legend" id="nsRadarLegendRow" style="display:none;">
+                <span><i class="ns-radar-swatch" style="background:#38bdf8;"></i> Lluvia ligera</span>
+                <span><i class="ns-radar-swatch" style="background:#f59e0b;"></i> Moderada</span>
+                <span><i class="ns-radar-swatch" style="background:#ef4444;"></i> Intensa / Tormenta</span>
+              </div>
+              <small id="nsRadarMsg" style="font-size:0.76rem; color:var(--text-muted);"></small>
+            </div>
           </div>
 
           <div class="map-frame-box">
@@ -2072,6 +2254,10 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
           <div class="card-meta" style="display:flex; flex-direction:column; gap:0.5rem;">
             <div><strong>• Nimbo AI Ilimitado:</strong> Tokens Infinitos habilitados 24/7.</div>
             <div><strong>• Todo lo del Plan Gratuito:</strong> Sin restricciones ni pausas.</div>
+            <div><strong>• Radar de Lluvia Animado:</strong> Capa Doppler en tiempo real sobre el mapa.</div>
+            <div><strong>• Ventana Seca Inteligente:</strong> Mejor franja horaria del día para salir sin mojarse.</div>
+            <div><strong>• Círculo Familiar:</strong> Comparte tus 5 lugares guardados en tiempo real.</div>
+            <div><strong>• Tarjetas para WhatsApp:</strong> Genera imágenes limpias de alertas listas para enviar.</div>
           </div>
 
 <!-- NS: pago directo + mes gratis (Plan Pro Premium) -->
@@ -2176,6 +2362,40 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 <div class="ml-al" id="mlAlert"></div>
 <div class="ns-card"><h3>Recordatorios y notificaciones</h3><div class="ns-row"><label><input type="checkbox" id="mlOn" onchange="NS.ml.tog(this)"> Activar notificaciones</label><label>Hora diaria <input type="time" id="mlHr" class="ns-in" style="width:auto" value="06:30" onchange="NS.ml.hr(this.value)"></label><button class="ns-chip" onclick="NS.ml.test()">Probar alerta ahora</button></div><p style="font-size:.78rem;opacity:.75">Se revisa el clima de tus lugares cada 5 minutos y al volver a abrir la app y se avisa si hay riesgo de inundación o lluvia intensa. Funciona mientras NimboSignal esté abierto en tu navegador.</p><p id="mlMsg2"></p></div>
 <h3 style="margin:1.1rem 0 .3rem">Mis lugares en vivo</h3><div class="ns-grid" id="mlList"></div>
+
+<div class="ns-card" id="nsFamCard" style="margin-top:1.1rem; border-left:4px solid var(--cyan);">
+  <div class="card-top">
+    <h3 style="margin:0;">Círculo Familiar (Compartir mis 5 Lugares)</h3>
+    <span class="ns-pro-pill">PRO</span>
+  </div>
+  <p>Comparte tu lista de hasta 5 lugares guardados con tu familia para que todos vean en tiempo real si hay riesgo de inundación en casa, el colegio o el trabajo.</p>
+
+  <div style="display:flex; flex-direction:column; gap:0.5rem; padding:0.75rem; border-radius:14px; background:var(--bg-sub); border:1px solid var(--border);">
+    <strong style="font-size:0.86rem;">1. Tu Código Familiar para compartir:</strong>
+    <div class="ns-fam-code-pill">
+      <span id="nsFamOwnCode">NS-FAM-0000</span>
+      <button type="button" class="ns-chip on" onclick="NS.fam.shareOwn()">Copiar y Sincronizar</button>
+    </div>
+    <small id="nsFamOwnMsg" style="color:var(--text-muted);">Envía este código a un familiar con Plan Pro para que vea tus lugares guardados en vivo.</small>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:0.5rem; padding:0.75rem; border-radius:14px; background:var(--bg-sub); border:1px solid var(--border);">
+    <strong style="font-size:0.86rem;">2. Ver lugares de un familiar:</strong>
+    <div class="ns-row" style="margin:0;">
+      <input class="ns-in" id="nsFamJoinIn" style="flex:1; min-width:190px;" placeholder="Pega el código familiar (ej. NS-FAM-XXXX o NSFAM:...)">
+      <button type="button" class="ns-chip on" onclick="NS.fam.join()">Conectar</button>
+      <button type="button" class="ns-chip" id="nsFamLeaveBtn" style="display:none;" onclick="NS.fam.leave()">Salir</button>
+    </div>
+    <small id="nsFamJoinMsg" style="color:var(--text-muted);"></small>
+  </div>
+
+  <div id="nsFamSharedHeader" style="display:none; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-top:0.3rem;">
+    <strong id="nsFamSharedTitle" style="font-size:0.95rem; color:var(--cyan);">Lugares compartidos del Círculo Familiar</strong>
+    <button type="button" class="ns-chip" onclick="NS.fam.refreshShared(1)">Actualizar en vivo</button>
+  </div>
+  <div class="ns-grid" id="nsFamList"></div>
+</div>
+
 </div></section>
 <section id="sec-turismo" class="view-section">
 <div class="section-head"><div><h2>Turismo, Ríos y Gastronomía de Ecuador</h2><p>Veredicto de ingreso y equipo recomendado, calculados con la lluvia en vivo de la ciudad seleccionada. Ubicaciones aproximadas.</p></div></div>
@@ -3825,7 +4045,7 @@ repsRec:async()=>(await getDocs(query(collection(db,'reportes'),orderBy('created
 lug:async u=>(await getDocs(collection(db,'usuarios',u,'lugares'))).docs.map(x=>({id:x.id,...x.data()})),
 setLug:(u,id,d)=>setDoc(doc(db,'usuarios',u,'lugares',id),{nombre:String(d.nombre).slice(0,80),lat:Number(d.lat),lon:Number(d.lon),zona:String(d.zona),creadoEn:Number(d.creadoEn)}),
 delLug:(u,id)=>deleteDoc(doc(db,'usuarios',u,'lugares',id)),
-watch:(u,cb)=>onSnapshot(doc(db,'usuarios',u),s=>cb(s.exists()?s.data():null),e=>console.warn('[NimboSignal] onSnapshot:',e))};
+watch:(u,cb)=>onSnapshot(doc(db,'usuarios',u),s=>cb(s.exists()?s.data():null),e=>console.warn('[NimboSignal] onSnapshot:',e)),getFam:async c=>{const s=await getDoc(doc(db,'circulos',c));return s.exists()?s.data():null},setFam:(c,d)=>setDoc(doc(db,'circulos',c),d)};
 onAuthStateChanged(auth,u=>window.NS&&NS.auth(u));
 if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.error('[NimboSignal] redirect:',e);const t=setInterval(()=>{if(window.NS&&NS.friendly){clearInterval(t);NS.msg(NS.friendly(e,2),0);NS.openLogin&&NS.openLogin()}},300);setTimeout(()=>clearInterval(t),8000)});
 }catch(e){window.NSF_ERROR=e;console.error('[NimboSignal] Firebase no se pudo iniciar:',e)}
@@ -3880,6 +4100,816 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
         }, { passive: true });
       }
     })();
+  </script>
+
+
+<div class="ns-modal" id="nsShareModal">
+  <div class="ns-card ns-box">
+    <div class="ns-row" style="justify-content:space-between; margin-top:0;">
+      <h3 style="margin:0;">Tarjeta de Alerta para WhatsApp</h3>
+      <button type="button" class="ns-chip" onclick="NS.cl('nsShareModal')">Cerrar</button>
+    </div>
+    <div id="nsShareLockedBody" style="display:none;">
+      <p>Genera tarjetas visuales limpias con el veredicto climático y estado de inundación listas para enviar por WhatsApp a tu familia o grupo de barrio.</p>
+      <div class="ns-row">
+        <button type="button" class="ns-chip on" onclick="NS.cl('nsShareModal');showSection('sec-planes')">Activar Plan Pro Premium</button>
+      </div>
+    </div>
+    <div id="nsShareReadyBody" style="display:none; flex-direction:column; gap:0.75rem;">
+      <img id="nsSharePreviewImg" alt="Vista previa de alerta NimboSignal" />
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.6rem;">
+        <button type="button" class="btn btn-whatsapp btn-full" onclick="NS.share.sendWhatsApp()">Enviar por WhatsApp</button>
+        <button type="button" class="btn btn-outline btn-full" onclick="NS.share.download()">Descargar PNG</button>
+      </div>
+      <small id="nsShareHint" style="color:var(--text-muted); text-align:center;">Imagen generada en vivo con datos satelitales de NimboSignal.</small>
+    </div>
+  </div>
+</div>
+
+
+  <script id="ns-pro-extras-js">
+  (function() {
+    const $ = s => document.querySelector(s);
+    const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    // 1. DETECCIÓN UNIFICADA DE PLAN PRO PREMIUM (WEB + MÓVIL)
+    window.nsHasPro = function() {
+      try {
+        if (typeof window.isPro === 'function' && window.isPro()) return true;
+        if (typeof window.getWebPlan === 'function') {
+          const wp = window.getWebPlan();
+          if (wp === 'PRO' || wp === 'MASTER') return true;
+        }
+        if (window.NS && window.NS.prem) {
+          if (window.NS.prem.lifetime === true) return true;
+          if (Number(window.NS.prem.premiumUntil) > Date.now()) return true;
+        }
+      } catch (e) {}
+      return false;
+    };
+
+    // 2. VENTANA SECA INTELIGENTE (MEJOR FRANJA HORARIA PARA SALIR SIN MOJARSE)
+    const dryCache = {};
+    let dryTok = 0;
+
+    function analyzeDryWindows(d) {
+      const H = d && d.hourly;
+      if (!H || !Array.isArray(H.time)) return null;
+      const curStr = String((d.current && d.current.time) || '');
+      let startIdx = H.time.indexOf(curStr.slice(0, 13) + ':00');
+      if (startIdx < 0) startIdx = 0;
+      const endIdx = Math.min(H.time.length, startIdx + 24);
+      const slots = [];
+      for (let i = startIdx; i < endIdx; i++) {
+        const pp = Number(H.precipitation_probability[i] || 0);
+        const mm = Number(H.precipitation[i] || 0);
+        const hh = String(H.time[i]).slice(11, 16);
+        const isDry = pp < 35 && mm < 0.2;
+        slots.push({ i, hh, pp, mm, isDry });
+      }
+      if (!slots.length) return null;
+
+      // Encontrar tramos secos consecutivos
+      const runs = [];
+      let cur = [];
+      for (const s of slots) {
+        if (s.isDry) cur.push(s);
+        else if (cur.length) { runs.push(cur); cur = []; }
+      }
+      if (cur.length) runs.push(cur);
+
+      // Ordenar por duración (priorizando los que empiezan pronto si tienen >= 2h)
+      runs.sort((a, b) => b.length - a.length || a[0].i - b[0].i);
+      const best = runs[0] || null;
+      const nextRain = slots.find(s => !s.isDry);
+      return { best, nextRain, slots };
+    }
+
+    async function updateDryWindow(cityName, lat, lon) {
+      const box = $('#nsDryWinBox');
+      if (!box) return;
+      const pro = window.nsHasPro();
+      const locked = $('#nsDryLockedView');
+      const unlocked = $('#nsDryUnlockedView');
+      const badge = $('#nsDryBadge');
+
+      if (!pro) {
+        box.classList.remove('unlocked');
+        if (locked) locked.style.display = 'block';
+        if (unlocked) unlocked.style.display = 'none';
+        if (badge) { badge.className = 'badge badge-amber'; badge.textContent = 'Plan Pro'; }
+        return;
+      }
+
+      box.classList.add('unlocked');
+      if (locked) locked.style.display = 'none';
+      if (unlocked) unlocked.style.display = 'block';
+
+      const my = ++dryTok;
+      const hl = $('#nsDryHeadline');
+      const dt = $('#nsDryDetail');
+      const key = lat.toFixed(3) + ',' + lon.toFixed(3);
+      const shortCity = String(cityName || 'Pasaje').split(',')[0];
+
+      try {
+        let data = dryCache[key] && (Date.now() - dryCache[key].ts < 180000) ? dryCache[key].d : null;
+        if (!data) {
+          if (typeof window.nsWeekData === 'function') {
+            data = await window.nsWeekData(lat, lon);
+          } else {
+            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m&hourly=precipitation_probability,precipitation&forecast_days=2&timezone=auto`, { cache: 'no-store' });
+            data = await r.json();
+          }
+          dryCache[key] = { ts: Date.now(), d: data };
+        }
+        if (my !== dryTok) return;
+
+        const res = analyzeDryWindows(data);
+        if (!res || !res.best) {
+          if (badge) { badge.className = 'badge badge-amber'; badge.textContent = 'Lluvia frecuente'; }
+          if (hl) { hl.style.color = 'var(--amber)'; hl.textContent = `Sin ventana seca prolongada en las próximas 24 h en ${shortCity}`; }
+          if (dt) dt.textContent = 'Se prevén lluvias intermitentes durante toda la jornada. Lleva impermeable y evita zonas bajas.';
+          return;
+        }
+
+        const b = res.best;
+        const startH = b[0].hh;
+        const lastHourNum = (parseInt(b[b.length - 1].hh.slice(0, 2), 10) + 1) % 24;
+        const endH = String(lastHourNum).padStart(2, '0') + ':00';
+        const maxP = Math.max(...b.map(x => x.pp));
+        const hrs = b.length;
+
+        if (badge) {
+          badge.className = hrs >= 3 ? 'badge badge-teal' : 'badge badge-cyan';
+          badge.textContent = hrs >= 3 ? 'Óptima para salir' : 'Ventana corta';
+        }
+        if (hl) {
+          hl.style.color = 'var(--teal)';
+          hl.textContent = `Mejor ventana seca en ${shortCity}: ${startH} a ${endH} (${hrs} h seguidas sin lluvia)`;
+        }
+        const rainNote = res.nextRain
+          ? `Próxima probabilidad de lluvia desde las ${res.nextRain.hh} (${res.nextRain.pp}%).`
+          : 'Sin lluvias previstas en las próximas 24 horas.';
+        if (dt) {
+          dt.textContent = `Probabilidad máxima de lluvia en esa franja: ${maxP}%. ${rainNote}`;
+        }
+      } catch (e) {
+        if (my !== dryTok) return;
+        if (hl) hl.textContent = 'No se pudo calcular la ventana seca ahora';
+        if (dt) dt.textContent = 'Verifica tu conexión a internet e intenta actualizar.';
+      }
+    }
+
+    // 3. RADAR DE LLUVIA ANIMADO EN TIEMPO REAL SOBRE LEAFLET (RAINVIEWER API)
+    const radar = {
+      active: false,
+      playing: false,
+      frames: [],
+      layers: [],
+      idx: 0,
+      timer: null,
+      host: 'https://tilecache.rainviewer.com',
+
+      syncGate() {
+        const pro = window.nsHasPro();
+        const lk = $('#nsRadarLockedView');
+        const un = $('#nsRadarUnlockedView');
+        if (lk) lk.style.display = pro ? 'none' : 'block';
+        if (un) un.style.display = pro ? 'flex' : 'none';
+        if (!pro && this.active) this.stop(true);
+      },
+
+      async toggle() {
+        if (!window.nsHasPro()) { showSection('sec-planes'); return; }
+        if (this.active) { this.stop(true); return; }
+        if (window.NS && NS.map) NS.map();
+        if (!window.NS || !NS.m || !window.L) return;
+
+        const btn = $('#nsRadarToggleBtn');
+        const msg = $('#nsRadarMsg');
+        if (btn) btn.textContent = 'Cargando radar...';
+        if (msg) msg.textContent = 'Conectando con satélite / radar RainViewer...';
+
+        try {
+          const r = await fetch('https://api.rainviewer.com/public/weather-maps.json?_t=' + Date.now(), { cache: 'no-store' });
+          const j = await r.json();
+          if (j.host) this.host = j.host;
+          const past = (j.radar && Array.isArray(j.radar.past)) ? j.radar.past.slice(-6).map(f => ({ ...f, kind: 'past' })) : [];
+          const nowcast = (j.radar && Array.isArray(j.radar.nowcast)) ? j.radar.nowcast.slice(0, 3).map(f => ({ ...f, kind: 'forecast' })) : [];
+          this.frames = [...past, ...nowcast];
+          if (!this.frames.length) throw new Error('Sin cuadros de radar disponibles');
+
+          this.clearLayers();
+          this.layers = this.frames.map(f => L.tileLayer(`${this.host}${f.path}/256/{z}/{x}/{y}/2/1_1.png`, {
+            tileSize: 256,
+            opacity: 0.68,
+            zIndex: 450,
+            attribution: 'Radar: RainViewer'
+          }));
+
+          this.active = true;
+          this.idx = Math.max(0, past.length - 1);
+          const sl = $('#nsRadarSlider');
+          if (sl) { sl.min = 0; sl.max = this.frames.length - 1; sl.value = this.idx; }
+
+          $('#nsRadarPlayBtn').style.display = 'inline-flex';
+          $('#nsRadarFrameBadge').style.display = 'inline-flex';
+          $('#nsRadarTimelineRow').style.display = 'flex';
+          $('#nsRadarLegendRow').style.display = 'flex';
+          if (btn) btn.textContent = 'Desactivar Radar';
+          if (msg) msg.textContent = 'Desliza la barra o anima para ver el desplazamiento de las lluvias.';
+
+          this.showFrame(this.idx);
+          this.play();
+        } catch (e) {
+          if (btn) btn.textContent = 'Activar Radar Animado';
+          if (msg) msg.textContent = 'No se pudo cargar la capa de radar en este momento. Reintenta en unos segundos.';
+        }
+      },
+
+      clearLayers() {
+        if (window.NS && NS.m) {
+          this.layers.forEach(l => { try { if (NS.m.hasLayer(l)) NS.m.removeLayer(l); } catch (e) {} });
+        }
+        this.layers = [];
+      },
+
+      showFrame(i) {
+        if (!this.active || !this.layers.length || !window.NS || !NS.m) return;
+        this.idx = ((i % this.frames.length) + this.frames.length) % this.frames.length;
+        this.layers.forEach((l, k) => {
+          if (k === this.idx) { if (!NS.m.hasLayer(l)) l.addTo(NS.m); }
+          else { if (NS.m.hasLayer(l)) NS.m.removeLayer(l); }
+        });
+        const f = this.frames[this.idx];
+        const dt = new Date(f.time * 1000);
+        const hh = dt.toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const badge = $('#nsRadarFrameBadge');
+        if (badge) {
+          badge.className = f.kind === 'forecast' ? 'badge badge-amber' : 'badge badge-teal';
+          badge.textContent = (f.kind === 'forecast' ? 'Proyección • ' : 'Radar en Vivo • ') + hh;
+        }
+        const sl = $('#nsRadarSlider');
+        if (sl) sl.value = this.idx;
+      },
+
+      seek(i) {
+        this.pause();
+        this.showFrame(i);
+      },
+
+      play() {
+        if (this.timer) clearInterval(this.timer);
+        this.playing = true;
+        const pb = $('#nsRadarPlayBtn');
+        if (pb) pb.textContent = '⏸ Pausar';
+        this.timer = setInterval(() => {
+          if (!this.active || document.hidden) return;
+          this.showFrame(this.idx + 1);
+        }, 800);
+      },
+
+      pause() {
+        this.playing = false;
+        if (this.timer) { clearInterval(this.timer); this.timer = null; }
+        const pb = $('#nsRadarPlayBtn');
+        if (pb) pb.textContent = '▶ Animar';
+      },
+
+      playPause() {
+        if (this.playing) this.pause();
+        else this.play();
+      },
+
+      stop(resetUI) {
+        this.pause();
+        this.active = false;
+        this.clearLayers();
+        if (resetUI) {
+          const btn = $('#nsRadarToggleBtn');
+          if (btn) btn.textContent = 'Activar Radar Animado';
+          const pb = $('#nsRadarPlayBtn'); if (pb) pb.style.display = 'none';
+          const fb = $('#nsRadarFrameBadge'); if (fb) fb.style.display = 'none';
+          const tr = $('#nsRadarTimelineRow'); if (tr) tr.style.display = 'none';
+          const lg = $('#nsRadarLegendRow'); if (lg) lg.style.display = 'none';
+          const msg = $('#nsRadarMsg'); if (msg) msg.textContent = '';
+        }
+      }
+    };
+
+    // 4. CÍRCULO FAMILIAR (COMPARTIR LOS 5 LUGARES GUARDADOS)
+    const FAM_OWN_KEY = 'nimbosignal_fam_own_v1';
+    const FAM_JOIN_KEY = 'nimbosignal_fam_joined_v1';
+    const PL_LABELS = ['Alerta de inundación', 'Precaución por acumulación de agua', 'Sin inundación'];
+    const PV_LABELS = ['No recomendable ir ahora', 'Puedes ir con precaución e impermeable', 'Sí, puedes ir con normalidad'];
+
+    const fam = {
+      ownCode: '',
+      joined: null, // { code, places: [...] }
+
+      init() {
+        let code = localStorage.getItem(FAM_OWN_KEY);
+        if (!code || !/^NS-FAM-\d{4}$/.test(code)) {
+          code = 'NS-FAM-' + Math.floor(1000 + Math.random() * 9000);
+          localStorage.setItem(FAM_OWN_KEY, code);
+        }
+        this.ownCode = code;
+        const el = $('#nsFamOwnCode');
+        if (el) el.textContent = code;
+
+        try {
+          const saved = JSON.parse(localStorage.getItem(FAM_JOIN_KEY));
+          if (saved && Array.isArray(saved.places) && saved.places.length) {
+            this.joined = saved;
+            this.renderJoinedUI();
+          }
+        } catch (e) {}
+      },
+
+      encodePortable(places) {
+        const slim = (places || []).slice(0, 5).map(p => ({
+          n: String(p.nombre || '').slice(0, 60),
+          a: Number(p.lat),
+          o: Number(p.lon),
+          z: String(p.zona || '')
+        }));
+        const json = JSON.stringify(slim);
+        const b64 = btoa(unescape(encodeURIComponent(json)));
+        return 'NSFAM:' + b64;
+      },
+
+      decodePortable(str) {
+        const raw = str.trim().replace(/^NSFAM:/i, '');
+        const json = decodeURIComponent(escape(atob(raw)));
+        const arr = JSON.parse(json);
+        if (!Array.isArray(arr) || !arr.length) return null;
+        return arr.slice(0, 5).filter(x => isFinite(x.a) && isFinite(x.o)).map((x, idx) => ({
+          id: 'fam_' + idx,
+          nombre: String(x.n || 'Lugar familiar').slice(0, 80),
+          lat: Number(x.a),
+          lon: Number(x.o),
+          zona: String(x.z || 'Ecuador')
+        }));
+      },
+
+      async shareOwn(silent) {
+        const places = (window.NS && NS.ml && Array.isArray(NS.ml.pl)) ? NS.ml.pl : [];
+        const msg = $('#nsFamOwnMsg');
+        if (!places.length) {
+          if (!silent && msg) msg.textContent = 'Primero guarda al menos 1 lugar arriba para poder compartirlo con tu familia.';
+          return;
+        }
+        const portable = this.encodePortable(places);
+        let cloudOk = false;
+        if (window.NSF && NSF.setFam) {
+          try {
+            await NSF.setFam(this.ownCode, {
+              ownerUid: (NS.user && NS.user.uid) || 'local',
+              places: places.slice(0, 5),
+              updatedAt: Date.now()
+            });
+            cloudOk = true;
+          } catch (e) {}
+        }
+
+        if (!silent) {
+          const shareText = `Únete a mi Círculo Familiar en NimboSignal (Plan Pro) para ver en vivo nuestros ${places.length} lugares guardados.
+Código corto: ${this.ownCode}
+Clave directa (sin conexión): ${portable}`;
+          try {
+            await navigator.clipboard.writeText(cloudOk ? this.ownCode : portable);
+          } catch (e) {}
+          if (msg) {
+            msg.style.color = 'var(--teal)';
+            msg.textContent = cloudOk
+              ? `Código ${this.ownCode} sincronizado y copiado. También puedes compartir la clave portátil si tu familiar no usa internet móvil.`
+              : `Clave familiar copiada al portapapeles (${places.length} lugares). Envíala por WhatsApp a tu familiar para que la pegue abajo.`;
+          }
+        }
+      },
+
+      async join() {
+        const inp = $('#nsFamJoinIn');
+        const msg = $('#nsFamJoinMsg');
+        const val = (inp && inp.value || '').trim();
+        if (!val) {
+          if (msg) { msg.style.color = 'var(--red)'; msg.textContent = 'Ingresa un código familiar (NS-FAM-XXXX o NSFAM:...).'; }
+          return;
+        }
+        if (msg) { msg.style.color = ''; msg.textContent = 'Conectando con el Círculo Familiar...'; }
+
+        try {
+          let places = null;
+          let labelCode = val;
+          if (/^NSFAM:/i.test(val)) {
+            places = this.decodePortable(val);
+            labelCode = 'Círculo Familiar Compartido';
+          } else {
+            const cleanCode = val.toUpperCase();
+            if (cleanCode === this.ownCode && window.NS && NS.ml && NS.ml.pl.length) {
+              places = NS.ml.pl.slice(0, 5);
+              labelCode = cleanCode;
+            } else if (window.NSF && NSF.getFam) {
+              const docData = await NSF.getFam(cleanCode);
+              if (docData && Array.isArray(docData.places) && docData.places.length) {
+                places = docData.places.slice(0, 5);
+                labelCode = cleanCode;
+              }
+            }
+          }
+
+          if (!places || !places.length) {
+            if (msg) { msg.style.color = 'var(--red)'; msg.textContent = 'No se encontró ese Círculo Familiar o aún no tiene lugares guardados. Pide a tu familiar la clave NSFAM:...'; }
+            return;
+          }
+
+          this.joined = { code: labelCode, places };
+          localStorage.setItem(FAM_JOIN_KEY, JSON.stringify(this.joined));
+          if (inp) inp.value = '';
+          if (msg) { msg.style.color = 'var(--teal)'; msg.textContent = `Conectado (${places.length} lugares familiares en monitoreo en vivo).`; }
+          this.renderJoinedUI();
+        } catch (e) {
+          if (msg) { msg.style.color = 'var(--red)'; msg.textContent = 'Error al leer el código familiar. Verifica que esté completo.'; }
+        }
+      },
+
+      leave() {
+        this.joined = null;
+        localStorage.removeItem(FAM_JOIN_KEY);
+        const hd = $('#nsFamSharedHeader'); if (hd) hd.style.display = 'none';
+        const lv = $('#nsFamLeaveBtn'); if (lv) lv.style.display = 'none';
+        const ls = $('#nsFamList'); if (ls) ls.innerHTML = '';
+        const msg = $('#nsFamJoinMsg'); if (msg) msg.textContent = 'Saliste del círculo familiar.';
+      },
+
+      async renderJoinedUI(force) {
+        const hd = $('#nsFamSharedHeader');
+        const lv = $('#nsFamLeaveBtn');
+        const ls = $('#nsFamList');
+        const tt = $('#nsFamSharedTitle');
+        if (!this.joined || !this.joined.places || !this.joined.places.length) {
+          if (hd) hd.style.display = 'none';
+          if (lv) lv.style.display = 'none';
+          if (ls) ls.innerHTML = '';
+          return;
+        }
+        if (hd) hd.style.display = 'flex';
+        if (lv) lv.style.display = 'inline-flex';
+        if (tt) tt.textContent = `Lugares de mi Familia (${this.joined.code})`;
+
+        try {
+          if (window.NS && NS.om) {
+            await NS.om(this.joined.places.map(p => [p.lat, p.lon]), force);
+          }
+          if (ls) {
+            ls.innerHTML = this.joined.places.map(p => {
+              const o = window.NS && NS.omc && NS.omc[p.lat + ',' + p.lon];
+              const w = o && o.v;
+              if (!w) return `<div class="ns-card"><h4>${esc(p.nombre)}</h4><p>Consultando clima en vivo...</p></div>`;
+              const l = w.mm + 0.5 * w.prev;
+              const e = l >= 6 ? 0 : (l >= 1.5 || w.pp >= 85) ? 1 : 2;
+              return `<div class="ns-card">
+                <span class="ns-b b${e}">${PL_LABELS[e]}</span>
+                <span class="ns-b lv">FAMILIA • ${w.hh}</span>
+                <h4>${esc(p.nombre)}</h4>
+                <small>${esc(p.zona || 'Ecuador')} · ${Number(p.lat).toFixed(4)}, ${Number(p.lon).toFixed(4)}</small>
+                <p><b>Estado:</b> ${PV_LABELS[e]}</p>
+                <p>🌡 ${w.t}°C · 💧 ${w.mm.toFixed(1)} mm · Prob. lluvia 6 h: ${w.pp}%</p>
+              </div>`;
+            }).join('');
+          }
+        } catch (e) {
+          if (ls) ls.innerHTML = '<p>No se pudo actualizar el clima de los lugares familiares.</p>';
+        }
+      },
+
+      refreshShared(force) {
+        this.renderJoinedUI(force);
+      }
+    };
+
+    // 5. TARJETA VISUAL DE ALERTA LIMPIA PARA COMPARTIR EN WHATSAPP (CANVAS PNG)
+    const share = {
+      blob: null,
+      dataUrl: '',
+      fileName: 'NimboSignal-Alerta.png',
+      summaryText: '',
+
+      buildCanvas() {
+        const city = ($('#heroCityTitle') && $('#heroCityTitle').textContent.trim()) || 'Pasaje, Ecuador';
+        const headline = ($('#verdictHeadline') && $('#verdictHeadline').textContent.trim()) || 'Monitoreo Climático en Vivo';
+        const detail = ($('#verdictDetail') && $('#verdictDetail').textContent.trim()) || '';
+        const floodBadge = ($('#floodBadge') && $('#floodBadge').textContent.trim()) || 'Sin Inundación Activa';
+        const floodSummary = ($('#floodSummaryText') && $('#floodSummaryText').textContent.trim()) || '';
+        const temp = ($('#metricTemp') && $('#metricTemp').textContent.trim()) || '--';
+        const hum = ($('#metricHum') && $('#metricHum').textContent.trim()) || '--';
+        const rain = ($('#metricRain') && $('#metricRain').textContent.trim()) || '--';
+        const risk = ($('#metricRisk') && $('#metricRisk').textContent.trim()) || '--';
+        const updated = ($('#nsUpd') && $('#nsUpd').textContent.trim()) || ('Actualizado: ' + new Date().toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit' }));
+        const sectors = [...document.querySelectorAll('#floodSectorsList .sector-pill')].map(el => el.textContent.trim()).slice(0, 6);
+
+        const isRed = /alerta|tormenta|fuerte|alto/i.test(floodBadge + ' ' + headline + ' ' + risk);
+        const isAmber = !isRed && /vigilancia|precauci|moderad/i.test(floodBadge + ' ' + headline + ' ' + risk);
+        const accent = isRed ? '#ef4444' : isAmber ? '#f59e0b' : '#4ea87e';
+
+        const W = 1080, H = 1240;
+        const canvas = document.createElement('canvas');
+        canvas.width = W;
+        canvas.height = H;
+        const ctx = canvas.getContext('2d');
+
+        // Fondo degradado oscuro elegante
+        const bg = ctx.createLinearGradient(0, 0, W, H);
+        bg.addColorStop(0, '#0f1720');
+        bg.addColorStop(0.55, '#152230');
+        bg.addColorStop(1, '#0d151e');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+
+        // Resplandor ambiental superior
+        const glow = ctx.createRadialGradient(W * 0.85, 80, 20, W * 0.85, 80, 520);
+        glow.addColorStop(0, isRed ? 'rgba(239,68,68,0.22)' : isAmber ? 'rgba(245,158,11,0.20)' : 'rgba(92,164,196,0.22)');
+        glow.addColorStop(1, 'rgba(15,23,32,0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, W, H);
+
+        const roundRect = (x, y, w, h, r) => {
+          ctx.beginPath();
+          ctx.moveTo(x + r, y);
+          ctx.arcTo(x + w, y, x + w, y + h, r);
+          ctx.arcTo(x + w, y + h, x, y + h, r);
+          ctx.arcTo(x, y + h, x, y, r);
+          ctx.arcTo(x, y, x + w, y, r);
+          ctx.closePath();
+        };
+
+        const wrapText = (text, x, y, maxW, lineH, maxLines) => {
+          const words = String(text || '').split(/\s+/);
+          let line = '';
+          let lines = 0;
+          for (let n = 0; n < words.length; n++) {
+            const test = line ? line + ' ' + words[n] : words[n];
+            if (ctx.measureText(test).width > maxW && line) {
+              ctx.fillText(line, x, y);
+              y += lineH;
+              lines++;
+              if (maxLines && lines >= maxLines) return y;
+              line = words[n];
+            } else {
+              line = test;
+            }
+          }
+          if (line && (!maxLines || lines < maxLines)) {
+            ctx.fillText(line, x, y);
+            y += lineH;
+          }
+          return y;
+        };
+
+        // Tarjeta principal
+        roundRect(48, 48, W - 96, H - 96, 36);
+        ctx.fillStyle = '#1a2836';
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'rgba(214, 226, 238, 0.14)';
+        ctx.stroke();
+
+        // Barra superior de color de estado
+        roundRect(48, 48, W - 96, 16, 8);
+        ctx.fillStyle = accent;
+        ctx.fill();
+
+        // Logo NS
+        roundRect(92, 98, 68, 68, 18);
+        const brandGrad = ctx.createLinearGradient(92, 98, 160, 166);
+        brandGrad.addColorStop(0, '#5ca4c4');
+        brandGrad.addColorStop(1, '#1d5d7a');
+        ctx.fillStyle = brandGrad;
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 30px system-ui, -apple-system, sans-serif';
+        ctx.fillText('NS', 105, 143);
+
+        // Nombre app
+        ctx.fillStyle = '#eef3f8';
+        ctx.font = '800 34px system-ui, -apple-system, sans-serif';
+        ctx.fillText('NimboSignal', 180, 134);
+        ctx.fillStyle = '#8b9eb0';
+        ctx.font = '600 20px system-ui, -apple-system, sans-serif';
+        ctx.fillText('REPORTE CLIMÁTICO Y DE INUNDACIONES', 180, 162);
+
+        // Ciudad y hora
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 50px system-ui, -apple-system, sans-serif';
+        ctx.fillText(city, 92, 245);
+
+        ctx.fillStyle = '#5ca4c4';
+        ctx.font = '700 22px system-ui, -apple-system, sans-serif';
+        ctx.fillText(updated, 92, 282);
+
+        // Píldora de estado de inundación
+        roundRect(92, 314, W - 184, 58, 29);
+        ctx.fillStyle = isRed ? 'rgba(239,68,68,0.18)' : isAmber ? 'rgba(245,158,11,0.18)' : 'rgba(78,168,126,0.18)';
+        ctx.fill();
+        ctx.fillStyle = accent;
+        ctx.font = '800 24px system-ui, -apple-system, sans-serif';
+        ctx.fillText('●  ' + floodBadge.toUpperCase(), 120, 351);
+
+        // Caja de Veredicto
+        roundRect(92, 398, W - 184, 240, 24);
+        ctx.fillStyle = '#121c27';
+        ctx.fill();
+        ctx.fillStyle = accent;
+        ctx.font = '800 32px system-ui, -apple-system, sans-serif';
+        let nextY = wrapText(headline, 122, 448, W - 244, 40, 2);
+        ctx.fillStyle = '#d3dee9';
+        ctx.font = '500 23px system-ui, -apple-system, sans-serif';
+        wrapText(detail || floodSummary, 122, nextY + 10, W - 244, 32, 3);
+
+        // 4 Métricas
+        const metrics = [
+          { label: 'TEMPERATURA', val: temp },
+          { label: 'HUMEDAD', val: hum },
+          { label: 'PROB. LLUVIA 8H', val: rain },
+          { label: 'RIESGO VIAL', val: risk }
+        ];
+        const boxW = (W - 184 - 24) / 2;
+        metrics.forEach((m, idx) => {
+          const col = idx % 2;
+          const row = Math.floor(idx / 2);
+          const bx = 92 + col * (boxW + 24);
+          const by = 666 + row * 124;
+          roundRect(bx, by, boxW, 106, 20);
+          ctx.fillStyle = '#121c27';
+          ctx.fill();
+          ctx.fillStyle = '#8b9eb0';
+          ctx.font = '700 19px system-ui, -apple-system, sans-serif';
+          ctx.fillText(m.label, bx + 24, by + 38);
+          ctx.fillStyle = idx === 3 ? accent : '#eef3f8';
+          ctx.font = '800 34px system-ui, -apple-system, sans-serif';
+          ctx.fillText(m.val, bx + 24, by + 82);
+        });
+
+        // Sectores vigilados
+        ctx.fillStyle = '#8b9eb0';
+        ctx.font = '700 20px system-ui, -apple-system, sans-serif';
+        ctx.fillText('SECTORES VIGILADOS EN ESTA CIUDAD:', 92, 954);
+        ctx.fillStyle = '#d3dee9';
+        ctx.font = '600 22px system-ui, -apple-system, sans-serif';
+        const secText = sectors.length ? sectors.join('  •  ') : 'Zonas bajas, riveras y centro urbano';
+        wrapText(secText, 92, 992, W - 184, 32, 2);
+
+        // Pie de tarjeta
+        ctx.strokeStyle = 'rgba(214, 226, 238, 0.12)';
+        ctx.beginPath();
+        ctx.moveTo(92, 1085);
+        ctx.lineTo(W - 92, 1085);
+        ctx.stroke();
+
+        ctx.fillStyle = '#8b9eb0';
+        ctx.font = '600 20px system-ui, -apple-system, sans-serif';
+        ctx.fillText('Generado en vivo con NimboSignal • Plan Pro Premium', 92, 1134);
+
+        this.fileName = 'NimboSignal-' + city.split(',')[0].trim().replace(/\s+/g, '_') + '.png';
+        this.summaryText = `🌦️ *Alerta NimboSignal — ${city}*
+• Estado: ${floodBadge}
+• Veredicto: ${headline}
+• Temp: ${temp} | Prob. lluvia 8h: ${rain} | Riesgo vial: ${risk}
+(${updated})`;
+        return canvas;
+      },
+
+      open() {
+        const modal = $('#nsShareModal');
+        const lk = $('#nsShareLockedBody');
+        const rd = $('#nsShareReadyBody');
+        if (!modal) return;
+
+        if (!window.nsHasPro()) {
+          if (lk) lk.style.display = 'block';
+          if (rd) rd.style.display = 'none';
+          modal.classList.add('on');
+          return;
+        }
+
+        if (lk) lk.style.display = 'none';
+        if (rd) rd.style.display = 'flex';
+        const canvas = this.buildCanvas();
+        this.dataUrl = canvas.toDataURL('image/png');
+        const img = $('#nsSharePreviewImg');
+        if (img) img.src = this.dataUrl;
+        canvas.toBlob(b => { this.blob = b; }, 'image/png');
+        modal.classList.add('on');
+      },
+
+      download() {
+        if (!this.dataUrl) return;
+        const a = document.createElement('a');
+        a.href = this.dataUrl;
+        a.download = this.fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      },
+
+      async sendWhatsApp() {
+        try {
+          if (this.blob && navigator.share && navigator.canShare) {
+            const file = new File([this.blob], this.fileName, { type: 'image/png' });
+            if (navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                files: [file],
+                title: 'Alerta Climática NimboSignal',
+                text: this.summaryText
+              });
+              return;
+            }
+          }
+        } catch (e) {
+          if (e && e.name === 'AbortError') return;
+        }
+        // Respaldo universal: descarga la imagen PNG y abre WhatsApp con el resumen listo
+        this.download();
+        const url = 'https://wa.me/?text=' + encodeURIComponent(this.summaryText);
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    };
+
+    window.nsOpenWhatsAppShare = () => share.open();
+
+    // 6. SINCRONIZACIÓN AUTOMÁTICA CON PLAN PRO Y CAMBIOS DE CIUDAD
+    window.nsRefreshProModules = function() {
+      const pro = window.nsHasPro();
+      const tag = $('#nsShareProTag');
+      if (tag) tag.style.display = pro ? 'none' : 'inline-flex';
+      radar.syncGate();
+      const c = window.nsLastCity || { name: 'Pasaje, Ecuador', lat: -3.3256, lon: -79.8069 };
+      updateDryWindow(c.name, c.lat, c.lon);
+    };
+
+    // Enganchar loadCityWeather sin alterar su funcionamiento
+    if (typeof window.loadCityWeather === 'function') {
+      const origLoad = window.loadCityWeather;
+      window.loadCityWeather = function(cityName, lat, lon, btnEl, silent) {
+        const res = origLoad.apply(this, arguments);
+        updateDryWindow(cityName, lat, lon);
+        return res;
+      };
+    }
+
+    // Enganchar NS.sync, NS.renderAcc y NS.ml.save
+    function hookNS() {
+      if (!window.NS) return;
+      NS.radar = radar;
+      NS.fam = fam;
+      NS.share = share;
+      fam.init();
+
+      if (typeof NS.sync === 'function') {
+        const origSync = NS.sync;
+        NS.sync = function() {
+          const r = origSync.apply(this, arguments);
+          window.nsRefreshProModules();
+          return r;
+        };
+      }
+      if (typeof NS.renderAcc === 'function') {
+        const origAcc = NS.renderAcc;
+        NS.renderAcc = function() {
+          const r = origAcc.apply(this, arguments);
+          window.nsRefreshProModules();
+          return r;
+        };
+      }
+      if (NS.ml && typeof NS.ml.save === 'function') {
+        const origMlSave = NS.ml.save;
+        NS.ml.save = async function() {
+          const r = await origMlSave.apply(this, arguments);
+          if (window.nsHasPro()) fam.shareOwn(true);
+          return r;
+        };
+      }
+      window.nsRefreshProModules();
+    }
+
+    ['activateFreePlan', 'activateMobileFreePlan'].forEach(fn => {
+      if (typeof window[fn] === 'function') {
+        const orig = window[fn];
+        window[fn] = function() {
+          const r = orig.apply(this, arguments);
+          window.nsRefreshProModules();
+          return r;
+        };
+      }
+    });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', hookNS);
+    } else {
+      hookNS();
+    }
+    setTimeout(hookNS, 600);
+  })();
   </script>
 
 </body>
