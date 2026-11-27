@@ -936,6 +936,7 @@
 .ns-code-box .ns-code-sub{font-size:.76rem;color:var(--text-muted)}
 @media(max-width:520px){.ns-prof-mail{display:none}.ns-prof-on.has-mail{padding:2px}}
 </style>
+<script>(function(){window.nsHHMM=window.nsHHMM||function(){return new Date().toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit',hour12:false})};const F=window.fetch;window.fetch=function(u,o){try{if(typeof u==='string'&&/^https?:\/\/(api\.open-meteo\.com|geocoding-api\.open-meteo\.com|nominatim\.openstreetmap\.org)/.test(u)){if(!/[?&]_t=/.test(u))u+=(u.indexOf('?')>-1?'&':'?')+'_t='+Date.now();o=Object.assign({cache:'no-store'},o||{})}}catch(e){}return F.call(this,u,o)}})();</script>
 <script>window.nsNorm=function(s){return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim()};window.NS_DATA={s:`Unidad Educativa María Andrea|Pasaje|-3.3235|-79.8110|2|Zona urbana central
 Unidad Educativa Aurelio Prieto Muelas|Pasaje|-3.3330|-79.8150|1|Loma de Franco; calles bajas
 Unidad Educativa Casacay|Pasaje|-3.3189|-79.7365|1|Parroquia Casacay; vigilar río Jubones
@@ -1194,6 +1195,16 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .ns-m #nsMap{height:72vh!important;min-height:0}
 .card:active{transform:scale(.985)}
 </style>
+<style id="ns-new">
+.ns-b.lv{background:rgba(34,211,238,.16);color:var(--cyan)}
+.cy-box{border:1px solid var(--glass-border);border-left:4px solid #22c55e;border-radius:10px;padding:.5rem .7rem;margin:.5rem 0;font-size:.82rem;line-height:1.6}
+.cy-box.c0{border-left-color:#ef4444}.cy-box.c1{border-left-color:#f59e0b}
+.ct0{color:#ef4444}.ct1{color:#d97706}.ct2{color:#059669}
+#mlMap{height:380px;border-radius:14px;margin:.6rem 0;z-index:1}
+.ml-al{display:none;border:1px solid #ef4444;border-left:4px solid #ef4444;background:rgba(239,68,68,.12);border-radius:10px;padding:.6rem .8rem;margin:.6rem 0;font-size:.86rem}
+.ml-lock{text-align:center;padding:1.6rem 1rem}
+</style>
+<style id="ns-live-m">.ns-m .ns-in,.ns-m input,.ns-m select,.ns-m textarea{font-size:16px!important}.ns-m #mlMap{height:300px}.ns-m .ns-chip{min-height:40px}#nsLiveBar{padding:.5rem .7rem;margin-bottom:.6rem}</style>
 </head>
 <body>
 
@@ -1309,16 +1320,11 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
           Colegios
         </span>
       </button>
+      <button class="nav-btn" data-target="sec-mis-lugares" onclick="showSection('sec-mis-lugares')"><span class="nav-label"><svg class="ico" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Mis Lugares (Alertas)</span><span style="font-size:.68rem;font-weight:800;color:#f59e0b">PRO</span></button>
       <button class="nav-btn" data-target="sec-pasaje" onclick="showSection('sec-pasaje')">
         <span class="nav-label">
           <svg class="ico" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>
           Pasaje y Rutas
-        </span>
-      </button>
-      <button class="nav-btn" data-target="sec-rios" onclick="showSection('sec-rios')">
-        <span class="nav-label">
-          <svg class="ico" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-          Ríos y Balnearios
         </span>
       </button>
       <button class="nav-btn" data-target="sec-recomendaciones" onclick="showSection('sec-recomendaciones')">
@@ -1650,26 +1656,23 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 
     <!-- 5. COLEGIOS -->
     <section id="sec-colegios" class="view-section">
-      <div class="section-head">
-        <h2>
-          <svg class="ico" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-          Colegios e Instituciones Educativas
-        </h2>
-        <p>Estado de jornada escolar y vías de acceso en Pasaje y El Oro.</p>
-      </div>
-
-      <div class="stack-list">
-        <input type="text" id="schoolSearch" class="mobile-input" placeholder="Buscar colegio (ej. Carmen Mora, Juan Pablo II)..." oninput="renderSchools()" />
-
-        <div class="h-scroll-row" id="schoolFilterRow">
-          <button class="btn btn-outline active" onclick="setSchoolFilter('todos', this)">Todos</button>
-          <button class="btn btn-outline" onclick="setSchoolFilter('Pasaje', this)">Pasaje</button>
-          <button class="btn btn-outline" onclick="setSchoolFilter('El Oro', this)">Otros El Oro</button>
+        <div class="section-head">
+          <div>
+            <h2>
+              <svg class="ico" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              Colegios e Instituciones Educativas
+            </h2>
+            <p>Estado de jornada y calles de acceso de cada plantel, con lluvia en vivo y reportes ciudadanos de las últimas 3 horas.</p>
+          </div>
         </div>
-
-        <div class="stack-list" id="schoolsGrid"></div>
-      </div>
-    </section>
+        <div class="ns-card">
+          <div class="ns-row"><select class="ns-in" id="coCity" style="max-width:220px" onchange="NS.co.man=1;NS.co.go()" aria-label="Ciudad"></select><input class="ns-in" id="nsCq" style="flex:1;min-width:200px" placeholder="Buscar colegio…" oninput="NS.co.r()"><button class="ns-chip on" onclick="NS.co.go(1)">Actualizar datos en vivo</button></div>
+          <div class="ns-row" id="nsCf"></div>
+          <div class="ns-live" id="coSum">Consultando…</div>
+          <p style="font-size:.74rem;opacity:.75">Las calles de acceso y perímetro son referenciales (las vías catalogadas más cercanas a cada plantel); confirme con la institución y con fuentes oficiales.</p>
+        </div>
+        <div class="ns-grid" id="nsCole"></div>
+      </section>
 
     <!-- 6. PASAJE Y RUTAS -->
     <section id="sec-pasaje" class="view-section">
@@ -1710,45 +1713,6 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
     </section>
 
     <!-- 7. RÍOS Y BALNEARIOS -->
-    <section id="sec-rios" class="view-section">
-      <div class="section-head">
-        <h2>
-          <svg class="ico" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-          Ríos y Balnearios
-        </h2>
-        <p>Estado de caudal y horarios seguros en Pasaje y El Oro.</p>
-      </div>
-
-      <div class="stack-list">
-        <div class="card">
-          <div class="card-top">
-            <h3 style="font-size:1.02rem;">Balneario La Cocha (Pasaje)</h3>
-            <span class="badge badge-teal"><span class="status-dot dot-green"></span> Apto Mañana</span>
-          </div>
-          <p style="font-size:0.84rem;">Horario ideal: <strong>08:00 a 13:30</strong>. Retirarse si el agua se enturbia o hay nubes oscuras hacia la montaña.</p>
-          <button class="btn btn-outline btn-full" onclick="quickAsk('¿Cómo está el Balneario La Cocha, Pasaje?')">Consultar en Nimbo AI</button>
-        </div>
-
-        <div class="card">
-          <div class="card-top">
-            <h3 style="font-size:1.02rem;">Río Jubones y Casacay</h3>
-            <span class="badge badge-amber"><span class="status-dot dot-amber"></span> Vigilancia Tarde</span>
-          </div>
-          <p style="font-size:0.84rem;">Caudal estable por la mañana. Vigilar crecidas por lluvias en la cuenca alta (Uzhcurrumi / Azuay).</p>
-          <button class="btn btn-outline btn-full" onclick="quickAsk('¿Cómo está el Río Jubones y Casacay?')">Consultar en Nimbo AI</button>
-        </div>
-
-        <div class="card">
-          <div class="card-top">
-            <h3 style="font-size:1.02rem;">Dos Bocas y Río Buenavista</h3>
-            <span class="badge badge-teal"><span class="status-dot dot-green"></span> Favorable</span>
-          </div>
-          <p style="font-size:0.84rem;">Aguas tranquilas para recreación familiar. Llevar hidratación y protector solar.</p>
-          <button class="btn btn-outline btn-full" onclick="quickAsk('¿Cómo está Dos Bocas y Río Buenavista?')">Consultar en Nimbo AI</button>
-        </div>
-      </div>
-    </section>
-
     <!-- 8. RECOMENDACIONES -->
     <section id="sec-recomendaciones" class="view-section">
       <div class="section-head">
@@ -2052,18 +2016,28 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 
   
 <section id="sec-calles" class="view-section">
-<div class="section-head"><div><h2>Calles Inundadas, Vías y Estado Escolar (Pasaje y Machala)</h2><p>Estado estimado de vías y colegios según la lluvia en vivo y la vulnerabilidad histórica de cada punto. Rutas alternas referenciales.</p></div></div>
+<div class="section-head"><div><h2>Calles y Vías: Estado en Vivo por Ciudad</h2><p>Calles y avenidas con su tramo de referencia, evaluadas con la lluvia en vivo (Open-Meteo) de sus coordenadas y con los reportes ciudadanos de las últimas 3 horas. Coordenadas referenciales.</p></div></div>
 <div class="ns-live nsLive"></div>
 <div class="ns-card"><h3>Buscador de Calles Inundadas y Estado de Vías</h3>
-<div class="ns-row"><input class="ns-in" id="nsVq" style="flex:1;min-width:200px" placeholder="Buscar calle, avenida o vía (Rocafuerte, 25 de Junio, Pajonal…)" oninput="NS.all()"><select class="ns-in" id="nsSim" style="max-width:240px" onchange="NS.sm(this.value)"><option value="">Escenario: condición actual en vivo</option><option value="0">Escenario: sin lluvia</option><option value="1">Escenario: lluvia moderada</option><option value="2">Escenario: lluvia intensa (El Niño)</option></select></div>
-<div class="ns-row" id="nsVf"></div></div>
+<div class="ns-row"><select class="ns-in" id="cyCity" style="max-width:220px" onchange="NS.cy.man=1;NS.cy.go()" aria-label="Ciudad"></select><input class="ns-in" id="nsVq" style="flex:1;min-width:200px" placeholder="Buscar calle o avenida (Rocafuerte, 25 de Junio, Amazonas…)" oninput="NS.cy.r()"><button class="ns-chip on" onclick="NS.cy.go(1)">Actualizar datos en vivo</button></div>
+<div class="ns-row"><select class="ns-in" id="nsSim" style="max-width:300px" onchange="NS.sm(this.value)"><option value="">Escenario (mapa y turismo): condición en vivo</option><option value="0">Escenario: sin lluvia</option><option value="1">Escenario: lluvia moderada</option><option value="2">Escenario: lluvia intensa (El Niño)</option></select></div>
+<div class="ns-row" id="nsVf"></div><div class="ns-live" id="cySum">Consultando…</div></div>
 <div class="ns-grid" id="nsVias"></div>
-<div class="ns-card"><h3>Reportes ciudadanos de inundación</h3><p>Inicia sesión y reporta el estado real de una calle; los últimos reportes se muestran a todos.</p>
+<div class="ns-card"><h3>Reportes ciudadanos de inundación</h3><p>Inicia sesión y reporta el estado real de una calle; los últimos reportes se muestran a todos y verifican el estado de las calles de arriba.</p>
 <div class="ns-row"><select class="ns-in" id="nsRc" style="flex:1;min-width:180px"></select><select class="ns-in" id="nsRe" style="max-width:190px"><option value="inundada">Inundada / Cerrada</option><option value="precaucion">Precaución / Agua acumulada</option><option value="transitable">Transitable</option></select></div>
 <div class="ns-row"><input class="ns-in" id="nsRt" maxlength="280" style="flex:1;min-width:200px" placeholder="Detalle breve (máx. 280 caracteres)"><button class="ns-chip on" onclick="NS.sendRep()">Enviar reporte</button></div><p id="nsRm"></p><div id="nsReps"></div></div>
-<h3 style="margin:1.35rem 0 .5rem">Directorio y Estado de Colegios</h3>
-<div class="ns-row"><input class="ns-in" id="nsCq" style="flex:1;min-width:200px" placeholder="Buscar colegio…" oninput="NS.all()"></div><div class="ns-row" id="nsCf"></div><div class="ns-grid" id="nsCole"></div>
 </section>
+<section id="sec-mis-lugares" class="view-section">
+<div class="section-head"><div><h2>Mis Lugares y Recordatorios <span class="badge badge-amber">PRO</span></h2><p>Guarda hasta 5 ubicaciones y recibe alertas de inundación o lluvia intensa.</p></div></div>
+<div id="mlLock" class="ns-card ml-lock"><h3>🔒 Exclusivo del Plan Pro Premium</h3><p>Guarda hasta 5 ubicaciones (tu calle, tu colegio, tu casa) en un mapa interactivo y recibe recordatorios automáticos de inundación y lluvia intensa para cada una.</p><div class="ns-row" style="justify-content:center"><button class="ns-chip on" onclick="showSection('sec-planes')">Activar 1 mes gratis</button><button class="ns-chip" onclick="showSection('sec-planes')">Suscribirme a Pro</button></div></div>
+<div id="mlPro" style="display:none">
+<div class="ns-card"><form class="ns-row" onsubmit="NS.ml.search(event)"><input class="ns-in" id="mlQ" style="flex:1;min-width:200px" placeholder="Buscar calle, dirección o colegio…"><button class="ns-chip on" type="submit">Buscar</button></form><div class="ns-row" id="mlRes"></div><div id="mlMap"></div><small>También puedes hacer clic en cualquier punto del mapa para colocar un marcador.</small>
+<div class="ns-row"><input class="ns-in" id="mlName" maxlength="80" style="flex:1;min-width:200px" placeholder="Nombre (ej. Mi calle, Colegio, Casa)"><small id="mlCo">Sin punto seleccionado</small><button class="ns-chip on" id="mlSave" onclick="NS.ml.save()">Guardar lugar</button></div>
+<p><b id="mlCnt">0 / 5 lugares guardados</b></p><p id="mlMsg"></p></div>
+<div class="ml-al" id="mlAlert"></div>
+<div class="ns-card"><h3>Recordatorios y notificaciones</h3><div class="ns-row"><label><input type="checkbox" id="mlOn" onchange="NS.ml.tog(this)"> Activar notificaciones</label><label>Hora diaria <input type="time" id="mlHr" class="ns-in" style="width:auto" value="06:30" onchange="NS.ml.hr(this.value)"></label><button class="ns-chip" onclick="NS.ml.test()">Probar alerta ahora</button></div><p style="font-size:.78rem;opacity:.75">Se revisa el clima de tus lugares cada 5 minutos y al volver a abrir la app y se avisa si hay riesgo de inundación o lluvia intensa. Funciona mientras NimboSignal esté abierto en tu navegador.</p><p id="mlMsg2"></p></div>
+<h3 style="margin:1.1rem 0 .3rem">Mis lugares en vivo</h3><div class="ns-grid" id="mlList"></div>
+</div></section>
 <section id="sec-turismo" class="view-section">
 <div class="section-head"><div><h2>Turismo, Ríos y Gastronomía de Ecuador</h2><p>Veredicto de ingreso y equipo recomendado, calculados con la lluvia en vivo de la ciudad seleccionada. Ubicaciones aproximadas.</p></div></div>
 <div class="ns-live nsLive"></div><div class="ns-row" id="nsTf"></div><div class="ns-grid" id="nsTur"></div>
@@ -3328,15 +3302,15 @@ const NS=window.NS={city:CIT[0],rain:0,sim:null,tag:'',vf:'all',tf:'all',cf:'all
 try{Object.assign(NS.prem,JSON.parse(localStorage.getItem(PK)))}catch(e){}
 const R=()=>NS.sim!==null?NS.sim:NS.rain,eff=v=>2-Math.max(0,R()-(+v-1)),bc=s=>'b'+(2-s);
 const chips=(id,o,cb,init)=>{const h=$(id);h.innerHTML=o.map((x,i)=>`<button class="ns-chip${x[1]===init?' on':''}" data-v="${i}">${x[0]}</button>`).join('');h.onclick=e=>{const b=e.target.closest('button');if(!b)return;h.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');cb(o[b.dataset.v][1])}};
-const riv=r=>{const s=Math.min(2,+r[4]+R());return `<span class="ns-b ${bc(s)}">${CAU[s]}</span><h4>${r[0]}</h4><small>${r[1]}</small><p>${r[5]}</p><p><b>¿Se puede meter?</b> <span class="ns-b ${bc(s)}">${VER[s]}</span></p><p><b>Qué ropa y equipo llevar:</b> ${GEA[s]}</p>`};
+const riv=(r,lv)=>{const s=Math.min(2,+r[4]+R());return `<span class="ns-b ${bc(s)}">${CAU[s]}</span><h4>${r[0]}</h4><small>${r[1]}</small><p>${r[5]}</p>${lv?`<p class="nsRw" data-la="${r[2]}" data-lo="${r[3]}"><b>Clima en vivo:</b> consultando…</p>`:''}<p><b>¿Se puede meter?</b> <span class="ns-b ${bc(s)}">${VER[s]}</span></p><p><b>Qué ropa y equipo llevar:</b> ${GEA[s]}</p>`};
 const bch=r=>{const s=Math.min(2,+r[4]+(R()==2?1:0));return `<span class="ns-b ${bc(s)}">Playa</span><h4>${r[0]}</h4><small>${r[1]}</small><p><b>Oleaje:</b> ${r[5]}</p><p><b>Marea:</b> según la tabla del INOCAR; las mareas son mayores en luna nueva y llena.</p><p><b>Clima:</b> ${NS.tag||'consultando…'}</p><p><b>¿Se puede meter?</b> <span class="ns-b ${bc(s)}">${VEB[s]}</span></p><p><b>Qué ropa y equipo llevar:</b> ${GEB[s]}</p>`};
 const rst=r=>`<span class="ns-b b1">Gastronomía</span><h4>${r[0]}</h4><small>${r[1]}</small><p><b>Especialidad:</b> ${r[4]}</p><p><b>Consejo según el clima:</b> ${r[5]}</p>`;
 const via=r=>{const e=eff(r[4]);return `<span class="ns-b b${e}">${ES[e]}</span><small>${r[1]}</small><h4>${r[0]}</h4><p>${DEP[e]}. ${PAS[e]}.</p><p><b>Ruta alterna:</b> ${r[5]}</p>`};
 const col=r=>{const e=eff(r[4]);return `<span class="ns-b b${e}">${ALR[e]}</span><span class="ns-b b${e}">${MOD[e]}</span><h4>${r[0]}</h4><small>${r[1]}</small><p><b>Acceso:</b> ${r[5]}. ${['Calles de acceso inundadas; evite el traslado.','Calles de acceso con agua acumulada; precaución.','Calles de acceso transitables.'][e]}</p>`};
 const live=()=>{const t=['sin lluvia','lluvia moderada','lluvia intensa'][R()];document.querySelectorAll('.nsLive').forEach(x=>x.innerHTML=`<b>${NS.city[0]}</b> · ${NS.tag||'consultando clima…'} · Condición aplicada: <b>${t}</b>${NS.sim!==null?' (escenario)':' (en vivo)'}`)};
-const vias=()=>{const q=($('#nsVq').value||'').toLowerCase();chips('#nsVf',[['Todas','all'],['Inundada / Cerrada',0],['Precaución / Agua acumulada',1],['Transitable',2]],v=>{NS.vf=v;vias()},NS.vf);$('#nsVias').innerHTML=VIA.filter(r=>(NS.vf==='all'||eff(r[4])===NS.vf)&&(r[0]+r[1]).toLowerCase().includes(q)).map(r=>`<div class="ns-card">${via(r)}</div>`).join('')||'<p>Sin resultados para ese filtro.</p>'};
-const cole=()=>{const q=($('#nsCq').value||'').toLowerCase(),f=NS.cf;chips('#nsCf',[['Todos','all'],['Pasaje','Pasaje'],['Machala','Machala'],['Presencial',2],['Virtual',0],['Alerta Preventiva',1]],v=>{NS.cf=v;cole()},f);$('#nsCole').innerHTML=COL.filter(r=>(f==='all'||r[1]===f||eff(r[4])===f)&&(r[0]+r[1]+r[5]).toLowerCase().includes(q)).map(r=>`<div class="ns-card">${col(r)}</div>`).join('')||'<p>Sin resultados.</p>'};
-const tur=()=>{chips('#nsTf',[['Todos','all'],['Ríos y Balnearios','r'],['Playas','p'],['Restaurantes','g']],v=>{NS.tf=v;tur()},NS.tf);const f=NS.tf,a=[];if(f=='all'||f=='r')RIO.forEach(r=>a.push(riv(r)));if(f=='all'||f=='p')PLY.forEach(r=>a.push(bch(r)));if(f=='all'||f=='g')RST.forEach(r=>a.push(rst(r)));$('#nsTur').innerHTML=a.map(h=>`<div class="ns-card">${h}</div>`).join('')};
+const vias=()=>NS.cy&&NS.cy.r();
+const cole=()=>NS.co&&NS.co.r();
+const tur=()=>{chips('#nsTf',[['Todos','all'],['Ríos y Balnearios','r'],['Playas','p'],['Restaurantes','g']],v=>{NS.tf=v;tur()},NS.tf);const f=NS.tf,a=[];if(f=='all'||f=='r')RIO.forEach(r=>a.push(riv(r,1)));if(f=='all'||f=='p')PLY.forEach(r=>a.push(bch(r)));if(f=='all'||f=='g')RST.forEach(r=>a.push(rst(r)));$('#nsTur').innerHTML=a.map(h=>`<div class="ns-card">${h}</div>`).join('');NS.rw&&NS.rw()};
 const imp=()=>{chips('#nsCity',CIT.map(c=>[c[0],c[0]]),NS.pick,NS.city[0]);const d=ELN.find(r=>r[0]===NS.city[0]);$('#nsCityBox').innerHTML=d?`<div class="ns-card"><h3>${d[0]}: qué está ocurriendo</h3><p><small>${NS.tag||''}</small></p><p><b>Anomalías de lluvia:</b> ${d[1]}</p><p><b>Ríos y canales:</b> ${d[2]}</p><p><b>Sectores urbanos en riesgo:</b> ${d[3]}</p><p><b>Impacto agrícola:</b> ${d[4]}</p><p><b>Drenaje e infraestructura:</b> ${d[5]}</p><p><b>Acciones ciudadanas:</b></p><ul style="margin:.2rem 0 0 1.1rem;font-size:.85rem">${ACC.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:'<div class="ns-card"><p>Ciudad global seleccionada: consulte el panorama global o elija una ciudad de Ecuador.</p></div>';chips('#nsGt',GL.map((g,i)=>[g[0],i]),i=>{NS.gt=i;imp()},NS.gt);const g=GL[NS.gt];$('#nsGb').innerHTML=`<div class="ns-card"><h3>${g[0]}</h3><p><b>Temperatura del mar / índice:</b> ${g[1]}</p><p><b>Lluvias y sequías:</b> ${g[2]}</p><p><b>Indicadores de preparación:</b> ${g[3]}</p><p><small>Fuentes: NOAA CPC, OMM. Los impactos son probabilidades, no certezas.</small></p></div>`};
 const news=()=>{chips('#nsNf',[['Mi región','mine'],['Todas (nacional y global)','all']],v=>{NS.nm=v;news()},NS.nm);const ec=CIT.some(c=>c[0]===NS.city[0]),k=ec?NS.city[0]:'Global';$('#nsNews').innerHTML=NEW.map((n,i)=>[n,i]).filter(([n])=>NS.nm==='all'||n[0]===k||(ec&&n[0]==='Ecuador')).map(([n,i])=>`<div class="ns-card"><span class="ns-b b${2-n[1]}">${SEV[n[1]]}</span><span class="ns-b b1">${n[0]}</span><h4>${n[4]}</h4><small>${n[2]} · ${n[3]}</small><p><button class="ns-chip" onclick="NS.art(${i})">Leer artículo completo</button></p></div>`).join('')||'<p>No hay noticias para esta región; use “Todas”.</p>'};
 NS.art=i=>{const n=NEW[i];$('#nsArtB').innerHTML=`<span class="ns-b b${2-n[1]}">${SEV[n[1]]}</span><span class="ns-b b1">${n[0]}</span><h3>${n[4]}</h3><small>${n[2]} · ${n[3]}</small><p style="font-size:.92rem">${n[5]}</p><p style="font-size:.75rem;opacity:.7">Resumen informativo elaborado por NimboSignal con base en guías y boletines públicos. La fuente indicada es una referencia para verificar; no es un comunicado oficial. Confirme siempre en los canales oficiales.</p>`;NS.op('nsArt')};
@@ -3519,7 +3493,145 @@ NS.renderProf=bad=>{
 };
 NS.renderUser=()=>{NS.renderProf();NS.renderPay()};
 NS.acc=()=>{window.closeMobileDrawer&&closeMobileDrawer();const sb=$('#webSidebar');sb&&sb.classList.remove('open');NS.op('nsAcc');NS.renderAcc();if(window.paypal&&!NS.pp){NS.pp=1;paypal.Buttons(NS.ppOpts()).render('#nsPP')}else if(!window.paypal)$('#nsPP').textContent='PayPal no está disponible en este momento.'};
-const init=()=>{if(MOVIL)document.body.classList.add('ns-m');const go=document.createElement('div'),T=MOVIL?'drawer-group-title':'nav-group-title',I='<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>',B=(t,l,a)=>`<button class="nav-btn" ${t?`data-target="${t}"`:''} onclick="${a}"><span class="nav-label">${I}${l}</span></button>`;go.innerHTML=`<div class="${T}">Inteligencia NimboSignal</div>`+[['sec-calles','Calles y Colegios'],['sec-turismo','Turismo y Gastronomía'],['sec-impacto','Impacto El Niño'],['sec-noticias-reg','Noticias por Región']].map(x=>B(x[0],x[1],`showSection('${x[0]}')`)).join('')+B('','Mi Cuenta y Plan','NS.acc()');const h=$('#webSidebar')||$('#mobileDrawer'),f=h&&h.querySelector('.nav-btn');if(f)f.parentElement.before(go);const m=$('.map-frame-box');if(m)m.innerHTML='<div class="ns-row" id="nsMc"></div><div id="nsMap"></div>';const b=$('#headerPlanBadge')||$('#headerSubBadge');if(b){b.style.cursor='pointer';b.onclick=NS.acc}const _s=window.showSection;window.showSection=id=>{_s(id);if(id==='sec-mapa')NS.map();if(id==='sec-planes')setTimeout(NS.mountPay,80);document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.target===id))};['fetchGlobalByCoords'].forEach(k=>{const o=window[k];if(o)window[k]=function(n,a,b,c){try{NS.setCity(n,a,b)}catch(e){}return o.apply(this,arguments)}});NS.rc();NS.all();NS.wx();NS.sync();NS.renderUser();NS.mountPay();setInterval(NS.wx,6e5)};
+/* ===== NimboSignal: Calles / Colegios / Mis Lugares (datos en vivo Open-Meteo + reportes Firestore) ===== */
+const CTS=['Pasaje','Machala','Santa Rosa','Huaquillas','Arenillas','El Guabo','Piñas','Zaruma','Guayaquil','Quito','Cuenca'],pad2=n=>String(n).padStart(2,'0');
+const km=(a,b,c,d)=>Math.hypot((a-c)*111,(b-d)*111*Math.cos(a*Math.PI/180));
+const def=()=>CTS.includes(NS.city[0])?NS.city[0]:'Pasaje';
+// Catálogo de calles/avenidas: ciudad|calle y tramo|lat|lon|vulnerabilidad (1 zona baja, 2 media, 3 elevada). Coordenadas referenciales.
+const CY=rows(`Pasaje|Av. Rocafuerte y Calle Ochoa León|-3.3268|-79.8052|1
+Pasaje|Calle Bolívar entre Municipalidad y Sucre|-3.3259|-79.8061|2
+Pasaje|Av. Quito y Juan Montalvo|-3.3246|-79.8086|2
+Pasaje|Calle Machala y Colón|-3.3276|-79.8071|1
+Pasaje|Av. Perimetral Sur|-3.3342|-79.8068|1
+Pasaje|Calle Eloy Alfaro y Azuay|-3.3284|-79.8043|2
+Pasaje|Calle Piedrahíta y 9 de Octubre|-3.3252|-79.8034|2
+Pasaje|Calle Tarqui y Colón|-3.3289|-79.8089|1
+Machala|Av. 25 de Junio y Calle Rocafuerte|-3.2605|-79.9585|2
+Machala|Av. Bolívar Madero Vargas (vía a Puerto Bolívar)|-3.2650|-79.9650|1
+Machala|Av. Ferroviaria (sector Canal El Macho)|-3.2545|-79.9510|1
+Machala|Calle Sucre y Calle Juan Montalvo|-3.2590|-79.9560|2
+Machala|Vía a Pajonal (salida sur)|-3.2860|-79.9310|2
+Santa Rosa|Av. Panamericana (ingreso norte)|-3.4440|-79.9640|2
+Santa Rosa|Calle Bolívar y Calle Sucre (centro)|-3.4500|-79.9600|2
+Santa Rosa|Vía Santa Rosa – Puerto Jelí|-3.4650|-79.9800|1
+Huaquillas|Av. La República y Calle Machala|-3.4770|-80.2300|1
+Huaquillas|Av. Tnte. Hugo Ortiz (puente internacional)|-3.4797|-80.2330|1
+Arenillas|Av. Eloy Alfaro (Panamericana)|-3.5490|-80.0690|2
+Arenillas|Calle Bolívar y Calle 10 de Agosto|-3.5500|-80.0710|2
+El Guabo|Av. Principal (Panamericana)|-3.2330|-79.8350|2
+El Guabo|Calle Bolívar y Calle Sucre|-3.2340|-79.8320|1
+Piñas|Calle Bolívar y Calle Sucre|-3.6790|-79.6780|3
+Piñas|Av. Loja (ingreso a la ciudad)|-3.6840|-79.6830|3
+Zaruma|Calle Sucre (centro histórico)|-3.6910|-79.6120|3
+Zaruma|Av. Abdón Calderón (ingreso)|-3.6880|-79.6150|3
+Guayaquil|Av. 9 de Octubre y Malecón Simón Bolívar|-2.1920|-79.8800|1
+Guayaquil|Av. Juan Tanca Marengo y Av. Francisco de Orellana|-2.1570|-79.8970|2
+Guayaquil|Av. de las Américas (sector aeropuerto)|-2.1560|-79.8830|2
+Guayaquil|Av. Benjamín Carrión y Av. Juan Tanca Marengo|-2.1650|-79.8970|1
+Quito|Av. Amazonas y Av. Naciones Unidas|-0.1800|-78.4840|2
+Quito|Av. Patria y Av. 12 de Octubre|-0.2080|-78.4900|2
+Quito|Av. Maldonado y El Recreo|-0.2470|-78.5230|1
+Cuenca|Av. 12 de Abril y Av. Solano|-2.9050|-79.0090|2
+Cuenca|Calle Larga y Av. Huayna Cápac|-2.9060|-79.0000|1
+Cuenca|Av. de las Américas y Av. Ordóñez Lasso|-2.8870|-79.0260|2`).map(r=>({c:r[0],n:r[1],la:+r[2],lo:+r[3],v:+r[4]}));
+COL.push(...rows(`Colegio Nacional Vicente Rocafuerte|Guayaquil|-2.1960|-79.8860|1|Centro de Guayaquil
+Instituto Nacional Mejía|Quito|-0.2170|-78.5130|2|Centro Histórico de Quito
+Colegio Nacional Benigno Malo|Cuenca|-2.8990|-79.0060|2|Centro Histórico de Cuenca
+Colegio Manuela Garaicoa de Calderón|Cuenca|-2.8940|-79.0100|2|Cuenca`));
+const SL=['INUNDADA / CERRADA','PRECAUCIÓN / AGUA ACUMULADA','TRANSITABLE'],LB=['Inundada / Agua acumulada','Precaución','Despejada'],lb=e=>e===null?'consultando…':LB[e],CL=['Virtual Recomendada — Accesos inundados','Alerta Preventiva — Precaución al ingresar','Presencial — Accesos despejados'],RE={inundada:'Inundada / Cerrada',precaucion:'Precaución / Agua acumulada',transitable:'Transitable'};
+const U911='https://www.ecu911.gob.ec/',UINA='https://www.inamhi.gob.ec/',UMED='https://educacion.gob.ec/',lk=(u,t)=>`<a href="${u}" target="_blank" rel="noopener noreferrer">${t}</a>`;
+// Clima en vivo (Open-Meteo, varias coordenadas por llamada, caché de 60 s)
+NS.omc={};
+NS.om=async(P,fresh)=>{const K=p=>p[0]+','+p[1],n=Date.now(),u=[...new Map(P.map(p=>[K(p),p])).values()].filter(p=>fresh||!NS.omc[K(p)]||n-NS.omc[K(p)].ts>6e4);
+if(u.length){const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+u.map(p=>p[0]).join(',')+'&longitude='+u.map(p=>p[1]).join(',')+'&current=temperature_2m,precipitation,rain,weather_code&hourly=precipitation_probability,precipitation&forecast_days=1&timezone=auto&_t='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);let j=await r.json();if(!Array.isArray(j))j=[j];
+u.forEach((p,i)=>{const d=j[i],h=d.hourly,k=Math.max(0,h.time.indexOf(d.current.time.slice(0,13)+':00')),q=h.precipitation_probability.slice(k,k+6).filter(x=>x!=null);NS.omc[K(p)]={ts:n,v:{t:Math.round(d.current.temperature_2m),mm:+(d.current.precipitation||0),pp:q.length?Math.max(...q):0,prev:(h.precipitation[k-1]||0)+(h.precipitation[k-2]||0),hh:nsHHMM()}}})}
+return P.map(p=>NS.omc[K(p)].v)};
+const W=(la,lo)=>{const o=NS.omc[la+','+lo];return o&&o.v};
+const EV=(w,v)=>{const l=w.mm+.5*w.prev,i=Math.min(3,Math.max(1,v||2))-1;return l>=[3,6,12][i]?0:(l>=[.6,1.5,3][i]||(i<2&&w.pp>=85))?1:2};
+// Reportes ciudadanos de las últimas 3 horas (colección reportes)
+NS.rp3=async f=>{const n=Date.now();if(!f&&NS.rpc&&n-NS.rpc.ts<6e4)return NS.rpc.v;let v=[];try{if(window.NSF)v=(await NSF.repsRec()).filter(r=>r.ms>n-108e5)}catch(e){}NS.rpc={ts:n,v};return v};
+const RP=(c,y)=>(NS.rpc?NS.rpc.v:[]).filter(r=>{const m=/\(([^)]+)\)\s*$/.exec(String(r.calle||''));return m&&nsNorm(m[1])===nsNorm(c)&&nsNorm(r.calle).includes(nsNorm(y.n.split(/ (?:entre|y) /)[0]))});
+const S=(y,w,c,cat)=>{let e=EV(w,y.v);const rp=cat?RP(c,y):[];rp.forEach(r=>{if(r.estado==='inundada')e=0;else if(r.estado==='precaucion')e=Math.min(e,1)});return{e,rp}};
+const ago=r=>'hace '+Math.max(1,Math.round((Date.now()-r.ms)/6e4))+' min',vb=r=>r.length?`<span class="ns-b b2">✔ Verificado por reporte ciudadano</span>`:'';
+const sel=(id,o)=>{const s=$(id);if(s){s.innerHTML=CTS.map(c=>`<option>${c}</option>`).join('');s.value=o.c=def()}};
+// ---------- CALLES Y VÍAS ----------
+const cy=NS.cy={c:'',f:'all',man:0,tk:0,err:0};
+cy.ui=()=>sel('#cyCity',cy);
+cy.show=()=>{if(!cy.man)$('#cyCity').value=def();cy.go()};
+cy.go=async f=>{const c=cy.c=$('#cyCity').value,my=++cy.tk,ys=CY.filter(y=>y.c===c);NS.rc();cy.err=0;cy.r();try{await Promise.all([NS.om(ys.map(y=>[y.la,y.lo]),f),NS.rp3(f)])}catch(e){cy.err=1}if(my===cy.tk)cy.r()};
+cy.r=()=>{if(!$('#nsVias'))return;const c=cy.c||def(),q=nsNorm($('#nsVq').value||''),L=CY.filter(y=>y.c===c).map(y=>{const w=W(y.la,y.lo);return{y,w,...(w?S(y,w,c,1):{e:null,rp:[]})}}),n=[0,0,0];L.forEach(x=>x.e!==null&&n[x.e]++);const hh=(L.find(x=>x.w)||{w:{}}).w.hh;
+chips('#nsVf',[['Todas','all'],['Inundadas',0],['Precaución / Agua acumulada',1],['Transitables',2]],v=>{cy.f=v;cy.r()},cy.f);
+$('#cySum').innerHTML=cy.err&&!hh?'No se pudo obtener el clima en vivo. Revisa tu conexión y pulsa «Actualizar datos en vivo».':`<b>${c}</b>: <b class="ct0">${n[0]}</b> de ${L.length} calles inundadas · <b class="ct1">${n[1]}</b> con precaución · <b class="ct2">${n[2]}</b> transitables${hh?` · <span class="ns-b lv">EN VIVO • ${hh}</span>`:' · consultando…'}`;
+$('#nsVias').innerHTML=L.filter(x=>(cy.f==='all'||x.e===cy.f)&&nsNorm(x.y.n).includes(q)).sort((a,b)=>(a.e===null?3:a.e)-(b.e===null?3:b.e)).map(x=>x.w?`<div class="ns-card"><span class="ns-b b${x.e}">${SL[x.e]}</span><span class="ns-b lv">EN VIVO • ${x.w.hh}</span>${vb(x.rp)}<h4>${esc(x.y.n)}</h4><small>${c} · ${x.y.la.toFixed(4)}, ${x.y.lo.toFixed(4)}</small><p>🌡 ${x.w.t}°C · 💧 ${x.w.mm.toFixed(1)} mm/h · Lluvia próx. 6 h: ${x.w.pp}%</p><p>${DEP[x.e]}. ${PAS[x.e]}.</p>${x.rp.slice(0,2).map(r=>`<p><small>Reporte ${ago(r)}: ${RE[r.estado]||esc(r.estado)}${r.texto?' — '+esc(r.texto):''}</small></p>`).join('')}<p style="font-size:.78rem">Verificación oficial: ${lk(U911,'ECU 911 Consulta de Vías')} · ${lk(UINA,'INAMHI')}</p></div>`:`<div class="ns-card"><h4>${esc(x.y.n)}</h4><small>${c}</small><p>${cy.err?'Sin datos en vivo.':'Consultando datos en vivo…'}</p></div>`).join('')||'<p>Sin resultados para ese filtro.</p>'};
+NS.rc=()=>{const o=$('#nsRc');if(o)o.innerHTML=CY.filter(y=>y.c===(cy.c||def())).map(y=>`<option>${esc(y.n)} (${y.c})</option>`).join('')};
+// ---------- COLEGIOS ----------
+const co=NS.co={c:'',f:'all',man:0,tk:0,err:0};
+const stOf=s=>{const la=+s[2],lo=+s[3],a=CY.filter(y=>y.c===s[1]).map(y=>({y,d:km(la,lo,y.la,y.lo)})).filter(x=>x.d<=2).sort((p,q)=>p.d-q.d).slice(0,2).map((x,i)=>({n:x.y.n,la:x.y.la,lo:x.y.lo,v:x.y.v,r:i?'lateral':'acceso principal',cat:1}));return a.length?a:[{n:'Calle de acceso local (entorno del plantel)',la,lo,v:+s[4]||2,r:'acceso'}]};
+co.ui=()=>sel('#coCity',co);
+co.show=()=>{if(!co.man)$('#coCity').value=def();co.go()};
+co.go=async f=>{const c=co.c=$('#coCity').value,my=++co.tk,P=[];COL.filter(s=>s[1]===c).forEach(s=>{P.push([+s[2],+s[3]]);stOf(s).forEach(x=>P.push([x.la,x.lo]))});co.err=0;co.r();try{await Promise.all([NS.om(P,f),NS.rp3(f)])}catch(e){co.err=1}if(my===co.tk)co.r()};
+co.r=()=>{if(!$('#nsCole'))return;const c=co.c||def(),q=nsNorm($('#nsCq').value||''),I=COL.filter(s=>s[1]===c).map(s=>{const w0=W(+s[2],+s[3]),L=stOf(s).map(x=>{const w=W(x.la,x.lo);return{...x,...(w?S(x,w,c,x.cat):{e:null,rp:[]})}});let e=w0?EV(w0,+s[4]||2):null;L.forEach(x=>{if(x.e!==null)e=e===null?x.e:Math.min(e,x.e)});return{s,w0,L,e}}),n=[0,0,0];I.forEach(x=>x.e!==null&&n[x.e]++);const hh=(I.find(x=>x.w0)||{w0:{}}).w0.hh;
+chips('#nsCf',[['Todos','all'],['Presencial',2],['Alerta Preventiva',1],['Virtual Recomendada',0]],v=>{co.f=v;co.r()},co.f);
+$('#coSum').innerHTML=co.err&&!hh?'No se pudo obtener el clima en vivo. Pulsa «Actualizar datos en vivo».':`<b>${c}</b>: <b class="ct2">${n[2]}</b> presenciales · <b class="ct1">${n[1]}</b> en alerta preventiva · <b class="ct0">${n[0]}</b> con virtual recomendada${hh?` · <span class="ns-b lv">EN VIVO • ${hh}</span>`:' · consultando…'}`;
+$('#nsCole').innerHTML=I.filter(x=>(co.f==='all'||x.e===co.f)&&nsNorm(x.s[0]).includes(q)).sort((a,b)=>(a.e===null?3:a.e)-(b.e===null?3:b.e)).map(x=>x.w0&&x.e!==null?`<div class="ns-card"><span class="ns-b b${x.e}">${CL[x.e]}</span><span class="ns-b lv">EN VIVO • ${x.w0.hh}</span>${vb(x.L.flatMap(l=>l.rp))}<h4>${esc(x.s[0])}</h4><small>${c} · ${esc(x.s[5])} · ${(+x.s[2]).toFixed(4)}, ${(+x.s[3]).toFixed(4)}</small><div class="cy-box c${x.e}"><b>${x.e===2?'Vías de acceso despejadas':'Calles del colegio afectadas'}</b><br>${x.L.map(l=>`• ${esc(l.n)} (${l.r}): <b class="ct${l.e}">${lb(l.e)}</b>${l.rp.length?' · <i>reporte ciudadano '+ago(l.rp[0])+'</i>':''}`).join('<br>')}</div><p>🌡 ${x.w0.t}°C · 💧 ${x.w0.mm.toFixed(1)} mm/h · Lluvia próx. 6 h: ${x.w0.pp}%</p><p style="font-size:.78rem">Verificación oficial: ${lk(U911,'ECU 911')} · ${lk(UMED,'Ministerio de Educación')}</p></div>`:`<div class="ns-card"><h4>${esc(x.s[0])}</h4><small>${c}</small><p>${co.err?'Sin datos en vivo.':'Consultando datos en vivo…'}</p></div>`).join('')||'<p>Sin resultados para ese filtro.</p>'};
+window.renderSchools=()=>co.r();
+const _sr=NS.sendRep;NS.sendRep=async()=>{await _sr();if(NS.user){cy.go(1);co.go(1)}};
+// Turismo: clima en vivo junto a cada río/balneario
+NS.rw=async()=>{const e=[...document.querySelectorAll('#nsTur .nsRw')];if(!e.length)return;try{const w=await NS.om(e.map(x=>[+x.dataset.la,+x.dataset.lo]));e.forEach((x,i)=>{const d=w[i];x.innerHTML=`<span class="ns-b lv">EN VIVO • ${d.hh}</span> ${d.t}°C · ${d.mm.toFixed(1)} mm/h · lluvia próx. 6 h: ${d.pp}%`})}catch(x){e.forEach(y=>y.innerHTML='<b>Clima en vivo:</b> sin conexión')}};
+// ---------- MIS LUGARES (Plan Pro Premium) ----------
+const LK='nimbosignal_saved_places_v1',CK='nimbosignal_places_cfg_v1',MAXP=5,PL=['Alerta de inundación','Precaución por acumulación de agua','Sin inundación'],PV=['No recomendable ir ahora','Puedes ir con precaución e impermeable','Sí, puedes ir con normalidad'];
+const ml=NS.ml={m:null,lg:null,sel:null,sm:null,sig:'',pl:[],cfg:{on:false,hr:'06:30',day:''}};
+try{const a=JSON.parse(localStorage.getItem(LK));if(Array.isArray(a))ml.pl=a.filter(p=>p&&p.id&&isFinite(p.lat)&&isFinite(p.lon)).slice(0,MAXP)}catch(e){}
+try{Object.assign(ml.cfg,JSON.parse(localStorage.getItem(CK)))}catch(e){}
+const svL=()=>{try{localStorage.setItem(LK,JSON.stringify(ml.pl))}catch(e){}};
+ml.sv=()=>{try{localStorage.setItem(CK,JSON.stringify(ml.cfg))}catch(e){}};
+const isPro=()=>!!(NS.prem.lifetime||NS.prem.premiumUntil>Date.now()),m2=t=>{const x=$('#mlMsg2');if(x)x.textContent=t};ml.msg2=m2;
+const zn=(la,lo)=>{let b='',d=1e9;CIT.forEach(c=>{const k=km(la,lo,c[1],c[2]);if(k<d){d=k;b=c[0]}});return d<=40?b:'Otra zona'};
+ml.gate=()=>{const p=isPro(),a=$('#mlLock'),b=$('#mlPro');if(a)a.style.display=p?'none':'block';if(b)b.style.display=p?'block':'none';return p};
+ml.ui=()=>{ml.gate();const h=$('#mlHr');if(h)h.value=ml.cfg.hr;setInterval(()=>{if(isPro()&&ml.cfg.on&&ml.pl.length)ml.chk('auto')},3e5);setInterval(()=>{if(!isPro()||!ml.cfg.on||!ml.pl.length)return;const d=new Date(),k=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();if(pad2(d.getHours())+':'+pad2(d.getMinutes())===ml.cfg.hr&&ml.cfg.day!==k){ml.cfg.day=k;ml.sv();ml.chk('daily')}},3e4)};
+ml.map=()=>{if(!window.L||!$('#mlMap'))return;if(ml.m)return ml.m.invalidateSize();ml.m=L.map('mlMap').setView([-3.3256,-79.8069],13);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(ml.m);ml.lg=L.layerGroup().addTo(ml.m);ml.m.on('click',e=>ml.pick(e.latlng.lat,e.latlng.lng));[100,500,1200].forEach(t=>setTimeout(()=>ml.m&&ml.m.invalidateSize(),t))};
+ml.show=()=>{if(!ml.gate())return;ml.map();const o=$('#mlOn');if(o)o.checked=!!(ml.cfg.on&&window.Notification&&Notification.permission==='granted');ml.render();ml.live();ml.pull()};
+ml.pick=(la,lo,label)=>{ml.sel={la,lo};$('#mlCo').textContent=la.toFixed(5)+', '+lo.toFixed(5);if(label&&!$('#mlName').value)$('#mlName').value=String(label).slice(0,80);if(ml.m){if(ml.sm)ml.sm.setLatLng([la,lo]);else ml.sm=L.marker([la,lo]).addTo(ml.m);ml.m.setView([la,lo],Math.max(ml.m.getZoom(),16))}};
+ml.search=async e=>{e.preventDefault();const q=$('#mlQ').value.trim(),o=$('#mlRes');if(!q)return;o.textContent='Buscando…';try{const j=await(await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=ec&accept-language=es&q='+encodeURIComponent(q)+'&_t='+Date.now(),{cache:'no-store'})).json();ml.rs=j;o.innerHTML=j.length?j.map((x,i)=>`<button type="button" class="ns-chip" data-i="${i}">${esc(x.display_name.split(',').slice(0,3).join(','))}</button>`).join(''):'No se encontraron resultados.';o.onclick=ev=>{const b=ev.target.closest('button');if(b){const x=ml.rs[b.dataset.i];ml.pick(+x.lat,+x.lon,x.display_name.split(',')[0])}}}catch(x){o.textContent='No se pudo buscar. Revisa tu conexión.'}};
+ml.render=()=>{const n=ml.pl.length;$('#mlCnt').textContent=n+' / '+MAXP+' lugares guardados';const b=$('#mlSave');b.disabled=n>=MAXP;b.textContent=n>=MAXP?'Límite alcanzado (elimina un lugar)':'Guardar lugar';if(ml.lg){ml.lg.clearLayers();ml.pl.forEach(p=>{const w=W(p.lat,p.lon),e=w?EV(w,2):2;L.marker([p.lat,p.lon],{icon:L.divIcon({className:'',html:`<div class="ns-pin" style="background:${EC[e]}"></div>`,iconSize:[18,18]})}).bindPopup('<b>'+esc(p.nombre)+'</b>').addTo(ml.lg)})}};
+ml.save=async()=>{const nm=$('#mlName').value.trim().slice(0,80),s=ml.sel,m=$('#mlMsg');if(!isPro())return ml.gate();if(ml.pl.length>=MAXP)return m.textContent='Límite de 5 lugares: elimina uno para guardar otro.';if(!s)return m.textContent='Busca una dirección o haz clic en el mapa para elegir un punto.';if(!nm)return m.textContent='Escribe un nombre para el lugar (máx. 80 caracteres).';
+const p={id:'l'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),nombre:nm,lat:+s.la.toFixed(6),lon:+s.lo.toFixed(6),zona:zn(s.la,s.lo),creadoEn:Date.now()};ml.pl.push(p);svL();$('#mlName').value='';m.textContent='Lugar guardado.';ml.render();ml.live();
+if(NS.user&&window.NSF){try{await NSF.setLug(NS.user.uid,p.id,p)}catch(e){console.warn('[NimboSignal] lugares:',e)}}};
+ml.del=async id=>{ml.pl=ml.pl.filter(p=>p.id!==id);svL();ml.render();ml.live();if(NS.user&&window.NSF){try{await NSF.delLug(NS.user.uid,id)}catch(e){console.warn('[NimboSignal] lugares:',e)}}};
+ml.focus=id=>{const p=ml.pl.find(x=>x.id===id);if(p&&ml.m){ml.m.setView([p.lat,p.lon],16);$('#mlMap').scrollIntoView({behavior:'smooth',block:'center'})}};
+ml.pull=async()=>{if(!NS.user||!window.NSF)return;const u=NS.user;try{const c=await NSF.lug(u.uid);if(NS.user!==u)return;const m=new Map();ml.pl.forEach(p=>m.set(p.id,p));c.forEach(p=>{if(p&&isFinite(p.lat)&&isFinite(p.lon))m.set(p.id,{id:p.id,nombre:String(p.nombre||'').slice(0,80),lat:+p.lat,lon:+p.lon,zona:String(p.zona||''),creadoEn:+p.creadoEn||Date.now()})});ml.pl=[...m.values()].sort((a,b)=>a.creadoEn-b.creadoEn).slice(0,MAXP);svL();ml.render();ml.live();const ids=new Set(c.map(p=>p.id));for(const p of ml.pl)if(!ids.has(p.id))await NSF.setLug(u.uid,p.id,p)}catch(e){console.warn('[NimboSignal] lugares (se usa localStorage):',e)}};
+ml.live=async f=>{const b=$('#mlList');if(!b)return;if(!ml.pl.length){b.innerHTML='<p>Aún no has guardado lugares. Elige un punto en el mapa y pulsa «Guardar lugar».</p>';return}try{await NS.om(ml.pl.map(p=>[p.lat,p.lon]),f)}catch(e){b.innerHTML='<p>No se pudo obtener el clima en vivo. <button class="ns-chip" onclick="NS.ml.live(1)">Reintentar</button></p>';return}
+b.innerHTML=ml.pl.map(p=>{const w=W(p.lat,p.lon),e=EV(w,2);return`<div class="ns-card"><span class="ns-b b${e}">${PL[e]}</span><span class="ns-b lv">EN VIVO • ${w.hh}</span><h4>${esc(p.nombre)}</h4><small>${esc(p.zona)} · ${p.lat.toFixed(4)}, ${p.lon.toFixed(4)}</small><p><b>¿Puedo ir?</b> ${PV[e]}</p><p>🌡 ${w.t}°C · 💧 ${w.mm.toFixed(1)} mm · Prob. de lluvia 6 h: ${w.pp}%</p><div class="ns-row"><button class="ns-chip" onclick="NS.ml.focus('${p.id}')">Centrar en mapa</button><button class="ns-chip" onclick="NS.ml.del('${p.id}')">Eliminar</button></div></div>`}).join('');ml.render()};
+ml.ntf=(t,b)=>{try{if(window.Notification&&Notification.permission==='granted')new Notification(t,{body:b,tag:'ns-lugares'})}catch(e){}};
+ml.chk=async mode=>{if(!isPro())return;const A=$('#mlAlert');let R=[];try{await NS.om(ml.pl.map(p=>[p.lat,p.lon]),1);R=ml.pl.map(p=>({p,w:W(p.lat,p.lon)})).filter(x=>x.w&&(EV(x.w,2)<2||x.w.mm>=2.5))}catch(e){}
+const msg=R.map(x=>{const e=EV(x.w,2);return x.p.nombre+': '+(e<2?PL[e].toLowerCase():'lluvia intensa')+' ('+x.w.mm.toFixed(1)+' mm)'}).join(' · ');ml.live();
+if(A){A.style.display=R.length?'block':'none';A.innerHTML=R.length?'⚠️ <b>Riesgo en tus lugares:</b> '+esc(msg):''}
+if(mode==='test'){ml.ntf('Prueba de NimboSignal',R.length?msg:'Notificaciones activas. Sin riesgo de inundación en tus lugares ahora.');return m2(R.length?'Notificación de prueba enviada (hay riesgo en tus lugares).':'Prueba enviada: ahora mismo no hay riesgo en tus lugares.')}
+if(!ml.cfg.on)return;const sig=R.map(x=>x.p.id+EV(x.w,2)).join(',');if(mode==='daily')ml.ntf('Recordatorio diario NimboSignal',R.length?msg:'Sin riesgo de inundación en tus lugares guardados.');else if(R.length&&sig!==ml.sig)ml.ntf('Alerta NimboSignal',msg);ml.sig=sig};
+ml.tog=async el=>{if(!el.checked){ml.cfg.on=false;ml.sv();return m2('Notificaciones desactivadas.')}if(!window.Notification){el.checked=false;return m2('Tu navegador no admite notificaciones.')}let p=Notification.permission;if(p==='default'){try{p=await Notification.requestPermission()}catch(e){}}if(p!=='granted'){el.checked=false;ml.cfg.on=false;ml.sv();return m2('Permiso denegado. Actívalo en los ajustes del sitio de tu navegador.')}ml.cfg.on=true;ml.sv();m2('Notificaciones activadas.');ml.chk('auto')};
+ml.hr=v=>{if(/^\d\d:\d\d$/.test(v)){ml.cfg.hr=v;ml.cfg.day='';ml.sv();m2('Recordatorio diario a las '+v+'.')}};
+ml.test=async()=>{if(!window.Notification)return m2('Tu navegador no admite notificaciones; se muestra solo la alerta en pantalla.'),ml.chk('test');if(Notification.permission==='default'){try{await Notification.requestPermission()}catch(e){}}if(Notification.permission!=='granted')m2('Sin permiso de notificaciones: se muestra solo la alerta en pantalla.');ml.chk('test')};
+const _ra=NS.renderAcc;NS.renderAcc=()=>{_ra();if(ml.gate()&&$('#sec-mis-lugares').classList.contains('active')&&!ml.m)ml.show()};
+const _au=NS.auth;NS.auth=async u=>{await _au(u);if(isPro()&&$('#sec-mis-lugares').classList.contains('active'))ml.pull()};
+
+/* ===== Motor en vivo para Android WebView ===== */
+NS.stamp=()=>{const t='EN VIVO • '+nsHHMM();document.querySelectorAll('.nsStamp').forEach(e=>e.textContent=t)};
+NS.busy=0;NS.last=0;
+NS.refresh=async man=>{if(NS.busy&&!man)return;NS.busy=1;const b=$('#nsRef');if(b){b.disabled=true;b.textContent='Actualizando…'}
+const T=[()=>NS.wx(),()=>{const c=NS.city;if(window.loadCityWeather&&CIT.includes(c))return loadCityWeather(c[0]+', Ecuador',c[1],c[2])},()=>NS.cy.go(1),()=>NS.co.go(1),()=>NS.rw&&NS.rw(),()=>NS.rep(),()=>NS.ml.chk('auto')];
+for(const f of T){try{await f()}catch(e){console.warn('[NimboSignal] refresco:',e)}}
+NS.last=Date.now();NS.stamp();NS.busy=0;if(b){b.disabled=false;b.textContent='⟳ Actualizar ahora'}};
+const rf=()=>{if(document.visibilityState==='hidden')return;if(Date.now()-NS.last>15e3)NS.refresh()};
+document.addEventListener('visibilitychange',rf);window.addEventListener('focus',rf);window.addEventListener('online',rf);
+setInterval(()=>{if(document.visibilityState!=='hidden')NS.refresh()},3e5);
+// Plan Pro en tiempo real: onSnapshot sobre usuarios/{uid} + respaldo en localStorage
+let _un=null;const _ap=NS.auth;
+NS.auth=async u=>{await _ap(u);if(_un){try{_un()}catch(e){}_un=null}
+if(u&&window.NSF&&NSF.watch){try{_un=NSF.watch(u.uid,d=>{if(!d||NS.user!==u)return;const n=NS.clean({...NS.prem,...d},num(d.updatedAt));NS.prem=n;try{localStorage.setItem(PK,JSON.stringify(n))}catch(e){}NS.sync();NS.renderAcc();NS.ml.gate();if($('#sec-mis-lugares').classList.contains('active'))NS.ml.show()})}catch(e){console.warn('[NimboSignal] onSnapshot:',e)}}};
+window.addEventListener('storage',e=>{if(e.key!==PK||!e.newValue)return;try{const d=JSON.parse(e.newValue);NS.prem=NS.clean({...NS.prem,...d},num(d.updatedAt));NS.sync();NS.renderAcc();NS.ml.gate()}catch(x){}});
+// Ciudad sincronizada: al cambiar NS.city, calles y colegios siguen esa ciudad
+['pick','setCity'].forEach(k=>{const o=NS[k];NS[k]=function(){const r=o.apply(this,arguments);NS.cy.man=0;NS.co.man=0;setTimeout(()=>{if($('#sec-calles').classList.contains('active'))NS.cy.show();if($('#sec-colegios').classList.contains('active'))NS.co.show()},400);return r}});
+const init=()=>{if(MOVIL)document.body.classList.add('ns-m');const go=document.createElement('div'),T=MOVIL?'drawer-group-title':'nav-group-title',I='<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>',B=(t,l,a)=>`<button class="nav-btn" ${t?`data-target="${t}"`:''} onclick="${a}"><span class="nav-label">${I}${l}</span></button>`;go.innerHTML=`<div class="${T}">Inteligencia NimboSignal</div>`+[['sec-calles','Calles y Vías'],['sec-turismo','Turismo y Gastronomía'],['sec-impacto','Impacto El Niño'],['sec-noticias-reg','Noticias por Región']].map(x=>B(x[0],x[1],`showSection('${x[0]}')`)).join('')+B('','Mi Cuenta y Plan','NS.acc()');const h=$('#webSidebar')||$('#mobileDrawer'),f=h&&h.querySelector('.nav-btn');if(f)f.parentElement.before(go);const m=$('.map-frame-box');if(m)m.innerHTML='<div class="ns-row" id="nsMc"></div><div id="nsMap"></div>';const b=$('#headerPlanBadge')||$('#headerSubBadge');if(b){b.style.cursor='pointer';b.onclick=NS.acc}const _s=window.showSection;window.showSection=id=>{_s(id);if(id==='sec-mapa')NS.map();if(id==='sec-calles')NS.cy.show();if(id==='sec-colegios')NS.co.show();if(id==='sec-mis-lugares')NS.ml.show();if(id==='sec-planes')setTimeout(NS.mountPay,80);document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.target===id))};['fetchGlobalByCoords'].forEach(k=>{const o=window[k];if(o)window[k]=function(n,a,b,c){try{NS.setCity(n,a,b)}catch(e){}return o.apply(this,arguments)}});NS.cy.ui();NS.co.ui();NS.ml.ui();NS.rc();NS.all();NS.wx();NS.sync();NS.renderUser();NS.mountPay();const mn=$('main.container');if(mn){const d=document.createElement('div');d.className='ns-card';d.id='nsLiveBar';d.innerHTML='<div class="ns-row" style="justify-content:space-between;align-items:center"><span class="ns-b lv nsStamp">EN VIVO • '+nsHHMM()+'</span><button class="ns-chip on" id="nsRef" onclick="NS.refresh(1)">⟳ Actualizar ahora</button></div>';mn.prepend(d)};setTimeout(()=>NS.refresh(),1500)};
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 })();
 </script>
@@ -3568,7 +3680,7 @@ document.addEventListener('DOMContentLoaded',()=>{build();if(typeof nsLastCity!=
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {getAuth,initializeAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,setPersistence,browserLocalPersistence,indexedDBLocalPersistence,browserSessionPersistence,browserPopupRedirectResolver,signOut} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,collection,addDoc,query,orderBy,limit,getDocs,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {getFirestore,doc,getDoc,setDoc,collection,addDoc,query,orderBy,limit,getDocs,deleteDoc,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 const firebaseConfig={
   apiKey:"AIzaSyDCF1XZU9aLF6SaiQTu1ACrN-EZZ5wzPxA",
   authDomain:"nimbosignal.firebaseapp.com",
@@ -3585,7 +3697,12 @@ let auth;try{auth=initializeAuth(app,{persistence:[indexedDBLocalPersistence,bro
 setPersistence(auth,browserLocalPersistence).catch(()=>setPersistence(auth,indexedDBLocalPersistence)).catch(()=>{});
 window.NSF={auth,wv:isWV,login:(e,p)=>signInWithEmailAndPassword(auth,e,p),reg:(e,p)=>createUserWithEmailAndPassword(auth,e,p),google:async()=>{if(isWV){const e=new Error('webview');e.code='ns/webview-google';throw e}const p=new GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});if(isMob)return signInWithRedirect(auth,p,browserPopupRedirectResolver);return signInWithPopup(auth,p,browserPopupRedirectResolver)},out:()=>signOut(auth),
 get:async u=>{const s=await getDoc(doc(db,'usuarios',u));return s.exists()?s.data():null},set:(u,d)=>setDoc(doc(db,'usuarios',u),{trialUsed:d.trialUsed===true,trialStartDate:Number(d.trialStartDate)||0,premiumUntil:Number(d.premiumUntil)||0,lifetime:d.lifetime===true,updatedAt:Number(d.updatedAt)||Date.now()}),
-rep:d=>addDoc(collection(db,'reportes'),{...d,createdAt:serverTimestamp()}),reps:async()=>(await getDocs(query(collection(db,'reportes'),orderBy('createdAt','desc'),limit(6)))).docs.map(x=>x.data())};
+rep:d=>addDoc(collection(db,'reportes'),{...d,createdAt:serverTimestamp()}),reps:async()=>(await getDocs(query(collection(db,'reportes'),orderBy('createdAt','desc'),limit(6)))).docs.map(x=>x.data()),
+repsRec:async()=>(await getDocs(query(collection(db,'reportes'),orderBy('createdAt','desc'),limit(60)))).docs.map(x=>{const d=x.data(),t=d.createdAt;return{...d,ms:t&&t.toMillis?t.toMillis():Date.now()}}),
+lug:async u=>(await getDocs(collection(db,'usuarios',u,'lugares'))).docs.map(x=>({id:x.id,...x.data()})),
+setLug:(u,id,d)=>setDoc(doc(db,'usuarios',u,'lugares',id),{nombre:String(d.nombre).slice(0,80),lat:Number(d.lat),lon:Number(d.lon),zona:String(d.zona),creadoEn:Number(d.creadoEn)}),
+delLug:(u,id)=>deleteDoc(doc(db,'usuarios',u,'lugares',id)),
+watch:(u,cb)=>onSnapshot(doc(db,'usuarios',u),s=>cb(s.exists()?s.data():null),e=>console.warn('[NimboSignal] onSnapshot:',e))};
 onAuthStateChanged(auth,u=>window.NS&&NS.auth(u));
 if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.error('[NimboSignal] redirect:',e);const t=setInterval(()=>{if(window.NS&&NS.friendly){clearInterval(t);NS.msg(NS.friendly(e,2),0);NS.openLogin&&NS.openLogin()}},300);setTimeout(()=>clearInterval(t),8000)});
 }catch(e){window.NSF_ERROR=e;console.error('[NimboSignal] Firebase no se pudo iniciar:',e)}
