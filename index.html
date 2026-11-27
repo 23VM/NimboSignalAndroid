@@ -17,10 +17,10 @@
       --bg-sub: rgba(9, 15, 28, 0.78);
       --bg-chat: rgba(7, 12, 24, 0.88);
       --border: rgba(148, 163, 184, 0.18);
-      --cyan: #06b6d4;
-      --cyan-soft: rgba(6, 182, 212, 0.16);
-      --teal: #10b981;
-      --teal-soft: rgba(16, 185, 129, 0.16);
+      --cyan: #4d96b8;
+      --cyan-soft: rgba(77, 150, 184, 0.16);
+      --teal: #3e9670;
+      --teal-soft: rgba(62, 150, 112, 0.16);
       --amber: #f59e0b;
       --amber-soft: rgba(245, 158, 11, 0.16);
       --red: #ef4444;
@@ -107,11 +107,11 @@
       flex-shrink: 0;
     }
 
-    .dot-green { background: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.65); }
+    .dot-green { background: #3e9670; box-shadow: 0 0 8px rgba(62, 150, 112, 0.65); }
     .dot-amber { background: #f59e0b; box-shadow: 0 0 8px rgba(245, 158, 11, 0.65); }
     .dot-orange { background: #f97316; box-shadow: 0 0 8px rgba(249, 115, 22, 0.65); }
     .dot-red { background: #ef4444; box-shadow: 0 0 8px rgba(239, 68, 68, 0.65); }
-    .dot-cyan { background: #06b6d4; box-shadow: 0 0 8px rgba(6, 182, 212, 0.65); }
+    .dot-cyan { background: #4d96b8; box-shadow: 0 0 8px rgba(77, 150, 184, 0.65); }
 
     /* MODAL BIENVENIDA ESTILO APK */
     .welcome-overlay {
@@ -133,7 +133,7 @@
 
     .welcome-box {
       background: var(--bg-surface);
-      border: 1px solid rgba(6, 182, 212, 0.38);
+      border: 1px solid rgba(77, 150, 184, 0.38);
       border-radius: 26px;
       padding: 1.65rem 1.3rem;
       width: 100%;
@@ -235,14 +235,14 @@
       width: 34px;
       height: 34px;
       border-radius: 11px;
-      background: linear-gradient(135deg, #06b6d4, #10b981);
+      background: linear-gradient(135deg, #4d96b8, #3e9670);
       display: grid;
       place-items: center;
       font-weight: 800;
       font-size: 0.88rem;
       color: #04131f;
       flex-shrink: 0;
-      box-shadow: 0 3px 10px rgba(6, 182, 212, 0.3);
+      box-shadow: 0 3px 10px rgba(77, 150, 184, 0.3);
     }
 
     .brand-info {
@@ -296,7 +296,7 @@
     }
 
     .region-pill button.active {
-      background: linear-gradient(135deg, #06b6d4, #10b981);
+      background: linear-gradient(135deg, #4d96b8, #3e9670);
       color: #04131f;
     }
 
@@ -384,7 +384,7 @@
 
     .nav-btn.active {
       background: var(--cyan-soft);
-      border-color: rgba(6, 182, 212, 0.35);
+      border-color: rgba(77, 150, 184, 0.35);
       color: var(--cyan);
       font-weight: 700;
     }
@@ -478,8 +478,8 @@
       letter-spacing: 0.01em;
     }
 
-    .badge-cyan { background: var(--cyan-soft); color: var(--cyan); border: 1px solid rgba(6, 182, 212, 0.32); }
-    .badge-teal { background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(16, 185, 129, 0.32); }
+    .badge-cyan { background: var(--cyan-soft); color: var(--cyan); border: 1px solid rgba(77, 150, 184, 0.32); }
+    .badge-teal { background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(62, 150, 112, 0.32); }
     .badge-amber { background: var(--amber-soft); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.32); }
     .badge-red { background: var(--red-soft); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.32); }
 
@@ -599,9 +599,9 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #06b6d4, #10b981);
+      background: linear-gradient(135deg, #4d96b8, #3e9670);
       color: #04131f;
-      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.25);
+      box-shadow: 0 4px 14px rgba(77, 150, 184, 0.25);
     }
 
     .btn-danger {
@@ -758,7 +758,7 @@
 
     .msg-user {
       align-self: flex-end;
-      background: linear-gradient(135deg, #06b6d4, #0284c7);
+      background: linear-gradient(135deg, #4d96b8, #0284c7);
       color: #04121d;
       font-weight: 700;
       border-bottom-right-radius: 5px;
@@ -807,7 +807,7 @@
       border-radius: 50%;
     }
 
-    input:checked + .slider { background-color: #06b6d4; }
+    input:checked + .slider { background-color: #4d96b8; }
     input:checked + .slider:before { transform: translateX(22px); }
 
     /* BARRA INFERIOR FIJA ESTILO ANDROID APK */
@@ -881,10 +881,10 @@
 <style id="ns-css">
 @property --bg-primary{syntax:'<color>';inherits:true;initial-value:#06101c}
 @property --bg-secondary{syntax:'<color>';inherits:true;initial-value:#0c2236}
-@property --accent-primary{syntax:'<color>';inherits:true;initial-value:#22d3ee}
-@property --accent-glow{syntax:'<color>';inherits:true;initial-value:rgba(34,211,238,.35)}
-@property --glass-border{syntax:'<color>';inherits:true;initial-value:rgba(34,211,238,.28)}
-:root{--bg-primary:#06101c;--bg-secondary:#0c2236;--accent-primary:#22d3ee;--accent-glow:rgba(34,211,238,.35);--glass-border:rgba(34,211,238,.28);transition:--bg-primary 1.6s cubic-bezier(.4,0,.2,1),--bg-secondary 1.6s cubic-bezier(.4,0,.2,1),--accent-primary 1.6s cubic-bezier(.4,0,.2,1),--accent-glow 1.6s cubic-bezier(.4,0,.2,1),--glass-border 1.6s cubic-bezier(.4,0,.2,1)}
+@property --accent-primary{syntax:'<color>';inherits:true;initial-value:#5ca4c4}
+@property --accent-glow{syntax:'<color>';inherits:true;initial-value:rgba(92,164,196,.35)}
+@property --glass-border{syntax:'<color>';inherits:true;initial-value:rgba(92,164,196,.28)}
+:root{--bg-primary:#06101c;--bg-secondary:#0c2236;--accent-primary:#5ca4c4;--accent-glow:rgba(92,164,196,.35);--glass-border:rgba(92,164,196,.28);transition:--bg-primary 1.6s cubic-bezier(.4,0,.2,1),--bg-secondary 1.6s cubic-bezier(.4,0,.2,1),--accent-primary 1.6s cubic-bezier(.4,0,.2,1),--accent-glow 1.6s cubic-bezier(.4,0,.2,1),--glass-border 1.6s cubic-bezier(.4,0,.2,1)}
 [data-theme=dark] body::before,:root:not([data-theme=light]) body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(900px 520px at 88% -8%,var(--accent-glow),transparent 62%),radial-gradient(700px 480px at -10% 105%,var(--accent-glow),transparent 66%),linear-gradient(160deg,var(--bg-primary),var(--bg-secondary))}
 .ns-card{background:var(--bg-card);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border:1px solid var(--border);border-radius:20px;padding:1.2rem 1.15rem;margin-bottom:1rem;box-shadow:var(--card-shadow);display:flex;flex-direction:column;gap:.55rem;transition:transform .2s ease,border-color .25s ease}
 .ns-card:active{transform:scale(0.992);border-color:var(--accent-primary)}
@@ -900,7 +900,7 @@
 .ns-b{display:inline-flex;align-items:center;width:fit-content;padding:.24rem .68rem;border-radius:999px;font-size:.73rem;font-weight:800;margin-right:.3rem;margin-bottom:.15rem}
 .b0{background:rgba(239,68,68,.18);color:#f87171;border:1px solid rgba(239,68,68,.3)}
 .b1{background:rgba(245,158,11,.18);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
-.b2{background:rgba(16,185,129,.18);color:#10b981;border:1px solid rgba(16,185,129,.3)}
+.b2{background:rgba(62,150,112,.18);color:#3e9670;border:1px solid rgba(62,150,112,.3)}
 .ns-in{width:100%;min-height:48px;padding:.75rem .95rem;border-radius:14px;border:1.5px solid var(--border);background:var(--bg-sub);color:var(--text-main);font:inherit;font-size:16px;transition:border-color .25s,box-shadow .25s}
 .ns-in:focus{outline:0;border-color:var(--accent-primary);box-shadow:0 0 0 3px var(--accent-glow)}.ns-in option{color:#0f172a}
 .ns-live{border-left:4px solid var(--accent-primary);padding:.85rem 1rem;border-radius:14px;background:var(--bg-card);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:.84rem;line-height:1.5;margin:.85rem 0;box-shadow:var(--card-shadow)}
@@ -919,8 +919,8 @@
 .ns-prof:active{transform:scale(0.95)}
 .ns-prof-on{padding:2px}
 .ns-prof-on.has-mail{padding:2px .75rem 2px 2px}
-.ns-prof-in{padding:0 .82rem;background:linear-gradient(135deg,#06b6d4,#10b981);color:#04131f;border-color:transparent;font-size:.78rem}
-.ns-av{width:32px;height:32px;border-radius:50%;object-fit:cover;display:grid;place-items:center;flex-shrink:0;background:linear-gradient(135deg,#06b6d4,#10b981);color:#04131f;font-weight:800;font-size:.9rem;line-height:1}
+.ns-prof-in{padding:0 .82rem;background:linear-gradient(135deg,#4d96b8,#3e9670);color:#04131f;border-color:transparent;font-size:.78rem}
+.ns-av{width:32px;height:32px;border-radius:50%;object-fit:cover;display:grid;place-items:center;flex-shrink:0;background:linear-gradient(135deg,#4d96b8,#3e9670);color:#04131f;font-weight:800;font-size:.9rem;line-height:1}
 .ns-prof-mail{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-main)}
 .ns-pay{display:flex;flex-direction:column;gap:.75rem;padding:1.05rem;border:1px solid var(--border);border-radius:16px;background:var(--bg-sub)}
 .ns-pay-acc{display:flex;flex-direction:column;gap:.45rem;font-size:.84rem}
@@ -1196,7 +1196,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .card:active{transform:scale(.985)}
 </style>
 <style id="ns-new">
-.ns-b.lv{background:rgba(34,211,238,.16);color:var(--cyan)}
+.ns-b.lv{background:rgba(92,164,196,.16);color:var(--cyan)}
 .cy-box{border:1px solid var(--glass-border);border-left:4px solid #22c55e;border-radius:10px;padding:.5rem .7rem;margin:.5rem 0;font-size:.82rem;line-height:1.6}
 .cy-box.c0{border-left-color:#ef4444}.cy-box.c1{border-left-color:#f59e0b}
 .ct0{color:#ef4444}.ct1{color:#d97706}.ct2{color:#059669}
@@ -1205,6 +1205,145 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .ml-lock{text-align:center;padding:1.6rem 1rem}
 </style>
 <style id="ns-live-m">.ns-m .ns-in,.ns-m input,.ns-m select,.ns-m textarea{font-size:16px!important}.ns-m #mlMap{height:300px}.ns-m .ns-chip{min-height:40px}#nsLiveBar{padding:.5rem .7rem;margin-bottom:.6rem}</style>
+
+  <style id="nimbo-3d-natural-theme">
+    /* === NIMBOSIGNAL 3.0 — DISEÑO MODERNO 3D + PALETA NATURAL (CLARO / OSCURO) === */
+    :root,
+    [data-theme="dark"] {
+      --bg-main: #0f1720 !important;
+      --bg-primary: #0f1720 !important;
+      --bg-secondary: #16222f !important;
+      --bg-gradient: radial-gradient(circle at 85% 0%, #1c3144 0%, #0f1720 62%) !important;
+      --bg-header: rgba(15, 23, 32, 0.92) !important;
+      --bg-sidebar: #131d29 !important;
+      --bg-drawer: #131d29 !important;
+      --bg-surface: #16222f !important;
+      --bg-card: #1a2836 !important;
+      --bg-sub: rgba(15, 23, 32, 0.78) !important;
+      --bg-chat: rgba(12, 19, 27, 0.88) !important;
+      --border: rgba(214, 226, 238, 0.11) !important;
+      --glass-border: rgba(214, 226, 238, 0.13) !important;
+
+      /* Paleta natural sin neones */
+      --cyan: #5ca4c4 !important;
+      --cyan-soft: rgba(92, 164, 196, 0.16) !important;
+      --teal: #4ea87e !important;
+      --teal-soft: rgba(78, 168, 126, 0.16) !important;
+      --amber: #d69848 !important;
+      --amber-soft: rgba(214, 152, 72, 0.16) !important;
+      --red: #d46262 !important;
+      --red-soft: rgba(212, 98, 98, 0.16) !important;
+
+      --text-main: #eef3f8 !important;
+      --text-body: #d3dee9 !important;
+      --text-muted: #8b9eb0 !important;
+
+      --shadow-3d-surface:
+        0 1px 0 rgba(255, 255, 255, 0.08) inset,
+        0 12px 26px -10px rgba(0, 0, 0, 0.52),
+        0 24px 44px -18px rgba(0, 0, 0, 0.44);
+      --shadow-3d-lift:
+        0 1px 0 rgba(255, 255, 255, 0.12) inset,
+        0 18px 34px -10px rgba(0, 0, 0, 0.62),
+        0 30px 54px -18px rgba(0, 0, 0, 0.52);
+      --btn-3d-depth: 0 4px 0 #264d63, 0 8px 18px rgba(0, 0, 0, 0.38);
+    }
+
+    [data-theme="light"] {
+      --bg-main: #f2f4f0 !important;
+      --bg-primary: #f2f4f0 !important;
+      --bg-secondary: #e7ece6 !important;
+      --bg-gradient: radial-gradient(circle at 88% 0%, #dfecee 0%, #f2f4f0 64%) !important;
+      --bg-header: rgba(255, 255, 255, 0.92) !important;
+      --bg-sidebar: #fafbf9 !important;
+      --bg-drawer: #fafbf9 !important;
+      --bg-surface: #ffffff !important;
+      --bg-card: #ffffff !important;
+      --bg-sub: #f6f8f5 !important;
+      --bg-chat: #eef2ee !important;
+      --border: rgba(23, 35, 46, 0.10) !important;
+      --glass-border: rgba(23, 35, 46, 0.10) !important;
+
+      /* Paleta costera / orgánica de día */
+      --cyan: #1d5d7a !important;
+      --cyan-soft: rgba(29, 93, 122, 0.11) !important;
+      --teal: #2b7a57 !important;
+      --teal-soft: rgba(43, 122, 87, 0.12) !important;
+      --amber: #b87624 !important;
+      --amber-soft: rgba(184, 118, 36, 0.12) !important;
+      --red: #b53d3d !important;
+      --red-soft: rgba(181, 61, 61, 0.12) !important;
+
+      --text-main: #16222d !important;
+      --text-body: #2b3b4a !important;
+      --text-muted: #5c6e7e !important;
+
+      --shadow-3d-surface:
+        0 1px 0 rgba(255, 255, 255, 0.95) inset,
+        0 10px 22px -10px rgba(20, 38, 54, 0.13),
+        0 20px 38px -18px rgba(20, 38, 54, 0.10);
+      --shadow-3d-lift:
+        0 1px 0 rgba(255, 255, 255, 1) inset,
+        0 16px 30px -10px rgba(20, 38, 54, 0.19),
+        0 28px 48px -18px rgba(20, 38, 54, 0.15);
+      --btn-3d-depth: 0 4px 0 #123e52, 0 8px 16px rgba(18, 62, 82, 0.22);
+    }
+
+    /* Superficies con volumen y relieve 3D */
+    .card, .ns-card, .welcome-box, .ns-box {
+      background: var(--bg-card) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 20px !important;
+      box-shadow: var(--shadow-3d-surface) !important;
+      transform-style: preserve-3d;
+      transition: transform 0.22s cubic-bezier(.22,.61,.36,1), box-shadow 0.22s ease, background 0.25s ease !important;
+    }
+
+    .card:hover, .ns-card:hover {
+      box-shadow: var(--shadow-3d-lift) !important;
+    }
+
+    /* Icono de marca con cubo 3D en perspectiva */
+    .brand-icon {
+      border-radius: 13px !important;
+      background: linear-gradient(145deg, var(--cyan), #134157) !important;
+      box-shadow:
+        0 6px 14px rgba(19, 65, 87, 0.34),
+        inset 0 1px 1px rgba(255, 255, 255, 0.42) !important;
+      transform: perspective(360px) rotateY(-8deg) rotateX(6deg);
+      transition: transform 0.25s ease !important;
+    }
+    .brand:hover .brand-icon {
+      transform: perspective(360px) rotateY(0deg) rotateX(0deg) scale(1.04);
+    }
+
+    /* Botones táctiles 3D */
+    .btn-primary, .ns-btn, .region-pill button.active, .nav-btn.active {
+      box-shadow: var(--btn-3d-depth) !important;
+      transition: transform 0.14s ease, box-shadow 0.14s ease !important;
+    }
+    .btn-primary:active, .ns-btn:active, .theme-btn:active, .icon-square-btn:active, .mode-choice:active {
+      transform: translateY(2px) !important;
+    }
+
+    .mode-choice, .theme-btn, .icon-square-btn {
+      box-shadow: var(--shadow-3d-surface) !important;
+      transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+    }
+    .mode-choice:hover {
+      transform: translateY(-3px) !important;
+      box-shadow: var(--shadow-3d-lift) !important;
+    }
+
+    /* Puntos de estado naturales sin brillo neón excesivo */
+    .status-dot { box-shadow: 0 0 0 3px rgba(128, 145, 160, 0.16) !important; }
+    .dot-green { background: #3e9670 !important; }
+    .dot-amber { background: #c98a36 !important; }
+    .dot-orange { background: #c46a3b !important; }
+    .dot-red { background: #c24b4b !important; }
+    .dot-cyan { background: #4d96b8 !important; }
+  </style>
+
 </head>
 <body>
 
@@ -1564,7 +1703,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
           <div class="map-frame-box">
             <iframe
               id="osmMapFrame"
-              src="https://www.openstreetmap.org/export/embed.html?bbox=-79.8369%2C-3.3506%2C-79.7769%2C-3.3006&layer=mapnik&marker=-3.3256%2C-79.8069"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=-79.8369%2C-3.3506%2C-79.7769%2C-3.3006&amp;layer=mapnik&amp;marker=-3.3256%2C-79.8069"
               loading="lazy"
               title="Mapa NimboSignal"
             ></iframe>
@@ -2998,23 +3137,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
       return e === 2 ? { txt: 'Jornada Normal', cls: 'badge-teal', note } : e === 1 ? { txt: 'Precaución por lluvia', cls: 'badge-amber', note } : { txt: 'Virtual recomendada', cls: 'badge-red', note };
     }
     function renderSchools() {
-      const q = document.getElementById('schoolSearch').value.toLowerCase().trim();
-      const grid = document.getElementById('schoolsGrid');
-      const filtered = SCHOOLS_DB.filter(s =>
-        (currentSchoolFilter === 'todos' || s.canton === currentSchoolFilter) &&
-        (s.name.toLowerCase().includes(q) || s.sector.toLowerCase().includes(q))
-      );
-      grid.innerHTML = filtered.map(s => { const st = nsSchoolState(s); return `
-        <div class="card">
-          <div class="card-top">
-            <h3 style="font-size:0.95rem;">${s.name}</h3>
-            <span class="badge ${st.cls}">${st.txt}</span>
-          </div>
-          <p style="font-size:0.8rem; color:var(--text-muted);">${s.sector}</p>
-          <div class="card-meta">${s.access}${st.note}</div>
-          <button class="btn btn-outline btn-full" onclick="quickAsk('¿Cómo está el ${s.name.replace(/"/g, '')}?')">Consultar en Nimbo AI</button>
-        </div>
-      `; }).join('');
+      if (window.NS && NS.co) NS.co.r();
     }
 
     // ==========================================
@@ -3219,7 +3342,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://www.paypal.com/sdk/js?client-id=BAAkf-ruwwXN2pCcmFuL0MFzeEhbaGxz87ok6D-dfXHOXrzWwns56SGeT_7Mh5VRMZdhtsqAEa1K3OKvlo&currency=USD&enable-funding=card"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=BAAkf-ruwwXN2pCcmFuL0MFzeEhbaGxz87ok6D-dfXHOXrzWwns56SGeT_7Mh5VRMZdhtsqAEa1K3OKvlo&amp;currency=USD&amp;enable-funding=card"></script>
 <script>
 (()=>{
 const $=s=>document.querySelector(s),MOVIL=true,MH='765e32fcc196294831e8ee08e4732d444895505394aed4e556662037ae71587a',PK='nimbosignal_prem_v2',DAY=864e5;
@@ -3318,7 +3441,7 @@ NS.op=id=>$('#'+id).classList.add('on');NS.cl=id=>$('#'+id).classList.remove('on
 NS.pick=n=>{const c=CIT.find(x=>x[0]===n)||CIT.find(x=>nsNorm(x[0])===nsNorm(n));if(!c)return;if(typeof window.loadCityWeather==='function'){loadCityWeather(c[0]+', Ecuador',c[1],c[2]);return}NS.city=c;NS.wx();NS.all()};
 NS.sm=v=>{NS.sim=v===''?null:+v;NS.all()};
 NS.setCity=(name,la,lo,skipVer)=>{const nm=String(name||'').split(',')[0].trim(),c=CIT.find(x=>nsNorm(x[0])===nsNorm(nm));if(!c&&!(isFinite(la)&&isFinite(lo)))return;if(c&&!skipVer&&typeof window.loadCityWeather==='function'){loadCityWeather(c[0]+', Ecuador',c[1],c[2]);return}NS.city=c||[nm,+la,+lo];NS.wx();NS.all()};
-const P={sol:['#0b2447','#19376d','#f5b942','rgba(245,185,66,.38)','rgba(245,185,66,.3)'],rain:['#06101c','#0c2236','#22d3ee','rgba(34,211,238,.35)','rgba(34,211,238,.28)'],cloud:['#131b25','#26313e','#b8c4d2','rgba(184,196,210,.3)','rgba(184,196,210,.25)'],night:['#04050d','#12123a','#818cf8','rgba(129,140,248,.35)','rgba(129,140,248,.28)']};
+const P={sol:['#132a3e','#1e425e','#d4943a','rgba(212,148,58,.24)','rgba(212,148,58,.22)'],rain:['#0f1c26','#193040','#5ca4c4','rgba(92,164,196,.24)','rgba(92,164,196,.22)'],cloud:['#161f28','#24313d','#9cb0c2','rgba(156,176,194,.22)','rgba(156,176,194,.20)'],night:['#0d141d','#182534','#7d96b8','rgba(125,150,184,.24)','rgba(125,150,184,.22)']};
 const pal=k=>{const r=document.documentElement,s=r.style,v=P[k];['--bg-primary','--bg-secondary','--accent-primary','--accent-glow','--glass-border'].forEach((n,i)=>s.setProperty(n,v[i]));if(r.getAttribute('data-theme')!=='light')s.setProperty('--cyan',v[2]);r.dataset.wx=k};
 NS.wx=async()=>{try{const c=NS.city,j=await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c[1]}&longitude=${c[2]}&current=temperature_2m,weather_code,precipitation,is_day&daily=precipitation_sum&forecast_days=2&timezone=auto`, { cache: 'no-store' })).json(),k=j.current,w=k.weather_code,s=j.daily.precipitation_sum[0]||0;NS.rain=k.precipitation>=2.5||s>=30?2:k.precipitation>=.3||s>=8?1:0;NS.tag=`${window.interpretWeatherCode?interpretWeatherCode(w).label:'Clima'} · ${Math.round(k.temperature_2m)}°C`;pal(!k.is_day?'night':(w>=51&&!(w>=71&&w<=77))?'rain':w>=2?'cloud':'sol');NS.all()}catch(e){NS.tag='Sin conexión con el clima (reintenta)';NS.all()}};
 NS.all=()=>{live();vias();cole();tur();imp();news();NS.mk();NS.renderAcc();window.renderSchools&&renderSchools()};
@@ -3707,5 +3830,57 @@ onAuthStateChanged(auth,u=>window.NS&&NS.auth(u));
 if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.error('[NimboSignal] redirect:',e);const t=setInterval(()=>{if(window.NS&&NS.friendly){clearInterval(t);NS.msg(NS.friendly(e,2),0);NS.openLogin&&NS.openLogin()}},300);setTimeout(()=>clearInterval(t),8000)});
 }catch(e){window.NSF_ERROR=e;console.error('[NimboSignal] Firebase no se pudo iniciar:',e)}
 </script>
+
+  <script id="nimbo-3d-controller">
+    (function() {
+      const savedTheme = localStorage.getItem('nimbo_theme');
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', savedTheme === 'light' ? '#f2f4f0' : '#0f1720');
+      }
+
+      const origToggle = window.toggleTheme;
+      window.toggleTheme = function() {
+        if (typeof origToggle === 'function') {
+          origToggle();
+        } else {
+          const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+          const nxt = cur === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', nxt);
+        }
+        const activeTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        localStorage.setItem('nimbo_theme', activeTheme);
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', activeTheme === 'light' ? '#f2f4f0' : '#0f1720');
+      };
+
+      // Inclinación 3D suave en tarjetas principales para pantallas con puntero fino
+      if (window.matchMedia && window.matchMedia('(pointer: fine)').matches) {
+        let rafId = null;
+        document.addEventListener('mousemove', function(e) {
+          if (rafId) return;
+          rafId = requestAnimationFrame(function() {
+            rafId = null;
+            const target = e.target.closest('.card, .ns-card, .mode-choice');
+            document.querySelectorAll('.card[data-tilted], .ns-card[data-tilted], .mode-choice[data-tilted]').forEach(el => {
+              if (el !== target) {
+                el.style.transform = '';
+                el.removeAttribute('data-tilted');
+              }
+            });
+            if (target) {
+              const r = target.getBoundingClientRect();
+              const x = (e.clientX - r.left) / r.width - 0.5;
+              const y = (e.clientY - r.top) / r.height - 0.5;
+              target.setAttribute('data-tilted', '1');
+              target.style.transform = `perspective(1100px) rotateX(${(-y * 3.2).toFixed(2)}deg) rotateY(${(x * 3.2).toFixed(2)}deg) translateY(-2px)`;
+            }
+          });
+        }, { passive: true });
+      }
+    })();
+  </script>
+
 </body>
 </html>
