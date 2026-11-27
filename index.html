@@ -936,7 +936,24 @@
 .ns-code-box .ns-code-sub{font-size:.76rem;color:var(--text-muted)}
 @media(max-width:520px){.ns-prof-mail{display:none}.ns-prof-on.has-mail{padding:2px}}
 </style>
-<script>(function(){window.nsHHMM=window.nsHHMM||function(){return new Date().toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit',hour12:false})};const F=window.fetch;window.fetch=function(u,o){try{if(typeof u==='string'&&/^https?:\/\/(api\.open-meteo\.com|geocoding-api\.open-meteo\.com|nominatim\.openstreetmap\.org)/.test(u)){if(!/[?&]_t=/.test(u))u+=(u.indexOf('?')>-1?'&':'?')+'_t='+Date.now();o=Object.assign({cache:'no-store'},o||{})}}catch(e){}return F.call(this,u,o)}})();</script>
+<script>
+window.nsFmtTime12 = function(hhmm) {
+  const m = String(hhmm || '').match(/(\d{1,2}):(\d{2})/);
+  if (!m) return String(hhmm || '');
+  let h = parseInt(m[1], 10) % 24;
+  const min = m[2];
+  const suf = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return h12 + ':' + min + ' ' + suf;
+};
+window.nsFmtHour12 = function(h24) {
+  let h = ((Number(h24) || 0) % 24 + 24) % 24;
+  const suf = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return h12 + ':00 ' + suf;
+};
+</script>
+<script>(function(){window.nsHHMM=window.nsHHMM||function(){return new Date().toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit',hour12:true})};const F=window.fetch;window.fetch=function(u,o){try{if(typeof u==='string'&&/^https?:\/\/(api\.open-meteo\.com|geocoding-api\.open-meteo\.com|nominatim\.openstreetmap\.org)/.test(u)){if(!/[?&]_t=/.test(u))u+=(u.indexOf('?')>-1?'&':'?')+'_t='+Date.now();o=Object.assign({cache:'no-store'},o||{})}}catch(e){}return F.call(this,u,o)}})();</script>
 <script>window.nsNorm=function(s){return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim()};window.NS_DATA={s:`Unidad Educativa María Andrea|Pasaje|-3.3235|-79.8110|2|Zona urbana central
 Unidad Educativa Aurelio Prieto Muelas|Pasaje|-3.3330|-79.8150|1|Loma de Franco; calles bajas
 Unidad Educativa Casacay|Pasaje|-3.3189|-79.7365|1|Parroquia Casacay; vigilar río Jubones
@@ -1458,6 +1475,140 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
     }
   </style>
 
+<style id="ns-v33-upgrades">
+    /* === MEJORAS 3, 4, 5, 6, 7 (TRANSICIÓN INICIAL, VENTANA SECA DESPLEGABLE, RADAR NUBES, VIDEO PLANES) === */
+    @keyframes nsWelcomeFadeIn {
+      from { opacity: 0; backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); }
+      to { opacity: 1; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    }
+    @keyframes nsWelcomeBoxPop {
+      0% { opacity: 0; transform: translateY(24px) scale(0.92); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes nsModeItemSlide {
+      0% { opacity: 0; transform: translateY(14px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .welcome-overlay {
+      animation: nsWelcomeFadeIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      transition: opacity 0.34s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.34s ease;
+    }
+    .welcome-overlay .welcome-box {
+      animation: nsWelcomeBoxPop 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      transition: transform 0.34s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.34s ease;
+    }
+    .welcome-overlay .mode-choice:nth-child(1) {
+      opacity: 0;
+      animation: nsModeItemSlide 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
+    }
+    .welcome-overlay .mode-choice:nth-child(2) {
+      opacity: 0;
+      animation: nsModeItemSlide 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.22s forwards;
+    }
+    .welcome-overlay.closing {
+      opacity: 0 !important;
+      pointer-events: none;
+    }
+    .welcome-overlay.closing .welcome-box {
+      transform: translateY(-12px) scale(0.95) !important;
+      opacity: 0 !important;
+    }
+
+    /* Ventana Seca desplegable */
+    .ns-dry-toggle {
+      margin-top: 0.55rem;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.58rem 0.85rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--cyan);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .ns-dry-toggle:hover {
+      border-color: var(--cyan);
+      background: var(--cyan-soft);
+    }
+    .ns-dry-chevron {
+      transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+      flex-shrink: 0;
+    }
+    .ns-dry-toggle.open .ns-dry-chevron {
+      transform: rotate(180deg);
+    }
+    .ns-dry-hourly-panel {
+      display: none;
+      margin-top: 0.6rem;
+      padding-top: 0.6rem;
+      border-top: 1px dashed var(--border);
+      flex-direction: column;
+      gap: 0.42rem;
+      max-height: 270px;
+      overflow-y: auto;
+    }
+    .ns-dry-hourly-panel.open {
+      display: flex;
+      animation: fadeUp 0.24s ease;
+    }
+    .ns-dry-hour-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.48rem 0.72rem;
+      border-radius: 11px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+    }
+    .ns-dry-hour-row.is-dry {
+      border-left: 3px solid var(--teal);
+    }
+    .ns-dry-hour-row.is-wet {
+      border-left: 3px solid var(--amber);
+    }
+
+    /* Video explicativo en Planes */
+    .ns-video-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #09111b;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+    }
+    .ns-video-wrap video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .ns-video-fallback {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1.25rem;
+      gap: 0.55rem;
+      background: radial-gradient(circle at top right, rgba(92, 164, 196, 0.22), rgba(9, 17, 27, 0.96));
+      color: #eef3f8;
+    }
+    .ns-video-fallback.show {
+      display: flex;
+    }
+</style>
 </head>
 <body>
 
@@ -1734,6 +1885,11 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
             <div id="nsDryUnlockedView" style="display:none;">
               <strong id="nsDryHeadline" style="display:block; font-size:0.92rem; color:var(--teal); margin-bottom:0.25rem;">Analizando franjas horarias secas...</strong>
               <p id="nsDryDetail" style="font-size:0.83rem; color:var(--text-body);"></p>
+              <button type="button" class="ns-dry-toggle" id="nsDryToggleBtn" onclick="window.nsToggleDryHourly && window.nsToggleDryHourly()" aria-expanded="false">
+                <span>Ver clima hora por hora (AM / PM)</span>
+                <svg class="ico ns-dry-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="ns-dry-hourly-panel" id="nsDryHourlyPanel"></div>
             </div>
           </div>
 
@@ -1748,7 +1904,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
           <div style="margin-top:0.2rem;">
             <button type="button" class="btn btn-whatsapp btn-full" id="nsShareCardBtn" onclick="nsOpenWhatsAppShare()">
               <svg class="ico" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-              Compartir Alerta WhatsApp (Imagen) <span class="ns-pro-pill" id="nsShareProTag" style="margin-left:0.35rem;">PRO</span>
+              Compartir Alerta WhatsApp (Imagen) 
             </button>
           </div>
 
@@ -1865,18 +2021,23 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
             </div>
 
             <div id="nsRadarUnlockedView" style="display:none; flex-direction:column; gap:0.55rem;">
+              <p style="font-size:0.81rem; color:var(--text-body); margin:0;">
+                Visualiza en vivo las <strong>masas de nubes y frentes de lluvia</strong> sobre el mapa para saber hacia qué sectores se desplaza el aguacero antes de salir.
+              </p>
               <div class="ns-row" style="margin:0;">
-                <button type="button" class="ns-chip on" id="nsRadarToggleBtn" onclick="NS.radar.toggle()">Activar Radar Animado</button>
+                <button type="button" class="ns-chip on" id="nsRadarToggleBtn" onclick="NS.radar.toggle()">Activar Radar y Nubes</button>
                 <button type="button" class="ns-chip" id="nsRadarPlayBtn" style="display:none;" onclick="NS.radar.playPause()">⏸ Pausar</button>
+                <button type="button" class="ns-chip" id="nsRadarRegionBtn" style="display:none;" onclick="NS.radar.focusRegional()">Vista Regional</button>
                 <span class="badge badge-teal" id="nsRadarFrameBadge" style="display:none;">--:--</span>
               </div>
               <div class="ns-radar-timeline" id="nsRadarTimelineRow" style="display:none;">
                 <input type="range" id="nsRadarSlider" min="0" max="0" value="0" oninput="NS.radar.seek(+this.value)" aria-label="Línea de tiempo del radar" />
               </div>
               <div class="ns-radar-legend" id="nsRadarLegendRow" style="display:none;">
+                <span><i class="ns-radar-swatch" style="background:rgba(148,163,184,0.75);"></i> Nubosidad</span>
                 <span><i class="ns-radar-swatch" style="background:#38bdf8;"></i> Lluvia ligera</span>
                 <span><i class="ns-radar-swatch" style="background:#f59e0b;"></i> Moderada</span>
-                <span><i class="ns-radar-swatch" style="background:#ef4444;"></i> Intensa / Tormenta</span>
+                <span><i class="ns-radar-swatch" style="background:#ef4444;"></i> Tormenta intensa</span>
               </div>
               <small id="nsRadarMsg" style="font-size:0.76rem; color:var(--text-muted);"></small>
             </div>
@@ -2228,6 +2389,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
             <div><strong>• Inundaciones y ENOS:</strong> Barrios vulnerables por ciudad y radar nacional cada 60s.</div>
             <div><strong>• Nimbo AI:</strong> 5 consultas diarias incluidas.</div>
             <div><strong>• Emergencias y Noticias:</strong> Marcación rápida al 911 y prensa oficial.</div>
+            <div><strong>• Tarjetas para WhatsApp:</strong> Genera imágenes limpias de alertas listas para compartir.</div>
           </div>
 
           <button class="btn btn-outline btn-full" id="btnUseFreePlan" onclick="activateMobileFreePlan()">Plan Gratuito Activo</button>
@@ -2251,19 +2413,18 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
             <span id="expiryDaysLeft" style="font-size:0.76rem; color:var(--text-muted); display:block; margin-top:0.15rem;"></span>
           </div>
 
-          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.5rem;">
+          <div class="card-meta" style="display:flex; flex-direction:column; gap:0.62rem; line-height:1.5;">
             <div><strong>• Nimbo AI Ilimitado:</strong> Tokens Infinitos habilitados 24/7.</div>
             <div><strong>• Todo lo del Plan Gratuito:</strong> Sin restricciones ni pausas.</div>
             <div><strong>• Radar de Lluvia Animado:</strong> Capa Doppler en tiempo real sobre el mapa.</div>
             <div><strong>• Ventana Seca Inteligente:</strong> Mejor franja horaria del día para salir sin mojarse.</div>
             <div><strong>• Círculo Familiar:</strong> Comparte tus 5 lugares guardados en tiempo real.</div>
-            <div><strong>• Tarjetas para WhatsApp:</strong> Genera imágenes limpias de alertas listas para enviar.</div>
           </div>
 
 <!-- NS: pago directo + mes gratis (Plan Pro Premium) -->
           <div class="ns-pay" id="nsPay">
             <div class="ns-pay-acc" id="nsPayAcc"></div>
-            <button type="button" class="btn btn-primary btn-full" id="nsPayTr" onclick="NS.trial()">Activar 1 mes gratis</button>
+            <button type="button" class="btn btn-primary btn-full" id="nsPayTr" onclick="NS.trial()">Activar 15 días gratis</button>
             <span class="ns-pay-note" id="nsPayTrNote"></span>
             <div class="ns-pay-price">Premium: <b>$1,99 USD</b> / 30 días (PayPal o tarjeta)</div>
             <div id="nsPPCard"></div>
@@ -2280,6 +2441,32 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
           </div>
         </div>
       </div>
+    
+        <!-- VIDEO EXPLICATIVO DE PLANES (LISTO PARA .MP4 DESDE GITHUB) -->
+        <div class="card" id="nsPlanVideoCard">
+          <div class="card-top">
+            <span class="badge badge-cyan"><span class="status-dot dot-cyan"></span> Video Guía</span>
+            <span style="font-size:0.78rem; font-weight:700; color:var(--text-muted);">MP4 • GitHub</span>
+          </div>
+          <h3 style="font-size:1.1rem;">¿Cómo funcionan los planes?</h3>
+          <p style="font-size:0.84rem; color:var(--text-muted);">
+            Mira este video breve para conocer todo lo que incluye el Plan Gratuito y cómo aprovechar el Plan Pro Premium.
+          </p>
+          <div class="ns-video-wrap">
+            <video id="nsPlanPromoVideo" controls playsinline preload="metadata" onerror="document.getElementById('nsPlanVideoFallback').classList.add('show')">
+              <source src="https://raw.githubusercontent.com/evanmj23/NimboSignal/main/planes-nimbosignal.mp4" type="video/mp4" />
+              Tu navegador no soporta la reproducción de video HTML5.
+            </video>
+            <div class="ns-video-fallback" id="nsPlanVideoFallback">
+              <svg class="ico ico-lg" style="color:var(--cyan); width:36px; height:36px;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <strong style="font-size:0.96rem;">Contenedor de Video Listo (.mp4 desde GitHub)</strong>
+              <span style="font-size:0.78rem; color:#94a3b8; max-width:340px;">
+                Sube tu archivo <code style="color:#5ca4c4;">planes-nimbosignal.mp4</code> a tu repositorio de GitHub y se reproducirá automáticamente aquí.
+              </span>
+            </div>
+          </div>
+        </div>
+
     </section>
 
     <!-- 13. AJUSTES Y CUENTA -->
@@ -2354,7 +2541,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 </section>
 <section id="sec-mis-lugares" class="view-section">
 <div class="section-head"><div><h2>Mis Lugares y Recordatorios <span class="badge badge-amber">PRO</span></h2><p>Guarda hasta 5 ubicaciones y recibe alertas de inundación o lluvia intensa.</p></div></div>
-<div id="mlLock" class="ns-card ml-lock"><h3>🔒 Exclusivo del Plan Pro Premium</h3><p>Guarda hasta 5 ubicaciones (tu calle, tu colegio, tu casa) en un mapa interactivo y recibe recordatorios automáticos de inundación y lluvia intensa para cada una.</p><div class="ns-row" style="justify-content:center"><button class="ns-chip on" onclick="showSection('sec-planes')">Activar 1 mes gratis</button><button class="ns-chip" onclick="showSection('sec-planes')">Suscribirme a Pro</button></div></div>
+<div id="mlLock" class="ns-card ml-lock"><h3>🔒 Exclusivo del Plan Pro Premium</h3><p>Guarda hasta 5 ubicaciones (tu calle, tu colegio, tu casa) en un mapa interactivo y recibe recordatorios automáticos de inundación y lluvia intensa para cada una.</p><div class="ns-row" style="justify-content:center"><button class="ns-chip on" onclick="showSection('sec-planes')">Activar 15 días gratis</button><button class="ns-chip" onclick="showSection('sec-planes')">Suscribirme a Pro</button></div></div>
 <div id="mlPro" style="display:none">
 <div class="ns-card"><form class="ns-row" onsubmit="NS.ml.search(event)"><input class="ns-in" id="mlQ" style="flex:1;min-width:200px" placeholder="Buscar calle, dirección o colegio…"><button class="ns-chip on" type="submit">Buscar</button></form><div class="ns-row" id="mlRes"></div><div id="mlMap"></div><small>También puedes hacer clic en cualquier punto del mapa para colocar un marcador.</small>
 <div class="ns-row"><input class="ns-in" id="mlName" maxlength="80" style="flex:1;min-width:200px" placeholder="Nombre (ej. Mi calle, Colegio, Casa)"><small id="mlCo">Sin punto seleccionado</small><button class="ns-chip on" id="mlSave" onclick="NS.ml.save()">Guardar lugar</button></div>
@@ -2417,7 +2604,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 <div id="nsLog"><input class="ns-in" id="nsEm" type="email" autocomplete="email" placeholder="Correo electrónico"><input class="ns-in" id="nsPw" type="password" autocomplete="current-password" placeholder="Contraseña (mínimo 6 caracteres)" style="margin-top:.6rem">
 <div class="ns-row"><button class="ns-chip on" onclick="NS.sign(0)">Ingresar</button><button class="ns-chip" onclick="NS.sign(1)">Crear cuenta</button><button class="ns-chip" onclick="NS.sign(2)">Continuar con Google</button></div><p style="font-size:.78rem;opacity:.85;margin-top:.5rem">En la app, usa <b>Correo y Contraseña</b> (rápido y seguro): tu plan Premium se sincroniza al instante con la web.</p></div>
 <button class="ns-chip" id="nsOut" style="display:none" onclick="NSF.out()">Cerrar sesión</button>
-<hr style="opacity:.2;margin:.9rem 0"><button class="ns-chip on" id="nsTr" onclick="NS.trial()">Activar 1 mes gratis</button>
+<hr style="opacity:.2;margin:.9rem 0"><button class="ns-chip on" id="nsTr" onclick="NS.trial()">Activar 15 días gratis</button>
 <p style="font-size:.82rem;margin-top:.65rem">Premium: <b>$1,99 USD</b> por 30 días (tarjeta o PayPal).</p><div id="nsPP"></div>
 <p style="margin-top:.85rem">¿Tienes un código promocional o de acceso?</p><div class="ns-row"><input class="ns-in" id="nsCode" style="flex:1" placeholder="Código" autocomplete="off"><button class="ns-chip on" onclick="NS.redeem(document.getElementById('nsCode').value,'nsAccMsg')">Canjear</button></div><p id="nsAccMsg" style="font-size:.82rem"></p>
 </div></div>
@@ -2508,12 +2695,20 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
     }
 
     function chooseStartMode(mode) {
-      document.getElementById('welcomeOverlay').classList.add('hidden');
+      const ov = document.getElementById('welcomeOverlay');
+      if (!ov) { switchRegionMode(mode); return; }
+      ov.classList.add('closing');
       switchRegionMode(mode);
+      setTimeout(() => {
+        ov.classList.add('hidden');
+        ov.classList.remove('closing');
+      }, 330);
     }
 
     function openWelcomeChooser() {
-      document.getElementById('welcomeOverlay').classList.remove('hidden');
+      const ov = document.getElementById('welcomeOverlay');
+      if (!ov) return;
+      ov.classList.remove('closing', 'hidden');
     }
 
     // ==========================================
@@ -2927,7 +3122,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
     let nsLastCity = { name: 'Pasaje, Ecuador', lat: -3.3256, lon: -79.8069 };
     let nsVerTok = 0, nsLastOk = 0;
     const nsPad = n => String(n).padStart(2, '0');
-    const nsHHMM = () => new Date().toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', hour12: false });
+    const nsHHMM = () => new Date().toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', hour12: true });
 
     // Índice EXACTO de la hora actual (data.current.time) dentro de data.hourly.time
     function nsHourIdx(d) {
@@ -2953,7 +3148,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
     // Hora local de la ciudad en el momento de la consulta (HH:MM)
     function nsCityClock(d) {
       const t = new Date(Date.now() + (Number(d.utc_offset_seconds) || 0) * 1000);
-      return nsPad(t.getUTCHours()) + ':' + nsPad(t.getUTCMinutes());
+      return window.nsFmtTime12(nsPad(t.getUTCHours()) + ':' + nsPad(t.getUTCMinutes()));
     }
 
     async function nsOM(la, lo) {
@@ -2986,7 +3181,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
         p: d.rain8,
         pKnown: d.rain8Known,
         recent3: d.recent3,
-        obs: String(c.time).slice(11, 16),
+        obs: window.nsFmtTime12(String(c.time).slice(11, 16)),
         read: nsCityClock(d)
       };
     }
@@ -3220,7 +3415,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 
         headlineEl.textContent = `Mayor incidencia actual en Ecuador: ${top.name}`;
         detailEl.textContent = `La mayor actividad convectiva asociada a El fenómeno del Niño se concentra ahora en ${top.name} (${top.info.label}, ${top.temp}°C, ${top.rainProb}% prob. lluvia), seguida por ${second.name} (${second.rainProb}% prob. lluvia).`;
-        syncEl.textContent = `Actualizado: ${new Date().toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+        syncEl.textContent = `Actualizado: ${new Date().toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}`;
 
         gridEl.innerHTML = results.map((item, idx) => {
           const isHigh = idx === 0 || item.rainProb >= 60;
@@ -3486,7 +3681,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
           const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-3.3415&longitude=-79.7820&current=temperature_2m,weather_code&hourly=precipitation_probability&forecast_days=2&timezone=auto', { cache: 'no-store' });
           const data = await res.json();
           const info = interpretWeatherCode(data.current.weather_code);
-          appendMessage('ai', `<strong>Reporte Fluvial (La Cocha / Río Jubones):</strong><br>• Clima actual: ${info.label} (<strong>${Math.round(data.current.temperature_2m)}°C</strong>).<br>• Horario recomendado: 08:00 a 13:30. Si observas agua turbia, sal de la orilla.`);
+          appendMessage('ai', `<strong>Reporte Fluvial (La Cocha / Río Jubones):</strong><br>• Clima actual: ${info.label} (<strong>${Math.round(data.current.temperature_2m)}°C</strong>).<br>• Horario recomendado: 8:00 AM a 1:30 PM. Si observas agua turbia, sal de la orilla.`);
           return;
         } catch (e) {}
       }
@@ -3702,7 +3897,7 @@ NS.save=async p=>{
 };
 NS.sync=()=>{const p=NS.prem,n=Date.now();if(MOVIL){let v=null;if(p.lifetime)v={tier:'MASTER',isMaster:true,startedAt:new Date().toISOString(),expiresAt:'2099-12-31T23:59:59.000Z'};else if(p.premiumUntil>n)v={tier:'PRO',isMaster:false,startedAt:new Date(p.trialStartDate||n).toISOString(),expiresAt:new Date(p.premiumUntil).toISOString()};if(v)localStorage.setItem('nimbosignal_mobile_sub_v2',JSON.stringify(v));window.renderMobileSubscriptionUI&&renderMobileSubscriptionUI()}else window.updatePlanUI&&updatePlanUI()};
 NS.extend=()=>NS.save({premiumUntil:Math.max(Date.now(),NS.prem.premiumUntil)+30*DAY});
-NS.trial=async()=>{if(!NS.user)return NS.msg('Inicia sesión para activar tu mes gratis.');if(NS.prem.trialUsed)return NS.msg('Ya usaste tu mes gratis.');const n=Date.now();const w=await NS.save({trialUsed:true,trialStartDate:n,premiumUntil:Math.max(n,NS.prem.premiumUntil)+30*DAY});w?NS.msg(w,0):NS.msg('¡Listo! Tienes 30 días de Premium completo.',1)};
+NS.trial=async()=>{if(!NS.user)return NS.msg('Inicia sesión para activar tus 15 días gratis.');if(NS.prem.trialUsed)return NS.msg('Ya usaste tus 15 días gratis.');const n=Date.now();const w=await NS.save({trialUsed:true,trialStartDate:n,premiumUntil:Math.max(n,NS.prem.premiumUntil)+15*DAY});w?NS.msg(w,0):NS.msg('¡Listo! Tienes 15 días de Premium completo.',1)};
 NS.redeem=async(raw,fid)=>{const c=String(raw).trim().toUpperCase(),f=$('#'+fid),o=(t,ok)=>{if(f){f.style.color=ok?'var(--teal)':'var(--red)';f.textContent=t}};if(!c)return o('Ingresa un código.',0);try{if(await sha(c)===MH){const w=await NS.save({lifetime:true});return o(w||'Código aceptado: Premium vitalicio activado.',w?0:1)}}catch(e){return o('Tu navegador no permite verificar códigos en este contexto (se requiere HTTPS).',0)}if(window.validateCode&&validateCode(c)==='PRO'){let w='';if(MOVIL)w=await NS.extend();else{localStorage.setItem('nimbosignal_web_plan_v1','PRO');NS.sync()}return o(w||'Plan Pro Premium activado correctamente.',w?0:1)}o('Código inválido. Verifica el código e inténtalo de nuevo.',0)};
 window.redeemWebLicense=()=>{const i=$('#webLicenseInput');NS.redeem(i.value,'webLicenseFeedback').then(()=>i.value='')};
 window.applyMobileLicenseCode=()=>{const i=$('#mobileCodeInput');NS.redeem(i.value,'mobileCodeFeedback').then(()=>i.value='')};
@@ -3790,7 +3985,7 @@ NS.auth=async u=>{
  }
  NS.sync();NS.renderAcc();
 };
-NS.renderAcc=()=>{const p=NS.prem,n=Date.now(),d=Math.ceil((p.premiumUntil-n)/DAY),s=$('#nsAccSt');if(!s)return;s.innerHTML=(NS.user?`Cuenta: <b>${esc(NS.user.email||'Google')}</b><br>`:'Sin sesión iniciada.<br>')+(p.lifetime?'Plan: <b>Premium vitalicio</b>':p.premiumUntil>n?`Plan: <b>Premium activo</b> · ${d} día${d==1?'':'s'} restante${d==1?'':'s'} (hasta ${new Date(p.premiumUntil).toLocaleDateString('es-EC')})`:'Plan: <b>Gratuito</b>')+`<br>Mes gratis: ${p.trialUsed?'ya utilizado':'disponible'}`;$('#nsLog').style.display=NS.user?'none':'block';$('#nsOut').style.display=NS.user?'inline-block':'none';$('#nsTr').disabled=!!p.trialUsed;NS.renderUser();if(NS.user)NS.rep()};
+NS.renderAcc=()=>{const p=NS.prem,n=Date.now(),d=Math.ceil((p.premiumUntil-n)/DAY),s=$('#nsAccSt');if(!s)return;s.innerHTML=(NS.user?`Cuenta: <b>${esc(NS.user.email||'Google')}</b><br>`:'Sin sesión iniciada.<br>')+(p.lifetime?'Plan: <b>Premium vitalicio</b>':p.premiumUntil>n?`Plan: <b>Premium activo</b> · ${d} día${d==1?'':'s'} restante${d==1?'':'s'} (hasta ${new Date(p.premiumUntil).toLocaleDateString('es-EC')})`:'Plan: <b>Gratuito</b>')+`<br>Prueba gratis (15 días): ${p.trialUsed?'ya utilizada':'disponible'}`;$('#nsLog').style.display=NS.user?'none':'block';$('#nsOut').style.display=NS.user?'inline-block':'none';$('#nsTr').disabled=!!p.trialUsed;NS.renderUser();if(NS.user)NS.rep()};
 // ---- NimboSignal: perfil del header + pago directo en la tarjeta Plan Pro Premium ----
 NS.ppOpts=()=>({style:{layout:'vertical',shape:'pill'},
  onClick:(d,a)=>NS.user?a.resolve():(NS.msg('Inicia sesión para pagar y guardar tu suscripción.'),NS.openLogin(),a.reject()),
@@ -3817,9 +4012,9 @@ NS.renderPay=()=>{
  const u=NS.user,used=!!NS.prem.trialUsed;
  a.innerHTML=u
   ?`<span class="ns-pay-lbl">Sesión iniciada con</span><b class="ns-pay-mail">${esc(u.email||'Google')}</b>`
-  :`<span class="ns-pay-lbl">Necesitas una cuenta para pagar o activar tu mes gratis.</span><button type="button" class="btn btn-primary${MOVIL?' btn-full':''}" onclick="NS.openLogin()">Iniciar sesión para pagar</button>`;
- if(t){t.disabled=used;t.textContent=used?'Mes gratis ya utilizado':'Activar 1 mes gratis'}
- if(n)n.textContent=used?'Ya usaste tu mes gratis. Puedes seguir sumando 30 días con el pago.':'Mes gratis: disponible (una vez por cuenta).';
+  :`<span class="ns-pay-lbl">Necesitas una cuenta para pagar o activar tus 15 días gratis.</span><button type="button" class="btn btn-primary${MOVIL?' btn-full':''}" onclick="NS.openLogin()">Iniciar sesión para pagar</button>`;
+ if(t){t.disabled=used;t.textContent=used?'Mes gratis ya utilizado':'Activar 15 días gratis'}
+ if(n)n.textContent=used?'Ya usaste tus 15 días gratis. Puedes seguir sumando 30 días con el pago.':'Prueba gratis de 15 días: disponible (una vez por cuenta).';
 };
 NS.renderProf=bad=>{
  const b=$('#nsProf');if(!b)return;
@@ -3991,7 +4186,7 @@ function franja(d,day,today){const H=d.hourly,nowH=+String(d.current.time).slice
  const f=a.filter(x=>x.p>=50||x.mm>=0.5);if(!f.length)return 'Sin lluvias significativas previstas';
  const g=[];let c=[f[0]];for(let i=1;i<f.length;i++){if(f[i].h-f[i-1].h<=1)c.push(f[i]);else{g.push(c);c=[f[i]]}}g.push(c);
  const sc=x=>x.reduce((s,y)=>s+y.mm+y.p/50,0);g.sort((x,y)=>sc(y)-sc(x));const b=g[0],s=b[0].h,e=b[b.length-1].h+1,p1=per(s),p2=per(e-1);
- return `Lluvia probable en la ${p1}${p1!==p2?'/'+p2:''} (${pad(s)}:00–${e>=24?'24':pad(e)}:00)`}
+ return `Lluvia probable en la ${p1}${p1!==p2?'/'+p2:''} (${window.nsFmtHour12(s)} – ${window.nsFmtHour12(e)})`}
 function rec(code,pp,mm,uv,w){if(code>=95)return 'Tormenta eléctrica: evita zonas abiertas, árboles y ríos.';if(pp>=70||mm>=10)return 'Lleva impermeable; precaución en ríos, quebradas y vías bajas.';if(code>=45&&code<=48)return 'Neblina: conduce con luces bajas y baja la velocidad.';if(uv>=8)return 'UV muy alto: protector solar, gorra y evita el sol de mediodía.';if(w>=35)return 'Viento fuerte: asegura objetos y evita zonas expuestas.';if(pp>=40||mm>=3)return 'Lleva paraguas por si acaso.';return 'Día favorable para actividades al aire libre.'}
 function card(d,i){const D=d.daily,t=D.time[i],code=D.weather_code[i],w=WXC(code),pp=D.precipitation_probability_max[i]||0,mm=D.precipitation_sum[i]||0,rn=D.rain_sum[i]||0,uv=D.uv_index_max[i]||0,wd=D.wind_speed_10m_max[i]||0;
  const lv=Math.max(w[2],pp>=70||mm>=15?2:pp>=40||mm>=3?1:0),c=COL3[lv],f=n=>Math.round(n);
@@ -4131,6 +4326,7 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
   (function() {
     const $ = s => document.querySelector(s);
     const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const fmt12 = h => window.nsFmtTime12 ? window.nsFmtTime12(h) : String(h || '');
 
     // 1. DETECCIÓN UNIFICADA DE PLAN PRO PREMIUM (WEB + MÓVIL)
     window.nsHasPro = function() {
@@ -4148,9 +4344,32 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
       return false;
     };
 
-    // 2. VENTANA SECA INTELIGENTE (MEJOR FRANJA HORARIA PARA SALIR SIN MOJARSE)
+    // 2. VENTANA SECA INTELIGENTE + DESPLEGABLE CLIMA HORA POR HORA (AM / PM)
     const dryCache = {};
     let dryTok = 0;
+
+    window.nsToggleDryHourly = function() {
+      const panel = $('#nsDryHourlyPanel');
+      const btn = $('#nsDryToggleBtn');
+      if (!panel || !btn) return;
+      const isOpen = panel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      const lbl = btn.querySelector('span');
+      if (lbl) lbl.textContent = isOpen ? 'Ocultar clima hora por hora' : 'Ver clima hora por hora (AM / PM)';
+    };
+
+    function wmoMini(code) {
+      code = Number(code || 0);
+      if (code === 0) return ['☀️', 'Despejado'];
+      if (code <= 2) return ['🌤️', 'Parcial nublado'];
+      if (code === 3) return ['☁️', 'Nublado'];
+      if (code <= 48) return ['🌫️', 'Neblina'];
+      if (code <= 57) return ['🌦️', 'Llovizna'];
+      if (code <= 67) return ['🌧️', 'Lluvia'];
+      if (code <= 82) return ['🌧️', 'Chubascos'];
+      return ['⛈️', 'Tormenta'];
+    }
 
     function analyzeDryWindows(d) {
       const H = d && d.hourly;
@@ -4163,13 +4382,14 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
       for (let i = startIdx; i < endIdx; i++) {
         const pp = Number(H.precipitation_probability[i] || 0);
         const mm = Number(H.precipitation[i] || 0);
+        const temp = H.temperature_2m ? Math.round(Number(H.temperature_2m[i] || 0)) : null;
+        const wcode = H.weather_code ? Number(H.weather_code[i] || 0) : (mm >= 0.5 ? 61 : 2);
         const hh = String(H.time[i]).slice(11, 16);
         const isDry = pp < 35 && mm < 0.2;
-        slots.push({ i, hh, pp, mm, isDry });
+        slots.push({ i, hh, hh12: fmt12(hh), pp, mm, temp, wcode, isDry });
       }
       if (!slots.length) return null;
 
-      // Encontrar tramos secos consecutivos
       const runs = [];
       let cur = [];
       for (const s of slots) {
@@ -4178,11 +4398,31 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
       }
       if (cur.length) runs.push(cur);
 
-      // Ordenar por duración (priorizando los que empiezan pronto si tienen >= 2h)
       runs.sort((a, b) => b.length - a.length || a[0].i - b[0].i);
       const best = runs[0] || null;
       const nextRain = slots.find(s => !s.isDry);
       return { best, nextRain, slots };
+    }
+
+    function renderDryHourlyList(slots) {
+      const panel = $('#nsDryHourlyPanel');
+      if (!panel) return;
+      panel.innerHTML = slots.slice(0, 16).map(s => {
+        const [ico, cond] = wmoMini(s.wcode);
+        const tempStr = s.temp !== null ? `${s.temp}°C · ` : '';
+        const badgeCls = s.isDry ? 'badge-teal' : 'badge-amber';
+        const badgeTxt = s.isDry ? 'Seco' : `💧 ${s.pp}%`;
+        return `<div class="ns-dry-hour-row ${s.isDry ? 'is-dry' : 'is-wet'}">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <strong style="min-width:74px; color:var(--text-main);">${s.hh12}</strong>
+            <span>${ico} ${cond}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.45rem;">
+            <span style="color:var(--text-muted); font-size:0.76rem;">${tempStr}${s.mm.toFixed(1)} mm</span>
+            <span class="badge ${badgeCls}" style="padding:0.16rem 0.52rem; font-size:0.7rem;">${badgeTxt}</span>
+          </div>
+        </div>`;
+      }).join('');
     }
 
     async function updateDryWindow(cityName, lat, lon) {
@@ -4217,7 +4457,7 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
           if (typeof window.nsWeekData === 'function') {
             data = await window.nsWeekData(lat, lon);
           } else {
-            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m&hourly=precipitation_probability,precipitation&forecast_days=2&timezone=auto`, { cache: 'no-store' });
+            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m&hourly=temperature_2m,precipitation_probability,precipitation,weather_code&forecast_days=2&timezone=auto`, { cache: 'no-store' });
             data = await r.json();
           }
           dryCache[key] = { ts: Date.now(), d: data };
@@ -4225,6 +4465,8 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
         if (my !== dryTok) return;
 
         const res = analyzeDryWindows(data);
+        if (res && res.slots) renderDryHourlyList(res.slots);
+
         if (!res || !res.best) {
           if (badge) { badge.className = 'badge badge-amber'; badge.textContent = 'Lluvia frecuente'; }
           if (hl) { hl.style.color = 'var(--amber)'; hl.textContent = `Sin ventana seca prolongada en las próximas 24 h en ${shortCity}`; }
@@ -4233,9 +4475,9 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
         }
 
         const b = res.best;
-        const startH = b[0].hh;
+        const startH = fmt12(b[0].hh);
         const lastHourNum = (parseInt(b[b.length - 1].hh.slice(0, 2), 10) + 1) % 24;
-        const endH = String(lastHourNum).padStart(2, '0') + ':00';
+        const endH = fmt12(String(lastHourNum).padStart(2, '0') + ':00');
         const maxP = Math.max(...b.map(x => x.pp));
         const hrs = b.length;
 
@@ -4248,7 +4490,7 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
           hl.textContent = `Mejor ventana seca en ${shortCity}: ${startH} a ${endH} (${hrs} h seguidas sin lluvia)`;
         }
         const rainNote = res.nextRain
-          ? `Próxima probabilidad de lluvia desde las ${res.nextRain.hh} (${res.nextRain.pp}%).`
+          ? `Próxima probabilidad de lluvia desde las ${res.nextRain.hh12} (${res.nextRain.pp}%).`
           : 'Sin lluvias previstas en las próximas 24 horas.';
         if (dt) {
           dt.textContent = `Probabilidad máxima de lluvia en esa franja: ${maxP}%. ${rainNote}`;
@@ -4260,12 +4502,13 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
       }
     }
 
-    // 3. RADAR DE LLUVIA ANIMADO EN TIEMPO REAL SOBRE LEAFLET (RAINVIEWER API)
+    // 3. RADAR Y NUBES VISIBLES EN EL MAPA (RAINVIEWER CON MAXNATIVEZOOM + CAPA DE NUBOSIDAD EN VIVO)
     const radar = {
       active: false,
       playing: false,
       frames: [],
       layers: [],
+      cloudLayer: null,
       idx: 0,
       timer: null,
       host: 'https://tilecache.rainviewer.com',
@@ -4279,6 +4522,69 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
         if (!pro && this.active) this.stop(true);
       },
 
+      focusRegional() {
+        if (window.NS && NS.m) {
+          const c = NS.m.getCenter();
+          NS.m.setView([c.lat, c.lng], 8, { animate: true });
+        }
+      },
+
+      async buildCloudOverlay() {
+        if (!window.NS || !NS.m || !window.L) return;
+        if (this.cloudLayer) {
+          try { if (NS.m.hasLayer(this.cloudLayer)) NS.m.removeLayer(this.cloudLayer); } catch (e) {}
+          this.cloudLayer = null;
+        }
+        const c = NS.m.getCenter();
+        const step = 0.28;
+        const pts = [];
+        for (let dLat = -2; dLat <= 2; dLat++) {
+          for (let dLon = -2; dLon <= 2; dLon++) {
+            pts.push([+(c.lat + dLat * step).toFixed(3), +(c.lng + dLon * step).toFixed(3)]);
+          }
+        }
+        const lats = pts.map(p => p[0]).join(',');
+        const lons = pts.map(p => p[1]).join(',');
+        try {
+          const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current=cloud_cover,precipitation,rain,weather_code&timezone=auto`, { cache: 'no-store' });
+          const arr = await r.json();
+          const list = Array.isArray(arr) ? arr : [arr];
+          const grp = L.layerGroup();
+          list.forEach((item, idx) => {
+            if (!item || !item.current) return;
+            const cc = Number(item.current.cloud_cover || 0);
+            const mm = Number(item.current.precipitation || 0);
+            const pt = pts[idx];
+            if (!pt || (cc < 25 && mm <= 0)) return;
+            const isStorm = mm >= 4;
+            const isMod = mm >= 0.8;
+            const isLight = mm > 0;
+            const fill = isStorm ? '#ef4444' : isMod ? '#f59e0b' : isLight ? '#38bdf8' : '#cbd5e1';
+            const fillOp = isStorm ? 0.36 : isMod ? 0.30 : isLight ? 0.26 : Math.min(0.28, (cc / 100) * 0.26);
+            const radius = isLight ? 18500 : 21000;
+            const label = isStorm
+              ? `Tormenta / Lluvia fuerte (${mm.toFixed(1)} mm/h · Nubes ${cc}%)`
+              : isMod
+              ? `Lluvia moderada (${mm.toFixed(1)} mm/h · Nubes ${cc}%)`
+              : isLight
+              ? `Lluvia ligera / Llovizna (${mm.toFixed(1)} mm/h · Nubes ${cc}%)`
+              : `Nubosidad activa (${cc}% cobertura)`;
+            L.circle(pt, {
+              radius,
+              stroke: isLight,
+              color: fill,
+              weight: 1,
+              opacity: 0.45,
+              fillColor: fill,
+              fillOpacity: fillOp,
+              interactive: true
+            }).bindTooltip(label, { sticky: true }).addTo(grp);
+          });
+          grp.addTo(NS.m);
+          this.cloudLayer = grp;
+        } catch (e) {}
+      },
+
       async toggle() {
         if (!window.nsHasPro()) { showSection('sec-planes'); return; }
         if (this.active) { this.stop(true); return; }
@@ -4288,8 +4594,14 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
         const btn = $('#nsRadarToggleBtn');
         const msg = $('#nsRadarMsg');
         if (btn) btn.textContent = 'Cargando radar...';
-        if (msg) msg.textContent = 'Conectando con satélite / radar RainViewer...';
+        if (msg) msg.textContent = 'Conectando con satélite / radar de nubes y precipitación...';
 
+        // Asegurar zoom regional visible si estaba demasiado cerca de una sola cuadra
+        if (NS.m.getZoom() > 10) {
+          NS.m.setView(NS.m.getCenter(), 9, { animate: true });
+        }
+
+        let rvLoaded = false;
         try {
           const r = await fetch('https://api.rainviewer.com/public/weather-maps.json?_t=' + Date.now(), { cache: 'no-store' });
           const j = await r.json();
@@ -4297,39 +4609,57 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
           const past = (j.radar && Array.isArray(j.radar.past)) ? j.radar.past.slice(-6).map(f => ({ ...f, kind: 'past' })) : [];
           const nowcast = (j.radar && Array.isArray(j.radar.nowcast)) ? j.radar.nowcast.slice(0, 3).map(f => ({ ...f, kind: 'forecast' })) : [];
           this.frames = [...past, ...nowcast];
-          if (!this.frames.length) throw new Error('Sin cuadros de radar disponibles');
 
-          this.clearLayers();
-          this.layers = this.frames.map(f => L.tileLayer(`${this.host}${f.path}/256/{z}/{x}/{y}/2/1_1.png`, {
-            tileSize: 256,
-            opacity: 0.68,
-            zIndex: 450,
-            attribution: 'Radar: RainViewer'
-          }));
+          if (this.frames.length) {
+            this.clearLayers();
+            // maxNativeZoom: 7 evita tiles 404 en zoom urbano (10-16) y escala suavemente el radar
+            this.layers = this.frames.map(f => L.tileLayer(`${this.host}${f.path}/256/{z}/{x}/{y}/4/1_1.png`, {
+              tileSize: 256,
+              maxNativeZoom: 7,
+              maxZoom: 19,
+              opacity: 0.78,
+              zIndex: 450,
+              attribution: 'Radar: RainViewer'
+            }));
+            rvLoaded = true;
+            this.idx = Math.max(0, past.length - 1);
+          }
+        } catch (e) {}
 
-          this.active = true;
-          this.idx = Math.max(0, past.length - 1);
+        // Capa complementaria de nubosidad y núcleos de lluvia en vivo sobre el mapa
+        await this.buildCloudOverlay();
+
+        this.active = true;
+        $('#nsRadarPlayBtn').style.display = rvLoaded ? 'inline-flex' : 'none';
+        $('#nsRadarRegionBtn').style.display = 'inline-flex';
+        $('#nsRadarFrameBadge').style.display = 'inline-flex';
+        $('#nsRadarTimelineRow').style.display = rvLoaded ? 'flex' : 'none';
+        $('#nsRadarLegendRow').style.display = 'flex';
+        if (btn) btn.textContent = 'Desactivar Radar';
+
+        if (rvLoaded) {
           const sl = $('#nsRadarSlider');
           if (sl) { sl.min = 0; sl.max = this.frames.length - 1; sl.value = this.idx; }
-
-          $('#nsRadarPlayBtn').style.display = 'inline-flex';
-          $('#nsRadarFrameBadge').style.display = 'inline-flex';
-          $('#nsRadarTimelineRow').style.display = 'flex';
-          $('#nsRadarLegendRow').style.display = 'flex';
-          if (btn) btn.textContent = 'Desactivar Radar';
-          if (msg) msg.textContent = 'Desliza la barra o anima para ver el desplazamiento de las lluvias.';
-
+          if (msg) msg.textContent = 'Capa de radar y nubes activa. Toca cualquier zona nubosa o desliza la línea de tiempo.';
           this.showFrame(this.idx);
           this.play();
-        } catch (e) {
-          if (btn) btn.textContent = 'Activar Radar Animado';
-          if (msg) msg.textContent = 'No se pudo cargar la capa de radar en este momento. Reintenta en unos segundos.';
+        } else {
+          const badge = $('#nsRadarFrameBadge');
+          if (badge) {
+            badge.className = 'badge badge-teal';
+            badge.textContent = 'Nubes y Lluvia • ' + (window.nsHHMM ? window.nsHHMM() : '');
+          }
+          if (msg) msg.textContent = 'Capa satelital de nubosidad y lluvia activa. Toca cualquier círculo en el mapa para ver intensidad.';
         }
       },
 
       clearLayers() {
         if (window.NS && NS.m) {
           this.layers.forEach(l => { try { if (NS.m.hasLayer(l)) NS.m.removeLayer(l); } catch (e) {} });
+          if (this.cloudLayer) {
+            try { if (NS.m.hasLayer(this.cloudLayer)) NS.m.removeLayer(this.cloudLayer); } catch (e) {}
+            this.cloudLayer = null;
+          }
         }
         this.layers = [];
       },
@@ -4343,7 +4673,7 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
         });
         const f = this.frames[this.idx];
         const dt = new Date(f.time * 1000);
-        const hh = dt.toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const hh = dt.toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', hour12: true });
         const badge = $('#nsRadarFrameBadge');
         if (badge) {
           badge.className = f.kind === 'forecast' ? 'badge badge-amber' : 'badge badge-teal';
@@ -4360,13 +4690,14 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
 
       play() {
         if (this.timer) clearInterval(this.timer);
+        if (!this.layers.length) return;
         this.playing = true;
         const pb = $('#nsRadarPlayBtn');
         if (pb) pb.textContent = '⏸ Pausar';
         this.timer = setInterval(() => {
           if (!this.active || document.hidden) return;
           this.showFrame(this.idx + 1);
-        }, 800);
+        }, 850);
       },
 
       pause() {
@@ -4387,8 +4718,9 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
         this.clearLayers();
         if (resetUI) {
           const btn = $('#nsRadarToggleBtn');
-          if (btn) btn.textContent = 'Activar Radar Animado';
+          if (btn) btn.textContent = 'Activar Radar y Nubes';
           const pb = $('#nsRadarPlayBtn'); if (pb) pb.style.display = 'none';
+          const rb = $('#nsRadarRegionBtn'); if (rb) rb.style.display = 'none';
           const fb = $('#nsRadarFrameBadge'); if (fb) fb.style.display = 'none';
           const tr = $('#nsRadarTimelineRow'); if (tr) tr.style.display = 'none';
           const lg = $('#nsRadarLegendRow'); if (lg) lg.style.display = 'none';
@@ -4405,7 +4737,7 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
 
     const fam = {
       ownCode: '',
-      joined: null, // { code, places: [...] }
+      joined: null,
 
       init() {
         let code = localStorage.getItem(FAM_OWN_KEY);
@@ -4473,9 +4805,6 @@ if(!isWV)getRedirectResult(auth,browserPopupRedirectResolver).catch(e=>{console.
         }
 
         if (!silent) {
-          const shareText = `Únete a mi Círculo Familiar en NimboSignal (Plan Pro) para ver en vivo nuestros ${places.length} lugares guardados.
-Código corto: ${this.ownCode}
-Clave directa (sin conexión): ${portable}`;
           try {
             await navigator.clipboard.writeText(cloudOk ? this.ownCode : portable);
           } catch (e) {}
@@ -4588,7 +4917,7 @@ Clave directa (sin conexión): ${portable}`;
       }
     };
 
-    // 5. TARJETA VISUAL DE ALERTA LIMPIA PARA COMPARTIR EN WHATSAPP (CANVAS PNG)
+    // 5. TARJETA VISUAL DE ALERTA LIMPIA PARA COMPARTIR EN WHATSAPP (INCLUIDA EN PLAN GRATUITO)
     const share = {
       blob: null,
       dataUrl: '',
@@ -4605,7 +4934,7 @@ Clave directa (sin conexión): ${portable}`;
         const hum = ($('#metricHum') && $('#metricHum').textContent.trim()) || '--';
         const rain = ($('#metricRain') && $('#metricRain').textContent.trim()) || '--';
         const risk = ($('#metricRisk') && $('#metricRisk').textContent.trim()) || '--';
-        const updated = ($('#nsUpd') && $('#nsUpd').textContent.trim()) || ('Actualizado: ' + new Date().toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit' }));
+        const updated = ($('#nsUpd') && $('#nsUpd').textContent.trim()) || ('Actualizado: ' + new Date().toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', hour12: true }));
         const sectors = [...document.querySelectorAll('#floodSectorsList .sector-pill')].map(el => el.textContent.trim()).slice(0, 6);
 
         const isRed = /alerta|tormenta|fuerte|alto/i.test(floodBadge + ' ' + headline + ' ' + risk);
@@ -4618,7 +4947,6 @@ Clave directa (sin conexión): ${portable}`;
         canvas.height = H;
         const ctx = canvas.getContext('2d');
 
-        // Fondo degradado oscuro elegante
         const bg = ctx.createLinearGradient(0, 0, W, H);
         bg.addColorStop(0, '#0f1720');
         bg.addColorStop(0.55, '#152230');
@@ -4626,7 +4954,6 @@ Clave directa (sin conexión): ${portable}`;
         ctx.fillStyle = bg;
         ctx.fillRect(0, 0, W, H);
 
-        // Resplandor ambiental superior
         const glow = ctx.createRadialGradient(W * 0.85, 80, 20, W * 0.85, 80, 520);
         glow.addColorStop(0, isRed ? 'rgba(239,68,68,0.22)' : isAmber ? 'rgba(245,158,11,0.20)' : 'rgba(92,164,196,0.22)');
         glow.addColorStop(1, 'rgba(15,23,32,0)');
@@ -4666,7 +4993,6 @@ Clave directa (sin conexión): ${portable}`;
           return y;
         };
 
-        // Tarjeta principal
         roundRect(48, 48, W - 96, H - 96, 36);
         ctx.fillStyle = '#1a2836';
         ctx.fill();
@@ -4674,12 +5000,10 @@ Clave directa (sin conexión): ${portable}`;
         ctx.strokeStyle = 'rgba(214, 226, 238, 0.14)';
         ctx.stroke();
 
-        // Barra superior de color de estado
         roundRect(48, 48, W - 96, 16, 8);
         ctx.fillStyle = accent;
         ctx.fill();
 
-        // Logo NS
         roundRect(92, 98, 68, 68, 18);
         const brandGrad = ctx.createLinearGradient(92, 98, 160, 166);
         brandGrad.addColorStop(0, '#5ca4c4');
@@ -4690,7 +5014,6 @@ Clave directa (sin conexión): ${portable}`;
         ctx.font = '800 30px system-ui, -apple-system, sans-serif';
         ctx.fillText('NS', 105, 143);
 
-        // Nombre app
         ctx.fillStyle = '#eef3f8';
         ctx.font = '800 34px system-ui, -apple-system, sans-serif';
         ctx.fillText('NimboSignal', 180, 134);
@@ -4698,7 +5021,6 @@ Clave directa (sin conexión): ${portable}`;
         ctx.font = '600 20px system-ui, -apple-system, sans-serif';
         ctx.fillText('REPORTE CLIMÁTICO Y DE INUNDACIONES', 180, 162);
 
-        // Ciudad y hora
         ctx.fillStyle = '#ffffff';
         ctx.font = '800 50px system-ui, -apple-system, sans-serif';
         ctx.fillText(city, 92, 245);
@@ -4707,7 +5029,6 @@ Clave directa (sin conexión): ${portable}`;
         ctx.font = '700 22px system-ui, -apple-system, sans-serif';
         ctx.fillText(updated, 92, 282);
 
-        // Píldora de estado de inundación
         roundRect(92, 314, W - 184, 58, 29);
         ctx.fillStyle = isRed ? 'rgba(239,68,68,0.18)' : isAmber ? 'rgba(245,158,11,0.18)' : 'rgba(78,168,126,0.18)';
         ctx.fill();
@@ -4715,7 +5036,6 @@ Clave directa (sin conexión): ${portable}`;
         ctx.font = '800 24px system-ui, -apple-system, sans-serif';
         ctx.fillText('●  ' + floodBadge.toUpperCase(), 120, 351);
 
-        // Caja de Veredicto
         roundRect(92, 398, W - 184, 240, 24);
         ctx.fillStyle = '#121c27';
         ctx.fill();
@@ -4726,7 +5046,6 @@ Clave directa (sin conexión): ${portable}`;
         ctx.font = '500 23px system-ui, -apple-system, sans-serif';
         wrapText(detail || floodSummary, 122, nextY + 10, W - 244, 32, 3);
 
-        // 4 Métricas
         const metrics = [
           { label: 'TEMPERATURA', val: temp },
           { label: 'HUMEDAD', val: hum },
@@ -4750,7 +5069,6 @@ Clave directa (sin conexión): ${portable}`;
           ctx.fillText(m.val, bx + 24, by + 82);
         });
 
-        // Sectores vigilados
         ctx.fillStyle = '#8b9eb0';
         ctx.font = '700 20px system-ui, -apple-system, sans-serif';
         ctx.fillText('SECTORES VIGILADOS EN ESTA CIUDAD:', 92, 954);
@@ -4759,7 +5077,6 @@ Clave directa (sin conexión): ${portable}`;
         const secText = sectors.length ? sectors.join('  •  ') : 'Zonas bajas, riveras y centro urbano';
         wrapText(secText, 92, 992, W - 184, 32, 2);
 
-        // Pie de tarjeta
         ctx.strokeStyle = 'rgba(214, 226, 238, 0.12)';
         ctx.beginPath();
         ctx.moveTo(92, 1085);
@@ -4768,7 +5085,7 @@ Clave directa (sin conexión): ${portable}`;
 
         ctx.fillStyle = '#8b9eb0';
         ctx.font = '600 20px system-ui, -apple-system, sans-serif';
-        ctx.fillText('Generado en vivo con NimboSignal • Plan Pro Premium', 92, 1134);
+        ctx.fillText('Generado en vivo con NimboSignal • Alerta Ciudadana', 92, 1134);
 
         this.fileName = 'NimboSignal-' + city.split(',')[0].trim().replace(/\s+/g, '_') + '.png';
         this.summaryText = `🌦️ *Alerta NimboSignal — ${city}*
@@ -4785,13 +5102,7 @@ Clave directa (sin conexión): ${portable}`;
         const rd = $('#nsShareReadyBody');
         if (!modal) return;
 
-        if (!window.nsHasPro()) {
-          if (lk) lk.style.display = 'block';
-          if (rd) rd.style.display = 'none';
-          modal.classList.add('on');
-          return;
-        }
-
+        // Disponible para todos (Plan Gratuito y Pro Premium)
         if (lk) lk.style.display = 'none';
         if (rd) rd.style.display = 'flex';
         const canvas = this.buildCanvas();
@@ -4828,7 +5139,6 @@ Clave directa (sin conexión): ${portable}`;
         } catch (e) {
           if (e && e.name === 'AbortError') return;
         }
-        // Respaldo universal: descarga la imagen PNG y abre WhatsApp con el resumen listo
         this.download();
         const url = 'https://wa.me/?text=' + encodeURIComponent(this.summaryText);
         window.open(url, '_blank', 'noopener,noreferrer');
@@ -4839,15 +5149,11 @@ Clave directa (sin conexión): ${portable}`;
 
     // 6. SINCRONIZACIÓN AUTOMÁTICA CON PLAN PRO Y CAMBIOS DE CIUDAD
     window.nsRefreshProModules = function() {
-      const pro = window.nsHasPro();
-      const tag = $('#nsShareProTag');
-      if (tag) tag.style.display = pro ? 'none' : 'inline-flex';
       radar.syncGate();
       const c = window.nsLastCity || { name: 'Pasaje, Ecuador', lat: -3.3256, lon: -79.8069 };
       updateDryWindow(c.name, c.lat, c.lon);
     };
 
-    // Enganchar loadCityWeather sin alterar su funcionamiento
     if (typeof window.loadCityWeather === 'function') {
       const origLoad = window.loadCityWeather;
       window.loadCityWeather = function(cityName, lat, lon, btnEl, silent) {
@@ -4857,7 +5163,6 @@ Clave directa (sin conexión): ${portable}`;
       };
     }
 
-    // Enganchar NS.sync, NS.renderAcc y NS.ml.save
     function hookNS() {
       if (!window.NS) return;
       NS.radar = radar;
